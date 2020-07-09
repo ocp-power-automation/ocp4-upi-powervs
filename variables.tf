@@ -1,0 +1,266 @@
+################################################################
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Licensed Materials - Property of IBM
+#
+# ©Copyright IBM Corp. 2020
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+################################################################
+
+################################################################
+# Configure the IBM Cloud provider
+################################################################
+variable "ibmcloud_api_key" {
+    description = "IBM Cloud API key associated with user's identity"
+    default = "<key>"
+}
+
+variable "service_instance_id" {
+    description = "The cloud instance ID of your account"
+    default = ""
+}
+
+variable "ibmcloud_region" {
+    description = "The IBM Cloud region where you want to create the resources"
+    default = ""
+}
+
+variable "ibmcloud_zone" {
+    description = "The zone of an IBM Cloud region where you want to create Power System resources"
+    default = ""
+}
+
+################################################################
+# Configure the Instance details
+################################################################
+
+variable "bastion" {
+    # only one node is supported
+    default = {
+        memory      = "8"
+        processors  = "1"
+    }
+}
+
+variable "bootstrap" {
+    default = {
+        count       = 1
+        memory      = "16"
+        processors  = "2"
+    }
+}
+
+variable "master" {
+    default = {
+        count       = 3
+        memory      = "16"
+        processors  = "2"
+    }
+}
+
+variable "worker" {
+    default = {
+        count       = 2
+        memory      = "16"
+        processors  = "2"
+    }
+}
+
+variable "rhel_image_name" {
+    description = "Name of the RHEL image that you want to use for the bastion node"
+    default = "RHEL82"
+}
+
+variable "rhcos_image_name" {
+    description = "Name of the RHCOS image that you want to use for OCP nodes"
+    default = "RHCOS-4.4"
+}
+
+variable "processor_type" {
+    description = "The type of processor mode (shared/dedicated)"
+    default = "shared"
+}
+
+variable "system_type" {
+    description = "The type of system (s922/e880)"
+    default = "s922"
+}
+
+variable "network_name" {
+    description = "The name of the network to be used for deploy operations"
+    default = "my_network_name"
+}
+
+variable "rhel_username" {
+    default = "root"
+}
+
+variable "public_key_file" {
+    description = "Path to public key file"
+    # if empty, will default to ${path.cwd}/data/id_rsa.pub
+    default     = "~/.ssh/id_rsa.pub"
+}
+
+variable "private_key_file" {
+    description = "Path to private key file"
+    # if empty, will default to ${path.cwd}/data/id_rsa
+    default     = "~/.ssh/id_rsa"
+}
+
+variable "private_key" {
+    description = "content of private ssh key"
+    # if empty string will read contents of file at var.private_key_file
+    default = ""
+}
+
+variable "public_key" {
+    description = "Public key"
+    # if empty string will read contents of file at var.public_key_file
+    default     = ""
+}
+
+variable "rhel_subscription_username" {}
+
+variable "rhel_subscription_password" {}
+
+
+################################################################
+### Instrumentation
+################################################################
+variable "ssh_agent" {
+    description = "Enable or disable SSH Agent. Can correct some connectivity issues. Default: false"
+    default     = false
+}
+
+variable "installer_log_level" {
+    description = "Set the log level required for openshift-install commands"
+    default = "info"
+}
+
+variable "helpernode_repo" {
+    description = "Set the repo URL for using ocp4-helpernode"
+    # Repo for running ocp4 installations steps.
+    default = "https://github.com/RedHatOfficial/ocp4-helpernode"
+}
+
+variable "helpernode_tag" {
+    description = "Set the branch/tag name or commit# for using ocp4-helpernode repo"
+    # Checkout level for https://github.com/RedHatOfficial/ocp4-helpernode which is used for setting up services required on bastion node
+    default = "fddbbc651153ef2966e5cb4d4167990b31c01ceb"
+}
+
+variable "install_playbook_repo" {
+    description = "Set the repo URL for using ocp4-playbooks"
+    # Repo for running ocp4 installations steps.
+    default = "https://github.com/ocp-power-automation/ocp4-playbooks"
+}
+
+variable "install_playbook_tag" {
+    description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
+    # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
+    default = "47b1fc6caa69f3705419889a9ea47717ec3d8c2e"
+}
+
+variable "ansible_extra_options" {
+    description = "Extra options string to append to ansible-playbook commands"
+    default     = "-v"
+}
+
+variable "pull_secret_file" {
+    default   = "data/pull-secret.txt"
+}
+
+variable "dns_forwarders" {
+    default   = "8.8.8.8; 8.8.4.4"
+}
+
+variable "rhcos_kernel_options" {
+    description = "List of kernel arguments for the cluster nodes"
+    default     = []
+}
+
+variable proxy {
+    description = "Proxy server details in a map"
+    default = {}
+#    default = {
+#        server = "10.10.1.166",
+#        port = "3128"
+#        user = "pxuser",
+#        password = "pxpassword"
+#    }
+}
+
+locals {
+    private_key_file    = "${var.private_key_file == "" ? "${path.cwd}/data/id_rsa" : "${var.private_key_file}" }"
+    public_key_file     = "${var.public_key_file == "" ? "${path.cwd}/data/id_rsa.pub" : "${var.public_key_file}" }"
+    private_key         = "${var.private_key == "" ? file(coalesce(local.private_key_file, "/dev/null")) : "${var.private_key}" }"
+    public_key          = "${var.public_key == "" ? file(coalesce(local.public_key_file, "/dev/null")) : "${var.public_key}" }"
+}
+
+################################################################
+### OpenShift variables
+################################################################
+variable "openshift_install_tarball" {
+    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-install-linux.tar.gz"
+}
+
+variable "openshift_client_tarball" {
+     default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-install-linux.tar.gz"
+}
+
+variable "release_image_override" {
+    default = ""
+}
+
+# Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
+variable "cluster_domain" {
+    default   = "rhocp.com"
+}
+# Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
+# Should not be more than 14 characters
+variable "cluster_id_prefix" {
+    default   = "test-ocp"
+}
+
+
+variable "storage_type" {
+    #Supported values: nfs (other value won't setup a storageclass)
+    default = "nfs"
+}
+
+variable "volume_size" {
+    # If storage_type = nfs, a new volume of this size will be attached to the bastion node.
+    # Value in GB
+    default = "300"
+}
+
+variable "volume_type" {
+    description = "The volume type (ssd, standard, tier1, tier3)"
+    default = "tier3"
+}
+
+variable "upgrade_image" {
+    description = "OCP upgrade image"
+    default = ""
+}
+
+variable "upgrade_pause_time" {
+    description = "Number of minutes to pause the playbook execution before starting to check the upgrade status once the upgrade command is executed."
+    default = "90"
+}
+
+variable "upgrade_delay_time" {
+    description = "Number of seconds to wait before re-checking the upgrade status once the playbook execution resumes."
+    default = "600"
+}
