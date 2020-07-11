@@ -13,8 +13,8 @@
 
 Clone this git repository on the client machine:
 ```
-git clone https://github.com/ocp-power-automation/ocp4-upi-powervs.git
-cd ocp4_upi_powervs
+$ git clone https://github.com/ocp-power-automation/ocp4-upi-powervs.git
+$ cd ocp4-upi-powervs
 ```
 
 ## Setup Variables.
@@ -31,41 +31,41 @@ Update the following variables specific to your environment.
  * `service_instance_id` : (Required) The cloud instance ID of your account. You can get the ID from instance name by using IBM Cloud CLI command: `ibmcloud resource service-instance <Name> | grep GUID`
  * `network_name` : (Required) The name of the network to be used for deploy operations.
  * `processor_type` : (Optional) The type of processor mode in which the VM will run (shared/dedicated).
- * `system_type` : (Optional) The type of system on which to create the VM (s922/e880).
+ * `system_type` : (Optional) The type of system on which to create the VM (s922/e980).
 
-### Setup Nodes Variables
+### Setup Node Variables
 
-Update the following variables specific to your cluster requirement. All the variables are required to be specified.
+Update the following variables specific to your cluster requirement.
 
  * `rhel_image_name` :  Name of the RHEL image that you want to use for bastion node.
  * `rhcos_image_name` : Name of the RHCOS image that you want to use for OCP nodes.
- * `bastion` : Map of below parameters for bastion host.
-    * `memory` : Memory in GBs required for bastion node.
-    * `processors` : Number of vCPUs to use for bastion.
- * `bootstrap` : Map of below parameters for bootstrap host.
-    * `memory` : Memory in GBs required for bootstrap node.
-    * `processors` : Number of vCPUs to use for bootstrap node.
+ * `bastion` : (Optional) Map of below parameters for bastion host.
+    * `memory` : Memory in GBs required for bastion node. Minimum is 8GB (default).
+    * `processors` : Number of vCPUs to use for bastion. Minimum is 1 vCPU (default).
+ * `bootstrap` : (Optional) Map of below parameters for bootstrap host.
+    * `memory` : Memory in GBs required for bootstrap node. Minimum is 16GB (default).
+    * `processors` : Number of vCPUs to use for bootstrap node. Minimum is 2 vCPU (default).
     * `count` : Always set the value to 1 before starting the deployment. When the deployment is completed successfully set to 0 to delete the bootstrap node.
- * `master` : Map of below parameters for master hosts.
-    * `memory` : Memory in GBs required for master nodes.
-    * `processors` : Number of vCPUs to use for master nodes.
-    * `count` : Number of master nodes.
- * `worker` : Map of below parameters for worker hosts. (Atleaset 2 Workers are required for running router pods in HA mode)
-    * `memory` : Memory in GBs required for worker nodes.
-    * `processors` : Number of vCPUs to use for worker nodes.
-    * `count` : Number of worker nodes.
+ * `master` : (Optional) Map of below parameters for master hosts.
+    * `memory` : Memory in GBs required for master nodes. Minimum is 16GB (default).
+    * `processors` : Number of vCPUs to use for master nodes. Minimum is 2 vCPU (default).
+    * `count` : Number of master nodes. Minimum required is 3 (default).
+ * `worker` : (Optional) Map of below parameters for worker hosts. (Atleaset 2 Workers are required for running router pods in HA mode)
+    * `memory` : Memory in GBs required for worker nodes. Default is 16GB.
+    * `processors` : Number of vCPUs to use for worker nodes. Default is 2 vCPU.
+    * `count` : Number of worker nodes. Minimum required is 2 (default).
 
-### Setup Instrumentation Variables
+### Setup Additional Variables
 
-Update the following variables specific to the nodes.
+Update the following variables specific to the nodes if required.
 
  * `rhel_username` : (Optional) The user that we should use for the connection to the bastion host. The default value is set as "root user.
- * `public_key_file` : (Optional) A pregenerated OpenSSH-formatted public key file. Default path is 'data/id_rsa.pub'.
+ * `public_key_file` : (Optional) An OpenSSH-formatted public key file. Default path is 'data/id_rsa.pub'.
  * `private_key_file` : (Optional) Corresponding private key file. Default path is 'data/id_rsa'.
  * `private_key` : (Optional) The contents of an SSH key to use for the connection. Ignored if `public_key_file` is provided.
  * `public_key` : (Optional) The contents of corresponding key to use for the connection. Ignored if `public_key_file` is provided.
- * `rhel_subscription_username` : (Optional) The username required for RHEL subcription on bastion host. Leave empty if repos are already set in the RHEL image(`rhel_image_name`) and subscription is not needed.
- * `rhel_subscription_password` : (Optional) The password required for RHEL subcription on bastion host.
+ * `rhel_subscription_username` : (Optional) The username required for RHEL subscription on bastion host. Leave empty if repos are already setup in the RHEL image(`rhel_image_name`) and subscription is not needed.
+ * `rhel_subscription_password` : (Optional) The password required for RHEL subscription on bastion host.
 
 ### Setup OpenShift Variables
 
@@ -77,7 +77,7 @@ Update the following variables specific to OCP.
  * `cluster_id_prefix` : (Required) Cluster identifier. Should not be more than 8 characters. Nodes are pre-fixed with this value, please keep it unique.
  * `release_image_override` : (Optional) This is set to OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE while creating ignition files.
 
-### Setup Additonal OpenShift Variables
+### Setup Additional OpenShift Variables
 
  * `installer_log_level` : (Optional) Log level for OpenShift install (e.g. "debug | info | warn | error") (default "info")
  * `ansible_extra_options` : (Optional) Ansible options to append to the ansible-playbook commands. Default is set to "-v".
@@ -124,11 +124,11 @@ id_rsa  id_rsa.pub  pull-secret.txt
 
 ## Start Install
 
-Run the following commands from where you have cloned this repository:
+Run the following commands from within the cloned repository:
 
 ```
-terraform init
-terraform apply -var-file var.tfvars -parallelism=3
+$ terraform init
+$ terraform apply -var-file var.tfvars -parallelism=3
 ```
 
 **NOTICE**: We have used [parallelism](https://www.terraform.io/docs/commands/apply.html#parallelism-n) to restrict parallel instance creation requests using the PowerVS client. This is due to a known issue where the apply fails at random parallel instance create requests. If you still get the error while creating the instance, you will have to delete the failed instance from PowerVS console and then run the apply command again.
@@ -142,7 +142,7 @@ Now wait for the installation to complete. It may take around 60 mins to complet
 
 ### Delete Bootstrap Node
 
-Once the deployment is completed successfully, you can safely delete the bootstrap node. This step is optional but recommended to free up the used during install.
+Once the deployment is completed successfully, you can safely delete the bootstrap node. This step is optional but recommended to free up the resources used during install.
 
 1. Change the `count` value to 0 in `bootstrap` map variable and re-run the apply command. Eg: `bootstrap = {memory = "16", processors = "2", "count" = 0}`
 2. Run command `terraform apply -var-file var.tfvars`

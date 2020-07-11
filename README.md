@@ -1,5 +1,6 @@
 # **Table of Contents**
 
+- [**Table of Contents**](#table-of-contents)
 - [Introduction](#introduction)
 - [Pre-requisites](#pre-requisites)
 - [Image and LPAR requirements](#image-and-lpar-requirements)
@@ -8,12 +9,9 @@
 
 
 # Introduction
-This repo contains Terraform templates to help deployment of OpenShift Container Platform (OCP) 4.x at [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
+This repo contains Terraform templates to help deployment of OpenShift Container Platform (OCP) 4.x using [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
 
-If you are using standalone PowerVM please take a look at the [following quickstart guide](https://github.com/RedHatOfficial/ocp4-helpernode/blob/devel/docs/quickstart-powervm.md)
-which uses the [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) to setup helper node (bastion) for OCP deployment.
-
-This project also leverages the same ansible playbook internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
+This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
 
 Run this code from either Mac or Linux (Intel) system.
 
@@ -33,22 +31,23 @@ on installing the latest Git.
 
 You'll need to create RedHat CoreOS (RHCOS) and RHEL 8.0 (or later) images in IBM Cloud Region.
 
-Following are the recommended LPAR configs for OpenShift nodes that will be deployed with RHCOS image.
+Following are the recommended instance configs for OpenShift nodes that will be deployed with RHCOS image.
 - Bootstrap, Master - 2 vCPUs, 16GB RAM, 120 GB Disk.
 
-  PowerVS LPARs by default uses SMT=8. So with 2vCPUs, the number of logical CPUs as seen by the Operating System will be **16** (`2 vCPUs x 8 SMT`)
+  PowerVS instances by default uses SMT=8. So with 2vCPUs, the number of logical CPUs as seen by the Operating System will be **16** (`2 vCPUs x 8 SMT`)
 
    **_This config is suitable for majority of the scenarios_**
 - Worker - 2 vCPUs, 16GB RAM, 120 GB Disk
 
    **_Increase worker vCPUs, RAM and Disk based on application requirements_**
 
-Following is the recommended LPAR config for the helper node that will be deployed with RHEL 8.0 (or later) image.
+Following is the recommended instance config for the helper node that will be deployed with RHEL 8.0 (or later) image.
 - Helper node (bastion) - 2vCPUs, 16GB RAM, 200 GB Disk
+- If NFS storage is requested, then additional 300 GB Disk is used
 
 # OCP Install
 
-Follow these [quickstart](docs/quickstart.md) guide to kickstart OCP installation at PowerVS on IBM Cloud.
+Follow the [quickstart](docs/quickstart.md) guide to kickstart OCP installation using PowerVS.
 
 # Contributing
 Please see the [contributing doc](https://github.com/ocp-power-automation/ocp4-upi-powervs/blob/master/CONTRIBUTING.md) for more details.

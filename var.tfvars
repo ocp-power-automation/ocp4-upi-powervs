@@ -30,7 +30,7 @@ openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc
 
 #release_image_override     = ""
 
-cluster_domain              = "example.com"
+cluster_domain              = "ibm.com"
 cluster_id_prefix           = "test"
 
 

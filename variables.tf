@@ -93,7 +93,7 @@ variable "processor_type" {
 }
 
 variable "system_type" {
-    description = "The type of system (s922/e880)"
+    description = "The type of system (s922/e980)"
     default = "s922"
 }
 
@@ -225,7 +225,7 @@ variable "release_image_override" {
 
 # Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
 variable "cluster_domain" {
-    default   = "rhocp.com"
+    default   = "ibm.com"
 }
 # Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
 # Should not be more than 14 characters
