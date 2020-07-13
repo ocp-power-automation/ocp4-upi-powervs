@@ -22,3 +22,8 @@ output "install_status" {
     depends_on = [null_resource.install]
     value = "COMPLETED"
 }
+
+output "local_registry" {
+    depends_on = [null_resource.install]
+    value = var.enable_local_registry ? "${local.local_registry.url}" : null
+}

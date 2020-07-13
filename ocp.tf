@@ -73,6 +73,9 @@ module "install" {
     openshift_client_tarball        = var.openshift_client_tarball
     storage_type                    = var.storage_type
     release_image_override          = var.release_image_override
+    enable_local_registry           = var.enable_local_registry
+    local_registry_image            = var.local_registry_image
+    ocp_release_tag                 = var.ocp_release_tag
     proxy                           = var.proxy
     helpernode_repo                 = var.helpernode_repo
     helpernode_tag                  = var.helpernode_tag

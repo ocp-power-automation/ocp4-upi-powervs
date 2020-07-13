@@ -35,5 +35,16 @@ workers:
 ppc64le: true
 ssh_gen_key: false
 
+%{ if enable_local_registry }
+setup_registry:
+  deploy: true
+  autosync_registry: true
+  registry_image: "${setup_registry.registry_image}"
+  local_repo: "ocp4/openshift4"
+  product_repo: "openshift-release-dev"
+  release_name: "ocp-release"
+  release_tag: "${setup_registry.release_tag}"
+%{ endif }
+
 ocp_client: "${client_tarball}"
 ocp_installer: "${install_tarball}"

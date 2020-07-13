@@ -58,8 +58,14 @@ locals {
             }
         ]
 
-        client_tarball  = var.openshift_client_tarball
-        install_tarball = var.openshift_install_tarball
+        setup_registry  = {
+            registry_image    = var.local_registry_image
+            release_tag       = var.ocp_release_tag
+        }
+
+        enable_local_registry    = var.enable_local_registry
+        client_tarball           = var.openshift_client_tarball
+        install_tarball          = var.openshift_install_tarball
     }
 
     inventory = {
@@ -75,6 +81,10 @@ locals {
         user_pass   = lookup(var.proxy, "user", "") == "" ? "" : "${lookup(var.proxy, "user", "")}:${lookup(var.proxy, "password", "")}@"
     }
 
+    local_registry = {
+        url = "registry.${var.cluster_id}.${var.cluster_domain}:5000/ocp4/openshift4"
+    }
+
     install_vars = {
         cluster_id              = var.cluster_id
         cluster_domain          = var.cluster_domain
@@ -82,7 +92,8 @@ locals {
         public_ssh_key          = var.public_key
         storage_type            = var.storage_type
         log_level               = var.log_level
-        release_image_override  = var.release_image_override
+        release_image_override  = var.enable_local_registry ? "${local.local_registry.url}:${var.ocp_release_tag}" : var.release_image_override
+        enable_local_registry   = var.enable_local_registry
         rhcos_kernel_options    = var.rhcos_kernel_options
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
         no_proxy                = data.ibm_pi_network.network.cidr
@@ -108,11 +119,16 @@ resource "null_resource" "config" {
 
     provisioner "remote-exec" {
         inline = [
+            "mkdir -p .openshift",
             "rm -rf ocp4-helpernode",
             "echo 'Cloning into ocp4-helpernode...'",
             "git clone ${var.helpernode_repo} --quiet",
             "cd ocp4-helpernode && git checkout ${var.helpernode_tag}"
         ]
+    }
+    provisioner "file" {
+        source      = "data/pull-secret.txt"
+        destination = "~/.openshift/pull-secret"
     }
     provisioner "file" {
         content     = templatefile("${path.module}/templates/helpernode_vars.yaml", local.helpernode_vars)
@@ -166,6 +182,7 @@ resource "null_resource" "install" {
 
 resource "null_resource" "upgrade" {
     depends_on = [null_resource.install]
+    count      = var.upgrade_image != "" ? 1 : 0
 
     connection {
         type        = "ssh"
