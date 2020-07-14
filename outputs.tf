@@ -53,6 +53,10 @@ ${module.prepare.bastion_public_ip} api.${random_id.label.hex}.${var.cluster_dom
 EOF
 }
 
+output "local_registry" {
+    value = module.install.local_registry
+}
+
 output "oc_server_url" {
     value = "https://api.${random_id.label.hex}.${var.cluster_domain}:6443/"
 }
