@@ -269,8 +269,9 @@ variable "upgrade_delay_time" {
 # Local registry variables ( used only in disconnected install )
 ################################################################
 variable "enable_local_registry" {
+  type = bool
   description = "Set to true to enable usage of local registry for restricted network install."
-  default = "false"
+  default = false
 }
 
 variable "local_registry_image" {
