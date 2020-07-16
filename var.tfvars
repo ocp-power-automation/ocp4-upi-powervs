@@ -9,11 +9,12 @@ bastion                     = {memory      = "8",   processors  = "1"}
 bootstrap                   = {memory      = "16",   processors  = "2",  "count"   = 1}
 master                      = {memory      = "16",   processors  = "2",  "count"   = 3}
 worker                      = {memory      = "16",   processors  = "2",  "count"   = 2}
+## change below variables as per your environment
 rhel_image_name     = "rhel-8.2"
 rhcos_image_name    = "rhcos-4.4.9"
 processor_type      = "shared"
 system_type         = "s922"
-network_name        = "my_network_name"
+network_name        = "ocp-net"
 
 rhel_username               = "root"
 public_key_file             = "~/.ssh/id_rsa.pub"
@@ -30,7 +31,7 @@ openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc
 
 #release_image_override     = ""
 
-cluster_domain              = "example.com"
+cluster_domain              = "ibm.com"
 cluster_id_prefix           = "test"
 
 

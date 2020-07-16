@@ -119,55 +119,78 @@ resource "null_resource" "bastion_init" {
             "echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null",
         ]
     }
+}
 
+resource "null_resource" "setup_proxy_info" {
+    depends_on = [null_resource.bastion_init]
+    count       = local.proxy.server != "" ? 1 : 0
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
+        bastion_host = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
+    }
     # Setup proxy
     provisioner "remote-exec" {
         inline = [<<EOF
 
-if [ "${local.proxy.server}" != "" ]; then
-    echo "Setting up proxy details..."
+echo "Setting up proxy details..."
 
-    # System
-    set http_proxy="http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
-    set https_proxy="http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
-    set no_proxy="127.0.0.1,localhost,${var.cluster_domain}"
-    echo "export http_proxy=\"http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}\"" | sudo tee /etc/profile.d/http_proxy.sh > /dev/null
-    echo "export https_proxy=\"http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}\"" | sudo tee -a /etc/profile.d/http_proxy.sh > /dev/null
-    echo "export no_proxy=\"127.0.0.1,localhost,${var.cluster_domain}\"" | sudo tee -a /etc/profile.d/http_proxy.sh > /dev/null
+# System
+set http_proxy="http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
+set https_proxy="http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
+set no_proxy="127.0.0.1,localhost,${var.cluster_domain}"
+echo "export http_proxy=\"http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}\"" | sudo tee /etc/profile.d/http_proxy.sh > /dev/null
+echo "export https_proxy=\"http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}\"" | sudo tee -a /etc/profile.d/http_proxy.sh > /dev/null
+echo "export no_proxy=\"127.0.0.1,localhost,${var.cluster_domain}\"" | sudo tee -a /etc/profile.d/http_proxy.sh > /dev/null
 
-    # RHSM
-    sudo sed -i -e 's/^proxy_hostname =.*/proxy_hostname = ${local.proxy.server}/' /etc/rhsm/rhsm.conf
-    sudo sed -i -e 's/^proxy_port =.*/proxy_port = ${local.proxy.port}/' /etc/rhsm/rhsm.conf
-    sudo sed -i -e 's/^proxy_user =.*/proxy_user = ${local.proxy.user}/' /etc/rhsm/rhsm.conf
-    sudo sed -i -e 's/^proxy_password =.*/proxy_password = ${local.proxy.password}/' /etc/rhsm/rhsm.conf
+# RHSM
+sudo sed -i -e 's/^proxy_hostname =.*/proxy_hostname = ${local.proxy.server}/' /etc/rhsm/rhsm.conf
+sudo sed -i -e 's/^proxy_port =.*/proxy_port = ${local.proxy.port}/' /etc/rhsm/rhsm.conf
+sudo sed -i -e 's/^proxy_user =.*/proxy_user = ${local.proxy.user}/' /etc/rhsm/rhsm.conf
+sudo sed -i -e 's/^proxy_password =.*/proxy_password = ${local.proxy.password}/' /etc/rhsm/rhsm.conf
 
-    # YUM/DNF
-    # Incase /etc/yum.conf is a symlink to /etc/dnf/dnf.conf we try to update the original file
-    yum_dnf_conf=$(readlink -f -q /etc/yum.conf)
-    sudo sed -i -e '/^proxy.*/d' $yum_dnf_conf
-    echo "proxy=http://${local.proxy.server}:${local.proxy.port}" | sudo tee -a $yum_dnf_conf > /dev/null
-    echo "proxy_username=${local.proxy.user}" | sudo tee -a $yum_dnf_conf > /dev/null
-    echo "proxy_password=${local.proxy.password}" | sudo tee -a $yum_dnf_conf > /dev/null
-fi
+# YUM/DNF
+# Incase /etc/yum.conf is a symlink to /etc/dnf/dnf.conf we try to update the original file
+yum_dnf_conf=$(readlink -f -q /etc/yum.conf)
+sudo sed -i -e '/^proxy.*/d' $yum_dnf_conf
+echo "proxy=http://${local.proxy.server}:${local.proxy.port}" | sudo tee -a $yum_dnf_conf > /dev/null
+echo "proxy_username=${local.proxy.user}" | sudo tee -a $yum_dnf_conf > /dev/null
+echo "proxy_password=${local.proxy.password}" | sudo tee -a $yum_dnf_conf > /dev/null
 
 EOF
   ]
     }
 
+}
+
+resource "null_resource" "bastion_register" {
+    depends_on  = [null_resource.bastion_init, null_resource.setup_proxy_info]
+    count       = var.rhel_subscription_username != "" ? 1 : 0
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
+        bastion_host = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
+    }
+
     provisioner "remote-exec" {
         inline = [<<EOF
-if [ '${var.rhel_subscription_username}' != '' ]
-then
-    # FIX for existing stale repos
-    echo "Moving all file from /etc/yum.repos.d/ to /etc/yum.repos.d.bak/"
-    mkdir /etc/yum.repos.d.bak/
-    mv /etc/yum.repos.d/* /etc/yum.repos.d.bak/
+# FIX for existing stale repos
+echo "Moving all file from /etc/yum.repos.d/ to /etc/yum.repos.d.bak/"
+mkdir /etc/yum.repos.d.bak/
+mv /etc/yum.repos.d/* /etc/yum.repos.d.bak/
 
-    sudo subscription-manager clean
-    sudo subscription-manager register --username=${var.rhel_subscription_username} --password=${var.rhel_subscription_password} --force
-    sudo subscription-manager refresh
-    sudo subscription-manager attach --auto
-fi
+sudo subscription-manager clean
+sudo subscription-manager register --username=${var.rhel_subscription_username} --password=${var.rhel_subscription_password} --force
+sudo subscription-manager refresh
+sudo subscription-manager attach --auto
 EOF
         ]
     }
@@ -175,14 +198,30 @@ EOF
         when        = destroy
         on_failure  = continue
         inline = [<<EOF
-if [ '${var.rhel_subscription_username}' != '' ]
-then
-    sudo subscription-manager unregister
-    sudo subscription-manager remove --all
-fi
+sudo subscription-manager unregister
+sudo subscription-manager remove --all
 EOF
         ]
     }
+    provisioner "remote-exec" {
+        inline = [
+            "sudo rm -rf /tmp/terraform_*"
+        ]
+    }
+}
+
+resource "null_resource" "bastion_packages" {
+    depends_on = [null_resource.bastion_init, null_resource.setup_proxy_info, null_resource.bastion_register]
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
+        bastion_host = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
+    }
+
     provisioner "remote-exec" {
         inline = [
             "#sudo yum update -y --skip-broken",
@@ -203,11 +242,6 @@ EOF
             "sudo systemctl enable NetworkManager"
         ]
     }
-    provisioner "remote-exec" {
-        inline = [
-            "sudo rm -rf /tmp/terraform_*"
-        ]
-    }
 }
 
 locals {
@@ -219,7 +253,7 @@ locals {
 }
 
 resource "null_resource" "setup_nfs_disk" {
-    depends_on  = [null_resource.bastion_init]
+    depends_on  = [null_resource.bastion_packages]
     count       = var.storage_type == "nfs" ? 1 : 0
     connection {
         type        = "ssh"
