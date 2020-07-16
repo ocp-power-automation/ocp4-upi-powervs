@@ -30,29 +30,6 @@ variable "bastion_ip" {}
 variable "cluster_domain" {}
 variable "cluster_id" {}
 
-variable "bootstrap" {
-    default = {
-        count       = 1
-        memory      = "16"
-        image_name  = "RHCOS-4.4"
-        processors  = "2"
-    }
-}
-
-variable "master" {
-    default = {
-        count       = 3
-        memory      = "16"
-        image_name  = "RHCOS-4.4"
-        processors  = "2"
-    }
-}
-
-variable "worker" {
-    default = {
-        count       = 2
-        memory      = "8"
-        image_name  = "RHCOS-4.4"
-        processors  = "2"
-    }
-}
+variable "bootstrap" {}
+variable "master" {}
+variable "worker" {}

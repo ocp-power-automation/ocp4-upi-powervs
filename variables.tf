@@ -79,12 +79,12 @@ variable "worker" {
 
 variable "rhel_image_name" {
     description = "Name of the RHEL image that you want to use for the bastion node"
-    default = "RHEL82"
+    default = "rhel-8.2"
 }
 
 variable "rhcos_image_name" {
     description = "Name of the RHCOS image that you want to use for OCP nodes"
-    default = "RHCOS-4.4"
+    default = "rhcos-4.4.9"
 }
 
 variable "processor_type" {
