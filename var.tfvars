@@ -45,7 +45,7 @@ enable_local_registry       = false  #Set to true to enable usage of local regis
 #helpernode_repo             = "https://github.com/RedHatOfficial/ocp4-helpernode"
 #helpernode_tag             = "5eab3db53976bb16be582f2edc2de02f7510050d"
 #install_playbook_repo       = "https://github.com/ocp-power-automation/ocp4-playbooks"
-#install_playbook_tag       = "374a19ab0e4ba279cbb5f9406bf63ea1e88a5c3e"
+#install_playbook_tag       = "d2509c4b4a67879daa6338f68e8e7eb1e15d05e2"
 
 installer_log_level         = "info"
 ansible_extra_options       = "-v"

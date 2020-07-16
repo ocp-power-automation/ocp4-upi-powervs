@@ -26,6 +26,13 @@ data "ibm_pi_network" "network" {
 
 
 locals {
+    local_registry  = {
+        enable_local_registry   = var.enable_local_registry
+        registry_image          = var.local_registry_image
+        ocp_release_repo        = "ocp4/openshift4"
+        ocp_release_tag         = var.ocp_release_tag
+    }
+
     helpernode_vars = {
         cluster_domain  = var.cluster_domain
         cluster_id      = var.cluster_id
@@ -58,12 +65,7 @@ locals {
             }
         ]
 
-        setup_registry  = {
-            registry_image    = var.local_registry_image
-            release_tag       = var.ocp_release_tag
-        }
-
-        enable_local_registry    = var.enable_local_registry
+        local_registry           = local.local_registry
         client_tarball           = var.openshift_client_tarball
         install_tarball          = var.openshift_install_tarball
     }
@@ -81,9 +83,7 @@ locals {
         user_pass   = lookup(var.proxy, "user", "") == "" ? "" : "${lookup(var.proxy, "user", "")}:${lookup(var.proxy, "password", "")}@"
     }
 
-    local_registry = {
-        url = "registry.${var.cluster_id}.${var.cluster_domain}:5000/ocp4/openshift4"
-    }
+    local_registry_ocp_image = "registry.${var.cluster_id}.${var.cluster_domain}:5000/${local.local_registry.ocp_release_repo}:${var.ocp_release_tag}"
 
     install_vars = {
         cluster_id              = var.cluster_id
@@ -92,7 +92,7 @@ locals {
         public_ssh_key          = var.public_key
         storage_type            = var.storage_type
         log_level               = var.log_level
-        release_image_override  = var.enable_local_registry ? "${local.local_registry.url}:${var.ocp_release_tag}" : var.release_image_override
+        release_image_override  = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
         enable_local_registry   = var.enable_local_registry
         rhcos_kernel_options    = var.rhcos_kernel_options
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"

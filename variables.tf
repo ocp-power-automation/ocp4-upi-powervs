@@ -169,7 +169,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
     # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
-    default = "374a19ab0e4ba279cbb5f9406bf63ea1e88a5c3e"
+    default = "d2509c4b4a67879daa6338f68e8e7eb1e15d05e2"
 }
 
 variable "ansible_extra_options" {
@@ -266,7 +266,7 @@ variable "upgrade_delay_time" {
 }
 
 ################################################################
-# Local registry variables ( used only in disconnected install )
+# Local registry variables ( used only for restricted network install )
 ################################################################
 variable "enable_local_registry" {
   type = bool
