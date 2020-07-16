@@ -9,8 +9,8 @@ bastion                     = {memory      = "8",   processors  = "1"}
 bootstrap                   = {memory      = "16",   processors  = "2",  "count"   = 1}
 master                      = {memory      = "16",   processors  = "2",  "count"   = 3}
 worker                      = {memory      = "16",   processors  = "2",  "count"   = 2}
-rhel_image_name     = "RHEL82"
-rhcos_image_name    = "RHCOS-4.4"
+rhel_image_name     = "rhel-8.2"
+rhcos_image_name    = "rhcos-4.4.9"
 processor_type      = "shared"
 system_type         = "s922"
 network_name        = "my_network_name"
