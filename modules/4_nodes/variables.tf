@@ -33,3 +33,7 @@ variable "cluster_id" {}
 variable "bootstrap" {}
 variable "master" {}
 variable "worker" {}
+
+variable "master_volume_size" {}
+variable "worker_volume_size" {}
+variable "volume_type" {}
