@@ -68,7 +68,6 @@ resource "ibm_pi_instance" "bootstrap" {
     pi_health_status        = "WARNING"
 }
 
-
 #master
 data "ignition_config" "master" {
     count       = var.master["count"]
@@ -101,11 +100,22 @@ resource "ibm_pi_instance" "master" {
     pi_sys_type             = var.system_type
     pi_cloud_instance_id    = var.service_instance_id
     pi_network_ids          = [data.ibm_pi_network.network.id]
+    pi_volume_ids           = var.master_volume_size == "" ? null : ibm_pi_volume.master[count.index].*.volume_id
     pi_user_data            = base64encode(data.ignition_config.master[count.index].rendered)
 
     # Not needed by RHCOS but required by resource
     pi_key_pair_name        = "${var.cluster_id}-keypair"
     pi_health_status        = "WARNING"
+}
+
+resource "ibm_pi_volume" "master" {
+    count               = var.master_volume_size == "" ? 0 : var.master["count"]
+
+    pi_volume_size       = var.master_volume_size
+    pi_volume_name       = "${var.cluster_id}-master-${count.index}-volume"
+    pi_volume_type       = var.volume_type
+    pi_volume_shareable  = true
+    pi_cloud_instance_id = var.service_instance_id
 }
 
 
@@ -142,11 +152,22 @@ resource "ibm_pi_instance" "worker" {
     pi_sys_type             = var.system_type
     pi_cloud_instance_id    = var.service_instance_id
     pi_network_ids          = [data.ibm_pi_network.network.id]
+    pi_volume_ids           = var.worker_volume_size == "" ? null : ibm_pi_volume.worker[count.index].*.volume_id
     pi_user_data            = base64encode(data.ignition_config.worker[count.index].rendered)
 
     # Not needed by RHCOS but required by resource
     pi_key_pair_name        = "${var.cluster_id}-keypair"
     pi_health_status        = "WARNING"
+}
+
+resource "ibm_pi_volume" "worker" {
+    count               = var.worker_volume_size == "" ? 0 : var.worker["count"]
+
+    pi_volume_size       = var.worker_volume_size
+    pi_volume_name       = "${var.cluster_id}-worker-${count.index}-volume"
+    pi_volume_type       = var.volume_type
+    pi_volume_shareable  = true
+    pi_cloud_instance_id = var.service_instance_id
 }
 
 

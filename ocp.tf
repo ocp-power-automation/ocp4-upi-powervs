@@ -46,6 +46,9 @@ module "nodes" {
     bootstrap                       = var.bootstrap
     master                          = var.master
     worker                          = var.worker
+    master_volume_size              = var.master_volume_size
+    worker_volume_size              = var.worker_volume_size
+    volume_type                     = var.volume_type
 }
 
 module "install" {

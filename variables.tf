@@ -250,6 +250,18 @@ variable "volume_type" {
     default = "tier3"
 }
 
+variable "master_volume_size" {
+    description = "Volume size to attach to the master nodes. If you don't need extra volume to be attached then keep the value empty"
+    # Value in GB
+    default = ""
+}
+
+variable "worker_volume_size" {
+    description = "Volume size to attach to the worker nodes. If you don't need extra volume to be attached then keep the value empty"
+    # Value in GB
+    default = ""
+}
+
 variable "upgrade_image" {
     description = "OCP upgrade image"
     default = ""

@@ -63,6 +63,9 @@ rhcos_kernel_options        = []
 storage_type                = "nfs"
 volume_size                 = "300" # Value in GB
 volume_type                 = "tier3"
+## Uncomment if you need to attach data volume to the master/worker nodes
+#master_volume_size          = "500"
+#worker_volume_size          = "500"
 
 #upgrade_image = ""
 #upgrade_pause_time = "90"
