@@ -42,7 +42,7 @@ setup_registry:
   registry_image: "${local_registry.registry_image}"
   local_repo: "${local_registry.ocp_release_repo}"
   product_repo: "openshift-release-dev"
-  release_name: "ocp-release"
+  release_name: "${local_registry.ocp_release_name}"
   release_tag: "${local_registry.ocp_release_tag}"
 %{ endif }
 

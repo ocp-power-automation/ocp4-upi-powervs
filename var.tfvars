@@ -39,6 +39,7 @@ enable_local_registry       = false  #Set to true to enable usage of local regis
 
 #local_registry_image       = "docker.io/ibmcom/registry-ppc64le:2.6.2.5"
 #ocp_release_tag            = "4.4.9-ppc64le"
+#ocp_release_name           = "ocp-release"
 
 ### Instrumentation
 
