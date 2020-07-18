@@ -31,6 +31,7 @@ locals {
         registry_image          = var.local_registry_image
         ocp_release_repo        = "ocp4/openshift4"
         ocp_release_tag         = var.ocp_release_tag
+        ocp_release_name        = var.ocp_release_name
     }
 
     helpernode_vars = {

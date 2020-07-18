@@ -55,6 +55,7 @@ variable "release_image_override" {}
 variable "enable_local_registry" {}
 variable "local_registry_image" {}
 variable "ocp_release_tag" {}
+variable "ocp_release_name" {}
 
 variable helpernode_repo { default = "https://github.com/RedHatOfficial/ocp4-helpernode" }
 variable helpernode_tag { default = "master" }

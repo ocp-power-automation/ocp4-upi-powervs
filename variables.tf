@@ -295,3 +295,8 @@ variable "ocp_release_tag" {
     description = "The version of OpenShift you want to sync."
     default = "4.4.9-ppc64le"
 }
+
+variable "ocp_release_name" {
+    description = "The release name of OpenShift you want to sync."
+    default = "ocp-release"
+}

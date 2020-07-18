@@ -111,6 +111,7 @@ Update the following variables specific to OCP local registry. Note that this is
  * `enable_local_registry` : (Optional) Set to true to enable usage of local registry for restricted network install.
  * `local_registry_image` : (Optional) This is the name of the image used for creating local registry container.
  * `ocp_release_tag` : (Optional) The version of OpenShift you want to sync. Determine the tag by referring the [Repository Tags](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags) page.
+ * `ocp_release_name` : (Optional) The type of release you want to sync. eg, ocp-release , ocp-release-nightly
 
 ### Setup OCP Upgrade Variables
 
