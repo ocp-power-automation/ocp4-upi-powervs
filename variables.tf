@@ -169,7 +169,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
     # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
-    default = "d2509c4b4a67879daa6338f68e8e7eb1e15d05e2"
+    default = "f5c25c1722cb9d7edec2a42936be19649a9c77b3"
 }
 
 variable "ansible_extra_options" {
@@ -190,8 +190,14 @@ variable "rhcos_kernel_options" {
     default     = []
 }
 
+variable "setup_squid_proxy" {
+    description = "Flag to install and configure squid proxy server on bastion node"
+    default     = true
+}
+
+# Applicable only when `setup_squid_proxy = false`
 variable proxy {
-    description = "Proxy server details in a map"
+    description = "External Proxy server details in a map"
     default = {}
 #    default = {
 #        server = "10.10.1.166",

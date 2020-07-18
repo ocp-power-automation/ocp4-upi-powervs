@@ -96,6 +96,8 @@ locals {
         release_image_override  = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
         enable_local_registry   = var.enable_local_registry
         rhcos_kernel_options    = var.rhcos_kernel_options
+        setup_squid_proxy       = var.setup_squid_proxy
+        squid_source_range      = data.ibm_pi_network.network.cidr
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
         no_proxy                = data.ibm_pi_network.network.cidr
     }

@@ -82,6 +82,7 @@ module "install" {
     local_registry_image            = var.local_registry_image
     ocp_release_tag                 = var.ocp_release_tag
     ocp_release_name                = var.ocp_release_name
+    setup_squid_proxy               = var.setup_squid_proxy
     proxy                           = var.proxy
     helpernode_repo                 = var.helpernode_repo
     helpernode_tag                  = var.helpernode_tag
