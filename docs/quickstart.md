@@ -88,7 +88,8 @@ Update the following variables specific to OCP.
  * `pull_secret_file` : (Optional) Location of the OCP pull-secret file to be used. Default path is 'data/pull-secret.txt'.
  * `dns_forwarders` : (Optional) External DNS servers to forward DNS queries that cannot resolve locally. Eg: `"8.8.8.8; 9.9.9.9"`.
  * `rhcos_kernel_options` : (Optional) List of [kernel arguments](https://docs.openshift.com/container-platform/4.4/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes eg: ["slub_max_order=0","loglevel=7"]. Note that this will be applied after the cluster is installed, hence wait till all the nodes are in `Ready` status before you start using the cluster. Check nodes status using the command `oc get nodes`.
- * `proxy` : (Optional) Map of below parameters for using a proxy server to setup OCP on a private network.
+ * `setup_squid_proxy` : (Optional) Flag to setup Squid proxy server on bastion node. Default value is true.
+ * `proxy` : (Optional) Map of below parameters for using external proxy server to setup OCP on a private network. Set `setup_squid_proxy = false` when you want to use this.
     * `server` : Proxy server hostname or IP.
     * `port` : Proxy port to use (default is 3128).
     * `user` : Proxy server user for authentication.

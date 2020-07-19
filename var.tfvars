@@ -47,7 +47,7 @@ enable_local_registry       = false  #Set to true to enable usage of local regis
 #helpernode_repo             = "https://github.com/RedHatOfficial/ocp4-helpernode"
 #helpernode_tag             = "5eab3db53976bb16be582f2edc2de02f7510050d"
 #install_playbook_repo       = "https://github.com/ocp-power-automation/ocp4-playbooks"
-#install_playbook_tag       = "d2509c4b4a67879daa6338f68e8e7eb1e15d05e2"
+#install_playbook_tag       = "f5c25c1722cb9d7edec2a42936be19649a9c77b3"
 
 installer_log_level         = "info"
 ansible_extra_options       = "-v"
@@ -55,7 +55,12 @@ pull_secret_file            = "data/pull-secret.txt"
 dns_forwarders              = "1.1.1.1; 9.9.9.9"
 rhcos_kernel_options        = []
 
-## Uncomment any one of the below formats to use proxy. Default 'port' will be 3128 if not specified. Not authenticated if 'user' is not specified.
+
+## Set up a squid proxy server on the bastion node.
+setup_squid_proxy           = true
+
+## N/A when `setup_squid_proxy = true`, set `setup_squid_proxy = false` when using external proxy.
+## Uncomment any one of the below formats to use external proxy. Default 'port' will be 3128 if not specified. Not authenticated if 'user' is not specified.
 #proxy = {}
 #proxy = {server = "hostname_or_ip"}
 #proxy = {server = "hostname_or_ip", port = "3128", user = "pxuser", password = "pxpassword"}
