@@ -13,13 +13,18 @@ This repo contains Terraform templates to help deployment of OpenShift Container
 
 This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
 
-Run this code from either Mac or Linux (Intel) system.
-
 :heavy_exclamation_mark: *This automation is intended for test/development purposes only and there is no formal support. For bugs/enhancement requests etc. please open a GitHub issue*
 
 # Pre-requisites
 
-You need to identify a remote client machine for running the automation. This could be your laptop or a VM. Install the below required packages on the client machine.
+You need to identify a remote client machine for running the automation. This could be your laptop or a VM.
+
+This code has been tested on the following x86-64 based Operating Systems:
+ - Linux
+ - MacOS (Darwin)
+ - Windows
+
+Install the below required packages on the client machine.
 
 - **Git**: Please refer to the [link](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for instructions
 on installing the latest Git.
