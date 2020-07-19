@@ -29,6 +29,7 @@ module "prepare" {
     storage_type                    = var.storage_type
     volume_type                     = var.volume_type
     volume_size                     = var.volume_size
+    volume_shareable                = var.volume_shareable
     proxy                           = var.proxy
 }
 
@@ -49,6 +50,7 @@ module "nodes" {
     master_volume_size              = var.master_volume_size
     worker_volume_size              = var.worker_volume_size
     volume_type                     = var.volume_type
+    volume_shareable                = var.volume_shareable
 }
 
 module "install" {

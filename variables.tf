@@ -250,6 +250,11 @@ variable "volume_type" {
     default = "tier3"
 }
 
+variable "volume_shareable" {
+    description = "If the volumes can be shared or not (true/false)"
+    default = false
+}
+
 variable "master_volume_size" {
     description = "Volume size to attach to the master nodes. If you don't need extra volume to be attached then keep the value empty"
     # Value in GB
