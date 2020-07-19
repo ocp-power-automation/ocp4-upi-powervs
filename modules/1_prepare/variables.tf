@@ -48,5 +48,6 @@ variable "rhel_subscription_password" {}
 variable "storage_type" {}
 variable "volume_type" {}
 variable "volume_size" {}
+variable "volume_shareable" {}
 
 variable "proxy" {}

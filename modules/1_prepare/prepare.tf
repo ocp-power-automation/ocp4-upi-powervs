@@ -54,7 +54,7 @@ resource "ibm_pi_volume" "volume" {
     pi_volume_size       = var.volume_size
     pi_volume_name       = "${var.cluster_id}-${var.storage_type}-volume"
     pi_volume_type       = var.volume_type
-    pi_volume_shareable  = true
+    pi_volume_shareable  = var.volume_shareable
     pi_cloud_instance_id = var.service_instance_id
 }
 

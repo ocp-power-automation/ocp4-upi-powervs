@@ -101,6 +101,7 @@ Update the following variables specific to OCP storage. Note that currently only
  * `storage_type` : (Optional) Storage provisioner to configure. Supported values: nfs (For now only nfs provisioner is supported, any other value won't setup a storageclass)
  * `volume_size` : (Optional) If storage_type is nfs, a volume will be created with given size (default 300) in GB and attached to bastion node. Eg: 1000 for 1TB disk.
  * `volume_type` : (Optional) The type of volume to create (ssd, standard, tier1, tier3).
+ * `volume_shareable` : (Optional) If the volumes can be shared or not (true/false). Default is false.
  * `master_volume_size` : (Optional) Volume size in GB to attach to the master nodes. Not created by default.
  * `worker_volume_size` : (Optional) Volume size in GB to attach to the worker nodes. Not created by default.
 
