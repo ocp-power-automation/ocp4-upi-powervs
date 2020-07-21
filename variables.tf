@@ -130,9 +130,13 @@ variable "public_key" {
     default     = ""
 }
 
-variable "rhel_subscription_username" {}
+variable "rhel_subscription_username" {
+    default = ""
+}
 
-variable "rhel_subscription_password" {}
+variable "rhel_subscription_password" {
+    default = ""
+}
 
 
 ################################################################
@@ -222,7 +226,7 @@ variable "openshift_install_tarball" {
 }
 
 variable "openshift_client_tarball" {
-     default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-install-linux.tar.gz"
+     default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-client-linux.tar.gz"
 }
 
 variable "release_image_override" {
