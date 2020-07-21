@@ -50,4 +50,5 @@ variable "volume_type" {}
 variable "volume_size" {}
 variable "volume_shareable" {}
 
+variable "setup_squid_proxy" {}
 variable "proxy" {}

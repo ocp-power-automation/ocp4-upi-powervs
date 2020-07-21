@@ -30,6 +30,7 @@ module "prepare" {
     volume_type                     = var.volume_type
     volume_size                     = var.volume_size
     volume_shareable                = var.volume_shareable
+    setup_squid_proxy               = var.setup_squid_proxy
     proxy                           = var.proxy
 }
 
