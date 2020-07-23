@@ -20,12 +20,6 @@
 
 variable "cluster_domain" {}
 variable "cluster_id" {}
-
-variable "custom_bastion" {}
-variable "custom_bastion_name" {}
-variable "custom_bastion_public_network" {}
-variable "custom_bastion_volume_size" {}
-
 variable "bastion" {
     # only one node is supported
     default = {
