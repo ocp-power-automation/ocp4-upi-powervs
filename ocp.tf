@@ -12,6 +12,10 @@ resource "random_id" "label" {
 module "prepare" {
     source                          = "./modules/1_prepare"
 
+    custom_bastion                  = var.custom_bastion
+    custom_bastion_name             = var.custom_bastion_name
+    custom_bastion_public_network   = var.custom_bastion_public_network
+    custom_bastion_volume_size      = var.custom_bastion_volume_size
     bastion                         = var.bastion
     service_instance_id             = var.service_instance_id
     cluster_id                      = "${random_id.label.hex}"
@@ -37,6 +41,8 @@ module "prepare" {
 module "nodes" {
     source                          = "./modules/4_nodes"
 
+    custom_bastion                  = var.custom_bastion
+    custom_bastion_key_pair         = var.custom_bastion_key_pair
     service_instance_id             = var.service_instance_id
     rhcos_image_name                = var.rhcos_image_name
     processor_type                  = var.processor_type
