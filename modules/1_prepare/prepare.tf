@@ -41,8 +41,6 @@ data "ibm_pi_network" "network" {
 
 ## Fix for Terraform CRASH.. always create new public network
 resource "ibm_pi_network" "public_network" {
-    count               = !var.custom_bastion ? 1 : 0
-
     pi_network_name           = "${var.cluster_id}-pub-net"
     pi_cloud_instance_id      = var.service_instance_id
     pi_network_type           = "pub-vlan"
@@ -50,7 +48,7 @@ resource "ibm_pi_network" "public_network" {
 
 data "ibm_pi_network" "public_network" {
     depends_on              = [ibm_pi_network.public_network]
-    pi_network_name         = var.custom_bastion ? var.custom_bastion_public_network : "${var.cluster_id}-pub-net"
+    pi_network_name         = "${var.cluster_id}-pub-net"
     pi_cloud_instance_id    = var.service_instance_id
 }
 
@@ -61,15 +59,13 @@ data "ibm_pi_network" "public_network" {
 #}
 
 resource "ibm_pi_key" "key" {
-    count               = !var.custom_bastion ? 1 : 0
-
     pi_cloud_instance_id = var.service_instance_id
     pi_key_name          = "${var.cluster_id}-keypair"
     pi_ssh_key           = var.public_key
 }
 
 resource "ibm_pi_volume" "volume" {
-    count               = var.storage_type == "nfs" && !var.custom_bastion ? 1 : 0
+    count               = var.storage_type == "nfs" ? 1 : 0
 
     pi_volume_size       = var.volume_size
     pi_volume_name       = "${var.cluster_id}-${var.storage_type}-volume"
@@ -79,15 +75,13 @@ resource "ibm_pi_volume" "volume" {
 }
 
 resource "ibm_pi_instance" "bastion" {
-    count               = !var.custom_bastion ? 1 : 0
-
     pi_memory               = var.bastion["memory"]
     pi_processors           = var.bastion["processors"]
     pi_instance_name        = "${var.cluster_id}-bastion"
     pi_proc_type            = var.processor_type
     pi_image_id             = data.ibm_pi_image.bastion.id
     pi_network_ids          = [data.ibm_pi_network.public_network.id, data.ibm_pi_network.network.id]
-    pi_key_pair_name        = ibm_pi_key.key[0].key_id
+    pi_key_pair_name        = ibm_pi_key.key.key_id
     pi_sys_type             = var.system_type
     pi_cloud_instance_id    = var.service_instance_id
     pi_volume_ids           = var.storage_type == "nfs" ? ibm_pi_volume.volume.*.volume_id : null
@@ -103,14 +97,14 @@ resource "ibm_pi_instance" "bastion" {
 
 data "ibm_pi_instance_ip" "bastion_ip" {
     depends_on              = [ibm_pi_instance.bastion]
-    pi_instance_name        = var.custom_bastion ? var.custom_bastion_name : ibm_pi_instance.bastion[0].pi_instance_name
+    pi_instance_name        = ibm_pi_instance.bastion.pi_instance_name
     pi_network_name         = data.ibm_pi_network.network.name
     pi_cloud_instance_id    = var.service_instance_id
 }
 
 data "ibm_pi_instance_ip" "bastion_public_ip" {
     depends_on              = [ibm_pi_instance.bastion]
-    pi_instance_name        = var.custom_bastion ? var.custom_bastion_name : ibm_pi_instance.bastion[0].pi_instance_name
+    pi_instance_name        = ibm_pi_instance.bastion.pi_instance_name
     pi_network_name         = data.ibm_pi_network.public_network.name
     pi_cloud_instance_id    = var.service_instance_id
 }
@@ -275,7 +269,7 @@ resource "null_resource" "bastion_packages" {
 
 locals {
     disk_config = {
-        volume_size = var.custom_bastion ? var.custom_bastion_volume_size : var.volume_size
+        volume_size = var.volume_size
         disk_name   = "disk/pv-storage-disk"
     }
     storage_path = "/export"
@@ -283,7 +277,7 @@ locals {
 
 resource "null_resource" "setup_nfs_disk" {
     depends_on  = [null_resource.bastion_packages]
-    count       = (var.storage_type == "nfs" && !var.custom_bastion) || (var.custom_bastion && var.custom_bastion_volume_size != "") ? 1 : 0
+    count       = var.storage_type == "nfs" ? 1 : 0
     connection {
         type        = "ssh"
         user        = var.rhel_username

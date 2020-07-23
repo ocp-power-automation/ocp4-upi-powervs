@@ -64,7 +64,7 @@ resource "ibm_pi_instance" "bootstrap" {
     pi_user_data            = base64encode(data.ignition_config.bootstrap.rendered)
 
     # Not needed by RHCOS but required by resource
-    pi_key_pair_name        = var.custom_bastion? var.custom_bastion_key_pair : "${var.cluster_id}-keypair"
+    pi_key_pair_name        = "${var.cluster_id}-keypair"
     pi_health_status        = "WARNING"
 }
 
@@ -104,7 +104,7 @@ resource "ibm_pi_instance" "master" {
     pi_user_data            = base64encode(data.ignition_config.master[count.index].rendered)
 
     # Not needed by RHCOS but required by resource
-    pi_key_pair_name        = var.custom_bastion? var.custom_bastion_key_pair : "${var.cluster_id}-keypair"
+    pi_key_pair_name        = "${var.cluster_id}-keypair"
     pi_health_status        = "WARNING"
 }
 
@@ -156,7 +156,7 @@ resource "ibm_pi_instance" "worker" {
     pi_user_data            = base64encode(data.ignition_config.worker[count.index].rendered)
 
     # Not needed by RHCOS but required by resource
-    pi_key_pair_name        = var.custom_bastion? var.custom_bastion_key_pair : "${var.cluster_id}-keypair"
+    pi_key_pair_name        = "${var.cluster_id}-keypair"
     pi_health_status        = "WARNING"
 }
 

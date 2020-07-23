@@ -33,23 +33,13 @@ Update the following variables specific to your environment.
  * `processor_type` : (Optional) The type of processor mode in which the VM will run (shared/dedicated).
  * `system_type` : (Optional) The type of system on which to create the VM (s922/e980).
 
-### Setup Custom Bastion Instance Variables
-
-Update the following variables specific to your environment.
-
- * `custom_bastion` : (Optional) Set to true to use custom bastion instance. Default is false.
- * `custom_bastion_name` : (Required when `custom_bastion= true`) Name of the custom bastion instance.
- * `custom_bastion_keypair` : (Required when `custom_bastion= true`) Name of the keypair used to connect with custom bastion instance. Use same keypair files (`id_rsa` & `id_rsa.pub`) for [Setup Data Files](#setup-data-files) section.
- * `custom_bastion_public_network` : (Required when `custom_bastion= true`) Name of the public network used by custom bastion instance.
- * `custom_bastion_volume_size` : (Optional) If additional volume is attached to custom bastion instance, provide its size in GB. Eg: 1000 for 1TB disk.
-
 ### Setup Node Variables
 
 Update the following variables specific to your cluster requirement.
 
- * `rhel_image_name` :  Name of the RHEL image that you want to use for bastion node. Not applicable when using custom bastion instance.
+ * `rhel_image_name` :  Name of the RHEL image that you want to use for bastion node.
  * `rhcos_image_name` : Name of the RHCOS image that you want to use for OCP nodes.
- * `bastion` : (Optional) Map of below parameters for bastion host. Not applicable when using custom bastion instance.
+ * `bastion` : (Optional) Map of below parameters for bastion host.
     * `memory` : Memory in GBs required for bastion node. Minimum is 8GB (default).
     * `processors` : Number of vCPUs to use for bastion. Minimum is 1 vCPU (default).
  * `bootstrap` : (Optional) Map of below parameters for bootstrap host.
@@ -109,8 +99,8 @@ Update the following variables specific to OCP.
 
 Update the following variables specific to OCP storage. Note that currently only NFS storage provisioner is supported.
 
- * `storage_type` : (Optional) Storage provisioner to configure. Supported values: nfs (For now only nfs provisioner is supported, any other value won't setup a storageclass). Not applicable when using custom bastion instance.
- * `volume_size` : (Optional) If storage_type is nfs, a volume will be created with given size (default 300) in GB and attached to bastion node. Eg: 1000 for 1TB disk. Not applicable when using custom bastion instance.
+ * `storage_type` : (Optional) Storage provisioner to configure. Supported values: nfs (For now only nfs provisioner is supported, any other value won't setup a storageclass)
+ * `volume_size` : (Optional) If storage_type is nfs, a volume will be created with given size (default 300) in GB and attached to bastion node. Eg: 1000 for 1TB disk.
  * `volume_type` : (Optional) The type of volume to create (ssd, standard, tier1, tier3).
  * `volume_shareable` : (Optional) If the volumes can be shared or not (true/false). Default is false.
  * `master_volume_size` : (Optional) Volume size in GB to attach to the master nodes. Not created by default.
@@ -208,7 +198,7 @@ The OpenShift command-line client is already configured on the bastion node with
 
 ## Clean up
 
-To destroy after you are done using the cluster you can run command `terraform destroy -var-file var.tfvars -refresh=false` to make sure that all resources are properly cleaned up.
+To destroy after you are done using the cluster you can run command `terraform destroy -var-file var.tfvars` to make sure that all resources are properly cleaned up.
 Do not manually clean up your environment unless both of the following are true:
 
 1. You know what you are doing
