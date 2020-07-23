@@ -4,6 +4,13 @@ ibmcloud_region     = "<region>"
 ibmcloud_zone       = ""
 service_instance_id = "<cloud_instance_ID>"
 
+### Configure the Custom Bastion Instance details
+#custom_bastion                = false  #Set to true to use custom bastion instance
+#custom_bastion_name           = ""
+#custom_bastion_key_pair       = ""
+#custom_bastion_public_network = ""
+#custom_bastion_volume_size    = "" # Value in GB
+
 ### Configure the Instance details
 bastion                     = {memory      = "8",   processors  = "1"}
 bootstrap                   = {memory      = "16",   processors  = "2",  "count"   = 1}
