@@ -26,6 +26,8 @@ variable "system_type" {}
 variable "network_name" {}
 variable "rhcos_image_name" {}
 
+variable "custom_bastion" {}
+variable "custom_bastion_keypair" {}
 variable "bastion_ip" {}
 variable "cluster_domain" {}
 variable "cluster_id" {}

@@ -46,7 +46,7 @@ Following are the recommended instance configs for OpenShift nodes that will be 
 
    **_Increase worker vCPUs, RAM and Disk based on application requirements_**
 
-Following is the recommended instance config for the helper node that will be deployed with RHEL 8.0 (or later) image.
+Following is the recommended instance config for the helper node that will be deployed with RHEL 8.0 (or later) image. If you want to create custom bastion instance via PowerVS UI and not via automation, Please refer to the [Create Power Systems Virtual Server Instance](docs/Create-Power-Systems-Virtual-Server-Instance.docx) guide for instructions.
 - Helper node (bastion) - 2vCPUs, 16GB RAM, 200 GB Disk
 - If NFS storage is requested, then additional 300 GB Disk is used
 

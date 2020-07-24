@@ -42,6 +42,35 @@ variable "ibmcloud_zone" {
 }
 
 ################################################################
+# Configure the Custom Bastion Instance details
+################################################################
+variable "custom_bastion" {
+    description = "Set to true to enable the usage of custom bastion instance."
+    type = bool
+    default = false
+}
+
+variable "custom_bastion_name" {
+    description = "Name of the custom bastion instance."
+    default   = ""
+}
+
+variable "custom_bastion_keypair" {
+    description = "Name of the keypair used to connect with custom bastion instance."
+    default   = ""
+}
+
+variable "custom_bastion_public_network" {
+    description = "Name of the public network used by custom bastion instance."
+    default   = ""
+}
+
+variable "custom_bastion_volume" {
+    description = "Name of the additional volume attached to custom bastion instance."
+    default   = ""
+}
+
+################################################################
 # Configure the Instance details
 ################################################################
 

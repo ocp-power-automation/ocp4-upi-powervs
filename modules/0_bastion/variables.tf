@@ -18,17 +18,31 @@
 #
 ################################################################
 
-variable "cluster_domain" {}
 variable "cluster_id" {}
 
 variable "custom_bastion" {}
+variable "custom_bastion_name" {}
+variable "custom_bastion_public_network" {}
 variable "custom_bastion_volume" {}
 
-variable "bastion_ip" {}
-variable "bastion_public_ip" {}
+variable "bastion" {
+    # only one node is supported
+    default = {
+        memory      = "4"
+        image_name  = "RHEL82"
+        processors  = "1"
+    }
+}
+
+variable "service_instance_id" {}
+variable "rhel_image_name" {}
 
 variable "private_key" {}
 variable "public_key" {}
+
+variable "processor_type" {}
+variable "system_type" {}
+variable "network_name" {}
 
 variable "rhel_username" {}
 variable "ssh_agent" {}
@@ -37,7 +51,6 @@ variable "rhel_subscription_username" {}
 variable "rhel_subscription_password" {}
 
 variable "storage_type" {}
+variable "volume_type" {}
 variable "volume_size" {}
-
-variable "setup_squid_proxy" {}
-variable "proxy" {}
+variable "volume_shareable" {}

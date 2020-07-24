@@ -23,15 +23,15 @@ output "cluster_id" {
 }
 
 output "bastion_private_ip" {
-    value = module.prepare.bastion_ip
+    value = module.bastion.bastion_ip
 }
 
 output "bastion_public_ip" {
-    value = module.prepare.bastion_public_ip
+    value = module.bastion.bastion_public_ip
 }
 
 output "bastion_ssh_command" {
-    value = "ssh ${var.rhel_username}@${module.prepare.bastion_public_ip}"
+    value = "ssh ${var.rhel_username}@${module.bastion.bastion_public_ip}"
 }
 
 output "bootstrap_ip" {

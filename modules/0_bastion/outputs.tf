@@ -18,26 +18,17 @@
 #
 ################################################################
 
-variable "cluster_domain" {}
-variable "cluster_id" {}
+output "bastion_ip" {
+    depends_on = [data.ibm_pi_instance_ip.bastion_ip]
+    value = data.ibm_pi_instance_ip.bastion_ip.ip
+}
 
-variable "custom_bastion" {}
-variable "custom_bastion_volume" {}
+output "bastion_public_ip" {
+    depends_on = [data.ibm_pi_instance_ip.bastion_public_ip]
+    value = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
+}
 
-variable "bastion_ip" {}
-variable "bastion_public_ip" {}
-
-variable "private_key" {}
-variable "public_key" {}
-
-variable "rhel_username" {}
-variable "ssh_agent" {}
-
-variable "rhel_subscription_username" {}
-variable "rhel_subscription_password" {}
-
-variable "storage_type" {}
-variable "volume_size" {}
-
-variable "setup_squid_proxy" {}
-variable "proxy" {}
+output "bastion_volume_size" {
+    depends_on = [data.ibm_pi_volume.volume]
+    value = var.custom_bastion && var.custom_bastion_volume != "" ? data.ibm_pi_volume.volume[0].size : var.volume_size
+}

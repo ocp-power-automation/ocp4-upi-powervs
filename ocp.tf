@@ -15,13 +15,16 @@ locals {
     cluster_id  = var.cluster_id == "" ? random_id.label[0].hex : "${var.cluster_id_prefix}-${var.cluster_id}"
 }
 
-module "prepare" {
-    source                          = "./modules/1_prepare"
+module "bastion" {
+    source                          = "./modules/0_bastion"
 
+    custom_bastion                  = var.custom_bastion
+    custom_bastion_name             = var.custom_bastion_name
+    custom_bastion_public_network   = var.custom_bastion_public_network
+    custom_bastion_volume           = var.custom_bastion_volume
     bastion                         = var.bastion
     service_instance_id             = var.service_instance_id
     cluster_id                      = local.cluster_id
-    cluster_domain                  = var.cluster_domain
     rhel_image_name                 = var.rhel_image_name
     processor_type                  = var.processor_type
     system_type                     = var.system_type
@@ -36,6 +39,25 @@ module "prepare" {
     volume_type                     = var.volume_type
     volume_size                     = var.volume_size
     volume_shareable                = var.volume_shareable
+}
+
+module "prepare" {
+    source                          = "./modules/1_prepare"
+
+    custom_bastion                  = var.custom_bastion
+    custom_bastion_volume           = var.custom_bastion_volume
+    bastion_ip                      = module.bastion.bastion_ip
+    bastion_public_ip               = module.bastion.bastion_public_ip
+    cluster_id                      = local.cluster_id
+    cluster_domain                  = var.cluster_domain
+    rhel_username                   = var.rhel_username
+    private_key                     = local.private_key
+    public_key                      = local.public_key
+    ssh_agent                       = var.ssh_agent
+    rhel_subscription_username      = var.rhel_subscription_username
+    rhel_subscription_password      = var.rhel_subscription_password
+    storage_type                    = var.storage_type
+    volume_size                     = var.volume_size
     setup_squid_proxy               = var.setup_squid_proxy
     proxy                           = var.proxy
 }
@@ -48,6 +70,8 @@ module "nodes" {
     processor_type                  = var.processor_type
     system_type                     = var.system_type
     network_name                    = var.network_name
+    custom_bastion                  = var.custom_bastion
+    custom_bastion_keypair          = var.custom_bastion_keypair
     bastion_ip                      = module.prepare.bastion_ip
     cluster_domain                  = var.cluster_domain
     cluster_id                      = local.cluster_id
