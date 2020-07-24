@@ -181,6 +181,8 @@ If you're unable to create and publish these DNS records, you can add them to yo
 
 **Note**: For convenience, entries specific to your cluster will be printed at the end of a successful run. Just copy and paste value of output variable `etc_hosts_entries` to your hosts file.
 
+**IMPORTANT**: OCP CLI console port 6443 is blocked by [default](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-network-security#firewall-ports) over external IP. We are working on a resolution. Till then you can run the CLI commands from the bastion node. However, you can access the OCP web-console (port 443) remotely over external IP.
+
 
 ## Cluster Access
 
