@@ -93,6 +93,23 @@ resource "ibm_pi_instance" "bastion" {
                                     {pub_gateway = data.ibm_pi_network.public_network.gateway}
                                 )
                               )
+
+    provisioner "remote-exec" {
+        connection {
+            type        = "ssh"
+            user        = var.rhel_username
+            host        = compact(self.addresses.*.external_ip)[0]
+            private_key = var.private_key
+            agent       = var.ssh_agent
+            timeout     = "15m"
+        }
+        when        = destroy
+        on_failure  = continue
+        inline = [
+            "sudo subscription-manager unregister",
+            "sudo subscription-manager remove --all",
+        ]
+    }
 }
 
 data "ibm_pi_instance_ip" "bastion_ip" {
@@ -214,15 +231,6 @@ sudo subscription-manager clean
 sudo subscription-manager register --username=${var.rhel_subscription_username} --password=${var.rhel_subscription_password} --force
 sudo subscription-manager refresh
 sudo subscription-manager attach --auto
-EOF
-        ]
-    }
-    provisioner "remote-exec" {
-        when        = destroy
-        on_failure  = continue
-        inline = [<<EOF
-sudo subscription-manager unregister
-sudo subscription-manager remove --all
 EOF
         ]
     }
