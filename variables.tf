@@ -242,7 +242,11 @@ variable "cluster_domain" {
 variable "cluster_id_prefix" {
     default   = "test-ocp"
 }
-
+# Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
+# Length cannot exceed 14 characters when combined with cluster_id_prefix
+variable "cluster_id" {
+    default   = ""
+}
 
 variable "storage_type" {
     #Supported values: nfs (other value won't setup a storageclass)

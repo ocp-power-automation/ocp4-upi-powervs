@@ -5,8 +5,14 @@ provider "ibm" {
 }
 
 resource "random_id" "label" {
+    count = var.cluster_id == "" ? 1 : 0
     byte_length = "2" # Since we use the hex, the word lenght would double
     prefix = "${var.cluster_id_prefix}-"
+}
+
+locals {
+    # Generates cluster_id as combination of cluster_id_prefix + (random_id or user-defined cluster_id)
+    cluster_id  = var.cluster_id == "" ? random_id.label[0].hex : "${var.cluster_id_prefix}-${var.cluster_id}"
 }
 
 module "prepare" {
@@ -14,7 +20,7 @@ module "prepare" {
 
     bastion                         = var.bastion
     service_instance_id             = var.service_instance_id
-    cluster_id                      = "${random_id.label.hex}"
+    cluster_id                      = local.cluster_id
     cluster_domain                  = var.cluster_domain
     rhel_image_name                 = var.rhel_image_name
     processor_type                  = var.processor_type
@@ -44,7 +50,7 @@ module "nodes" {
     network_name                    = var.network_name
     bastion_ip                      = module.prepare.bastion_ip
     cluster_domain                  = var.cluster_domain
-    cluster_id                      = "${random_id.label.hex}"
+    cluster_id                      = local.cluster_id
     bootstrap                       = var.bootstrap
     master                          = var.master
     worker                          = var.worker
@@ -60,7 +66,7 @@ module "install" {
     service_instance_id             = var.service_instance_id
     network_name                    = var.network_name
     cluster_domain                  = var.cluster_domain
-    cluster_id                      = "${random_id.label.hex}"
+    cluster_id                      = local.cluster_id
     dns_forwarders                  = var.dns_forwarders
     bastion_ip                      = module.prepare.bastion_ip
     rhel_username                   = var.rhel_username

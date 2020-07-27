@@ -33,6 +33,7 @@ openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc
 
 cluster_domain              = "ibm.com"
 cluster_id_prefix           = "test"
+cluster_id                  = ""
 
 ### Local registry variables
 enable_local_registry       = false  #Set to true to enable usage of local registry for restricted network install.
