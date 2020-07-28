@@ -32,6 +32,7 @@ module "prepare" {
     ssh_agent                       = var.ssh_agent
     rhel_subscription_username      = var.rhel_subscription_username
     rhel_subscription_password      = var.rhel_subscription_password
+    rhel_smt                        = var.rhel_smt
     storage_type                    = var.storage_type
     volume_type                     = var.volume_type
     volume_size                     = var.volume_size
