@@ -45,6 +45,8 @@ variable "ssh_agent" {}
 variable "rhel_subscription_username" {}
 variable "rhel_subscription_password" {}
 
+variable "rhel_smt" {}
+
 variable "storage_type" {}
 variable "volume_type" {}
 variable "volume_size" {}

@@ -138,6 +138,10 @@ variable "rhel_subscription_password" {
     default = ""
 }
 
+variable "rhel_smt" {
+    description = "SMT value to set on the bastion node. Eg: on,off,2,4,8"
+    default = "on"
+}
 
 ################################################################
 ### Instrumentation

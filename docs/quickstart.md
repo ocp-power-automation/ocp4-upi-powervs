@@ -66,6 +66,7 @@ Update the following variables specific to the nodes if required.
  * `public_key` : (Optional) The contents of corresponding key to use for the connection. Ignored if `public_key_file` is provided.
  * `rhel_subscription_username` : (Optional) The username required for RHEL subscription on bastion host. Leave empty if repos are already setup in the RHEL image(`rhel_image_name`) and subscription is not needed.
  * `rhel_subscription_password` : (Optional) The password required for RHEL subscription on bastion host.
+ * `rhel_smt`: (Optional) The SMT value to set on the bastion node. Eg: on,off,2,4,8.
 
 ### Setup OpenShift Variables
 

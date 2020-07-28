@@ -157,6 +157,8 @@ resource "null_resource" "bastion_init" {
             "echo 'HOSTNAME=${lower(var.cluster_id)}-bastion.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null",
             "sudo hostname -F /etc/hostname",
             "echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null",
+            # Set SMT to user specified value; Should not fail for invalid values.
+            "sudo ppc64_cpu --smt=${var.rhel_smt} | true",
         ]
     }
 }
