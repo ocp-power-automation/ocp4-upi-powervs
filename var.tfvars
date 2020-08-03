@@ -11,7 +11,7 @@ master                      = {memory      = "16",   processors  = "2",  "count"
 worker                      = {memory      = "16",   processors  = "2",  "count"   = 2}
 ## change below variables as per your environment
 rhel_image_name     = "rhel-8.2"
-rhcos_image_name    = "rhcos-4.4.9"
+rhcos_image_name    = "rhcos-4.5.4"
 processor_type      = "shared"
 system_type         = "s922"
 network_name        = "ocp-net"
@@ -27,8 +27,8 @@ rhel_smt                    = 4
 
 
 ### OpenShift variables
-openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-install-linux.tar.gz"
-openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-client-linux.tar.gz"
+openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/4.5.4/openshift-install-linux.tar.gz"
+openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/4.5.4/openshift-client-linux.tar.gz"
 
 #release_image_override     = ""
 
