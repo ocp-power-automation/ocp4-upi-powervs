@@ -66,7 +66,7 @@ Update the following variables specific to the nodes if required.
  * `public_key` : (Optional) The contents of corresponding key to use for the connection. Ignored if `public_key_file` is provided.
  * `rhel_subscription_username` : (Optional) The username required for RHEL subscription on bastion host. Leave empty if repos are already setup in the RHEL image(`rhel_image_name`) and subscription is not needed.
  * `rhel_subscription_password` : (Optional) The password required for RHEL subscription on bastion host.
- * `rhel_smt`: (Optional) The SMT value to set on the bastion node. Eg: on,off,2,4,8.
+ * `rhel_smt`: (Optional) The SMT value to set on the bastion node. Eg: on,off,2,4,8. Default is 4
 
 ### Setup OpenShift Variables
 
@@ -79,7 +79,7 @@ Update the following variables specific to OCP.
  * `cluster_id` : (Optional) Cluster identifier, when not set random value will be used. Length cannot exceed 14 characters when combined with cluster_id_prefix.
  * `release_image_override` : (Optional) This is set to OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE while creating ignition files. Not applicable when using local registry setup.
 
-### Setup Additional OpenShift Variables
+### Setup Additional OpenShift Variables (Optional)
 
  * `installer_log_level` : (Optional) Log level for OpenShift install (e.g. "debug | info | warn | error") (default "info")
  * `ansible_extra_options` : (Optional) Ansible options to append to the ansible-playbook commands. Default is set to "-v".
@@ -97,7 +97,7 @@ Update the following variables specific to OCP.
     * `user` : Proxy server user for authentication.
     * `password` : Proxy server password for authentication.
 
-### Setup Storage Variables
+### Setup Storage Variables (Optional)
 
 Update the following variables specific to OCP storage. Note that currently only NFS storage provisioner is supported.
 
@@ -108,7 +108,7 @@ Update the following variables specific to OCP storage. Note that currently only
  * `master_volume_size` : (Optional) Volume size in GB to attach to the master nodes. Not created by default.
  * `worker_volume_size` : (Optional) Volume size in GB to attach to the worker nodes. Not created by default.
 
-### Setup Local Registry Variables
+### Setup Local Registry Variables (Optional)
 
 Update the following variables specific to OCP local registry. Note that this is required only for restricted network install.
 
@@ -117,7 +117,7 @@ Update the following variables specific to OCP local registry. Note that this is
  * `ocp_release_tag` : (Optional) The version of OpenShift you want to sync. Determine the tag by referring the [Repository Tags](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags) page.
  * `ocp_release_name` : (Optional) The type of release you want to sync. eg, ocp-release , ocp-release-nightly
 
-### Setup OCP Upgrade Variables
+### Setup OCP Upgrade Variables (Optional)
 
 Update the following variables specific to OCP upgrade. The upgrade will be performed after a successful install of OCP.
 

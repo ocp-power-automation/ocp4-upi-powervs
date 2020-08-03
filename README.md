@@ -13,7 +13,7 @@ This repo contains Terraform templates to help deployment of OpenShift Container
 
 This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
 
-:heavy_exclamation_mark: *This automation is intended for test/development purposes only and there is no formal support. For bugs/enhancement requests etc. please open a GitHub issue*
+:heavy_exclamation_mark: *There is no formal support for the automation. For bugs/enhancement requests etc. please open a GitHub issue*
 
 # Pre-requisites
 
@@ -21,7 +21,7 @@ You need to identify a remote client machine for running the automation. This co
 
 This code has been tested on the following x86-64 based Operating Systems:
  - Linux
- - MacOS (Darwin)
+ - Mac OSX (Darwin)
  - Windows
 
 Install the below required packages on the client machine.
@@ -47,7 +47,7 @@ Following are the recommended instance configs for OpenShift nodes that will be 
 
 Following is the recommended instance config for the helper node that will be deployed with RHEL 8.0 (or later) image.
 - Helper node (bastion) - 2vCPUs, 16GB RAM, 200 GB Disk
-- If NFS storage is requested, then additional 300 GB Disk is used
+- Additional 300 GB Disk for NFS storage (This is the default)
 
 # OCP Install
 
