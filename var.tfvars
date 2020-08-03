@@ -23,7 +23,7 @@ private_key                 = ""
 public_key                  = ""
 rhel_subscription_username  = ""
 rhel_subscription_password  = ""
-rhel_smt                    = "on"
+rhel_smt                    = 4
 
 
 ### OpenShift variables
