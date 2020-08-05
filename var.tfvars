@@ -32,7 +32,7 @@ openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc
 
 #release_image_override     = ""
 
-cluster_domain              = "ibm.com"
+cluster_domain              = "ibm.com"  #Set domain to nip.io or xip.io if you prefer using online wildcard domain and avoid modifying /etc/hosts
 cluster_id_prefix           = "test"
 cluster_id                  = ""
 
