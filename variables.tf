@@ -285,8 +285,13 @@ variable "worker_volume_size" {
     default = ""
 }
 
-variable "upgrade_image" {
-    description = "OCP upgrade image"
+variable "upgrade_version" {
+    description = "OCP upgrade version eg. 4.5.4"
+    default = ""
+}
+
+variable "upgrade_channel" {
+    description = "Upgrade channel having required version availble for cluster upgrade (stable-4.x, fast-4.x, candidate-4.x) eg. stable-4.5"
     default = ""
 }
 

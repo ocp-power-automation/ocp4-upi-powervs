@@ -76,7 +76,8 @@ volume_shareable            = false
 #master_volume_size          = "500"
 #worker_volume_size          = "500"
 
-#upgrade_image = ""
+#upgrade_version = ""
+#upgrade_channel = ""  #(stable-4.x, fast-4.x, candidate-4.x) eg. stable-4.5
 #upgrade_pause_time = "90"
 #upgrade_delay_time = "600"
 
