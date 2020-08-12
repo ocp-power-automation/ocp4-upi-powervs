@@ -67,6 +67,8 @@ variable "log_level" {}
 
 variable "ansible_extra_options" {}
 variable "rhcos_kernel_options" {}
+variable "chrony_config" { default = true }
+variable "chrony_config_servers" {}
 
 variable "upgrade_image" {}
 variable "upgrade_pause_time" {}

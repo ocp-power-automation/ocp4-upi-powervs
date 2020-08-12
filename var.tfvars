@@ -56,7 +56,8 @@ ansible_extra_options       = "-v"
 pull_secret_file            = "data/pull-secret.txt"
 dns_forwarders              = "1.1.1.1; 9.9.9.9"
 rhcos_kernel_options        = []
-
+chrony_config               = true
+#chrony_config_servers      = [ {server = "0.centos.pool.ntp.org", options = "iburst"}, {server = "1.centos.pool.ntp.org", options = "iburst"} ]
 
 ## Set up a squid proxy server on the bastion node.
 setup_squid_proxy           = true
