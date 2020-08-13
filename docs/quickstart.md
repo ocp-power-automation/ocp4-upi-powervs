@@ -90,6 +90,10 @@ Update the following variables specific to OCP.
  * `pull_secret_file` : (Optional) Location of the OCP pull-secret file to be used. Default path is 'data/pull-secret.txt'.
  * `dns_forwarders` : (Optional) External DNS servers to forward DNS queries that cannot resolve locally. Eg: `"8.8.8.8; 9.9.9.9"`.
  * `rhcos_kernel_options` : (Optional) List of [kernel arguments](https://docs.openshift.com/container-platform/4.4/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes eg: ["slub_max_order=0","loglevel=7"]. Note that this will be applied after the cluster is installed, hence wait till all the nodes are in `Ready` status before you start using the cluster. Check nodes status using the command `oc get nodes`.
+ * `chrony_config` : (Optional) Set to true to configure chrony (NTP) client on the CoreOS node. Default value is true.
+ * `chrony_config_servers` : (Optional) List of NTP servers and options.
+    * `server` : NTP server hostname or ip to sync with
+    * `options`: chrony options to use for sync (ex: `iburst`)
  * `setup_squid_proxy` : (Optional) Flag to setup Squid proxy server on bastion node. Default value is true.
  * `proxy` : (Optional) Map of below parameters for using external proxy server to setup OCP on a private network. Set `setup_squid_proxy = false` when you want to use this.
     * `server` : Proxy server hostname or IP.

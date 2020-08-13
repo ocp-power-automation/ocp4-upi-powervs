@@ -18,5 +18,19 @@ setup_squid_proxy : ${setup_squid_proxy}
 squid_acl_localnet:
   - acl localnet src ${squid_source_range}
 
+%{ if chrony_config ~}
+chronyconfig:
+  enabled: true
+  allow:
+    - ${chrony_allow_range}
+%{ if chrony_config_servers != [] ~}
+  content:
+%{ endif ~}
+%{ for item in chrony_config_servers ~}
+    - server: ${item.server}
+      options: ${item.options}
+%{ endfor ~}
+%{ endif ~}
+
 proxy_url: "${proxy_url}"
 no_proxy: "${no_proxy}"

@@ -47,6 +47,8 @@ locals {
         ipid            = cidrhost(data.ibm_pi_network.network.cidr, 0)
         pool            = {"start": cidrhost(data.ibm_pi_network.network.cidr,2),
                             "end": cidrhost(data.ibm_pi_network.network.cidr,-2)}
+        chrony_config           = var.chrony_config
+        chrony_config_servers   = var.chrony_config_servers
 
         bootstrap_info  = {
             ip = var.bootstrap_ip,
@@ -98,6 +100,9 @@ locals {
         release_image_override  = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
         enable_local_registry   = var.enable_local_registry
         rhcos_kernel_options    = var.rhcos_kernel_options
+        chrony_config           = var.chrony_config
+        chrony_config_servers   = var.chrony_config_servers
+        chrony_allow_range      = data.ibm_pi_network.network.cidr
         setup_squid_proxy       = var.setup_squid_proxy
         squid_source_range      = data.ibm_pi_network.network.cidr
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"

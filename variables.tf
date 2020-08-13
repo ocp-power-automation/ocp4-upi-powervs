@@ -198,6 +198,17 @@ variable "rhcos_kernel_options" {
     default     = []
 }
 
+variable "chrony_config" {
+    description = "Set to true to setup time synchronization and setup chrony. Default: true"
+    default     = true
+}
+
+variable "chrony_config_servers" {
+    description = "List of ntp servers and options to apply"
+    default     = []
+    # example: chrony_config_servers = [ {server = "10.3.21.254", options = "iburst"}, {server = "10.5.21.254", options = "iburst"} ]
+}
+
 variable "setup_squid_proxy" {
     description = "Flag to install and configure squid proxy server on bastion node"
     default     = true
