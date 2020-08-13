@@ -5,10 +5,15 @@ ibmcloud_zone       = ""
 service_instance_id = "<cloud_instance_ID>"
 
 ### Configure the Instance details
-bastion                     = {memory      = "8",   processors  = "1"}
-bootstrap                   = {memory      = "16",   processors  = "2",  "count"   = 1}
-master                      = {memory      = "16",   processors  = "2",  "count"   = 3}
-worker                      = {memory      = "16",   processors  = "2",  "count"   = 2}
+### This is default minimalistic config. For PowerVS processors are equal to entitled physical count
+### So N processors == N physical core entitlements == ceil[N] vCPUs.
+### Example 0.5 processors == 0.5 physical core entitlements == ceil[0.5] = 1 vCPU == 8 logical OS CPUs (SMT=8)
+### Example 1.5 processors == 1.5 physical core entitlements == ceil[1.5] = 2 vCPU == 16 logical OS CPUs (SMT=8)
+### Example 2 processors == 2 physical core entitlements == ceil[2] = 2 vCPU == 16 logical OS CPUs (SMT=8)
+bastion                     = {memory      = "16",   processors  = "1"}
+bootstrap                   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
+master                      = {memory      = "16",   processors  = "0.5",  "count"   = 3}
+worker                      = {memory      = "16",   processors  = "0.5",  "count"   = 2}
 ## change below variables as per your environment
 rhel_image_name     = "rhel-8.2"
 rhcos_image_name    = "rhcos-4.5.4"

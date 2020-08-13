@@ -48,7 +48,7 @@ variable "ibmcloud_zone" {
 variable "bastion" {
     # only one node is supported
     default = {
-        memory      = "8"
+        memory      = "16"
         processors  = "1"
     }
 }
@@ -57,7 +57,7 @@ variable "bootstrap" {
     default = {
         count       = 1
         memory      = "16"
-        processors  = "2"
+        processors  = "0.5"
     }
 }
 
@@ -65,7 +65,7 @@ variable "master" {
     default = {
         count       = 3
         memory      = "16"
-        processors  = "2"
+        processors  = "0.5"
     }
 }
 
@@ -73,7 +73,7 @@ variable "worker" {
     default = {
         count       = 2
         memory      = "16"
-        processors  = "2"
+        processors  = "0.5"
     }
 }
 
