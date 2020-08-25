@@ -85,7 +85,6 @@ resource "ibm_pi_instance" "bastion" {
     pi_sys_type             = var.system_type
     pi_cloud_instance_id    = var.service_instance_id
     pi_volume_ids           = var.storage_type == "nfs" ? ibm_pi_volume.volume.*.volume_id : null
-    pi_health_status        = "WARNING"
     # Fix for default route on public interface
     pi_user_data            = base64encode(
                                 templatefile(
