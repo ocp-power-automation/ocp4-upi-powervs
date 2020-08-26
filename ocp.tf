@@ -1,3 +1,13 @@
+terraform {
+  required_version = "~> 0.12.2"
+  required_providers {
+    ibm = "~> 1.9.0"
+    ignition = "~> 1.2"
+    null = "~> 2.1"
+    random = "~> 2.3"
+  }
+}
+
 provider "ibm" {
     ibmcloud_api_key = var.ibmcloud_api_key
     region           = var.ibmcloud_region
