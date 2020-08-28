@@ -23,6 +23,8 @@ for device in $(nmcli device | grep ethernet | awk '{print $1}'); do
         if [[ $defroute == "yes" ]]; then
             echo "Changing DEFROUTE=no for other interface: $device"
             sed -i 's/DEFROUTE=yes/DEFROUTE=no/g' $ifcfg_file
+            # Force delete the private route in case network is already configured
+            ip route del default via $gateway | true
         fi
     else
         echo "No gateway, ignoring this interface: $device"
