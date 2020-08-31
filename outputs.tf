@@ -69,3 +69,6 @@ output "install_status" {
     value = module.install.install_status
 }
 
+output "cluster_authentication_details" {
+    value = "Cluster authentication details are available in ${module.prepare.bastion_public_ip} under ~/openstack-upi/auth"
+}
