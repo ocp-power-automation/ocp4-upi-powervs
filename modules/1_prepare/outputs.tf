@@ -25,5 +25,5 @@ output "bastion_ip" {
 
 output "bastion_public_ip" {
     depends_on = [null_resource.bastion_packages]
-    value = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
+    value = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
 }
