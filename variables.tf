@@ -84,7 +84,7 @@ variable "rhel_image_name" {
 
 variable "rhcos_image_name" {
     description = "Name of the RHCOS image that you want to use for OCP nodes"
-    default = "rhcos-4.4.9"
+    default = "rhcos-4.6"
 }
 
 variable "processor_type" {
@@ -177,7 +177,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
     # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
-    default = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
+    default = "0137d2f72bfc09a653c99527fd9e47c345803ae6"
 }
 
 variable "ansible_extra_options" {
@@ -237,11 +237,11 @@ locals {
 ### OpenShift variables
 ################################################################
 variable "openshift_install_tarball" {
-    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-install-linux.tar.gz"
+    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest-4.6/openshift-install-linux.tar.gz"
 }
 
 variable "openshift_client_tarball" {
-     default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.4/openshift-client-linux.tar.gz"
+    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest-4.6/openshift-client-linux.tar.gz"
 }
 
 variable "release_image_override" {
