@@ -16,7 +16,7 @@ master                      = {memory      = "16",   processors  = "0.5",  "coun
 worker                      = {memory      = "16",   processors  = "0.5",  "count"   = 2}
 ## change below variables as per your environment
 rhel_image_name     = "rhel-8.2"
-rhcos_image_name    = "rhcos-4.5.4"
+rhcos_image_name    = "rhcos-4.6"
 processor_type      = "shared"
 system_type         = "s922"
 network_name        = "ocp-net"
@@ -32,8 +32,8 @@ rhel_smt                    = 4
 
 
 ### OpenShift variables
-openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/4.5.4/openshift-install-linux.tar.gz"
-openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/4.5.4/openshift-client-linux.tar.gz"
+#openshift_install_tarball   = ""
+#openshift_client_tarball    = ""
 
 #release_image_override     = ""
 
@@ -52,9 +52,9 @@ enable_local_registry       = false  #Set to true to enable usage of local regis
 
 
 #helpernode_repo             = "https://github.com/RedHatOfficial/ocp4-helpernode"
-#helpernode_tag             = "5eab3db53976bb16be582f2edc2de02f7510050d"
+#helpernode_tag             = ""
 #install_playbook_repo       = "https://github.com/ocp-power-automation/ocp4-playbooks"
-#install_playbook_tag       = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
+#install_playbook_tag       = ""
 
 installer_log_level         = "info"
 ansible_extra_options       = "-v"

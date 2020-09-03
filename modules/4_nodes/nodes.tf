@@ -28,18 +28,50 @@ data "ibm_pi_image" "rhcos" {
     pi_cloud_instance_id    = var.service_instance_id
 }
 
+# FIXME:
+# This will restart NetworkManager on all RHCOS nodes every 5 mins.
+# Required because RHCOS nodes fail to get the network address and wait continously for the ignition URL.
+# Remove when a fix is available or if not required.
+data "ignition_systemd_unit" "restart-NetworkManager" {
+    name        = "NetworkManager.service"
+    dropin {
+        name    = "restart.conf"
+        content = <<EOF
+[Service]
+Restart=always
+RuntimeMaxSec=300
+EOF
+    }
+}
+
+data "ignition_file" "dhcp-timeout" {
+    overwrite   = true
+    mode        = "755" // 0644
+    path        = "/etc/NetworkManager/conf.d/99-dhcp-timeout.conf"
+    content {
+        content = <<EOF
+[connection]
+ipv4.dhcp-timeout=2147483647
+EOF
+    }
+}
+
 #bootstrap
 data "ignition_config" "bootstrap" {
-    append {
+    merge {
         source  = "http://${var.bastion_ip}:8080/ignition/bootstrap.ign"
     }
     files       = [
         data.ignition_file.b_hostname.rendered,
+        data.ignition_file.dhcp-timeout.rendered
+    ]
+    systemd = [
+        data.ignition_systemd_unit.restart-NetworkManager.rendered
     ]
 }
 
 data "ignition_file" "b_hostname" {
-    filesystem  = "root"
+    overwrite   = true
     mode        = "420" // 0644
     path        = "/etc/hostname"
     content {
@@ -71,15 +103,21 @@ resource "ibm_pi_instance" "bootstrap" {
 #master
 data "ignition_config" "master" {
     count       = var.master["count"]
-    append {
+    merge {
         source  = "http://${var.bastion_ip}:8080/ignition/master.ign"
     }
-    files       = [data.ignition_file.m_hostname[count.index].rendered]
+    files       = [
+        data.ignition_file.m_hostname[count.index].rendered,
+        data.ignition_file.dhcp-timeout.rendered
+    ]
+    systemd = [
+        data.ignition_systemd_unit.restart-NetworkManager.rendered
+    ]
 }
 
 data "ignition_file" "m_hostname" {
     count       = var.master["count"]
-    filesystem  = "root"
+    overwrite   = true
     mode        = "420" // 0644
     path        = "/etc/hostname"
     content {
@@ -122,7 +160,7 @@ resource "ibm_pi_volume" "master" {
 #worker
 data "ignition_file" "w_hostname" {
     count       = var.worker["count"]
-    filesystem  = "root"
+    overwrite   = true
     mode        = "420" // 0644
     path        = "/etc/hostname"
 
@@ -135,10 +173,16 @@ EOF
 
 data "ignition_config" "worker" {
     count       = var.worker["count"]
-    append {
+    merge {
         source  = "http://${var.bastion_ip}:8080/ignition/worker.ign"
     }
-    files       = [data.ignition_file.w_hostname[count.index].rendered]
+    files       = [
+        data.ignition_file.w_hostname[count.index].rendered,
+        data.ignition_file.dhcp-timeout.rendered
+    ]
+    systemd = [
+        data.ignition_systemd_unit.restart-NetworkManager.rendered
+    ]
 }
 
 resource "ibm_pi_instance" "worker" {
