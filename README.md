@@ -3,26 +3,25 @@
 - [**Table of Contents**](#table-of-contents)
 - [Introduction](#introduction)
 - [Pre-requisites](#pre-requisites)
+    - [Packages](#packages)
+    - [Terraform Providers](#terraform-providers)
 - [Image and LPAR requirements](#image-and-lpar-requirements)
 - [OCP Install](#ocp-install)
 - [Contributing](#contributing)
 
 
 # Introduction
-This repo contains Terraform templates to help deployment of OpenShift Container Platform (OCP) 4.x using [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
+This repo contains Terraform templates to help with deployment of OpenShift Container Platform (OCP) 4.x on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
 
 This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
 
-:heavy_exclamation_mark: *There is no formal support for the automation. For bugs/enhancement requests etc. please open a GitHub issue*
+:heavy_exclamation_mark: *For bugs/enhancement requests etc. please open a GitHub issue*
 
 # Pre-requisites
 
-You need to identify a remote client machine for running the automation. This could be your laptop or a VM.
-
-### Operating Systems
-
-This code has been tested on the following x86-64 based Operating Systems:
- - Linux
+The automation needs to run from a system with internet access. This could be your laptop or a VM with public internet connectivity.
+This automation code have been tested on the following Operating Systems:
+ - Linux (x86_64)
  - Mac OSX (Darwin)
  - Windows
 
@@ -35,7 +34,7 @@ Install the below required packages on the client machine.
 
 ### Terraform Providers
 
-At present Terraform registry does not support below plugins. Third-party providers can be manually installed using [local filesystem as a mirror](https://www.terraform.io/docs/commands/cli-config.html#filesystem_mirror). This is in additon to the provider plugins that are downloaded by Terraform during `terraform init`.
+At present Terraform registry does not support below plugins. Third-party providers can be manually installed using [local filesystem as a mirror](https://www.terraform.io/docs/commands/cli-config.html#filesystem_mirror). This is in addition to the provider plugins that are downloaded by Terraform during `terraform init`.
 
 **Ignition provider v2.1.0**
 
@@ -79,7 +78,7 @@ Following is the recommended instance config for the helper node that will be de
 
 # OCP Install
 
-Follow the [quickstart](docs/quickstart.md) guide to kickstart OCP installation using PowerVS.
+Follow the [quickstart](docs/quickstart.md) guide for OCP installation on PowerVS.
 
 # Contributing
 Please see the [contributing doc](https://github.com/ocp-power-automation/ocp4-upi-powervs/blob/master/CONTRIBUTING.md) for more details.
