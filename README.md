@@ -5,6 +5,7 @@
 - [Prerequisites](#prerequisites)
 - [Image and LPAR requirements](#image-and-lpar-requirements)
 - [OCP Install](#ocp-install)
+- [Known Issues](#known-issues)
 - [Contributing](#contributing)
 
 
@@ -49,8 +50,10 @@ Following is the recommended instance config for the helper node that will be de
 - Additional 300 GB Disk for NFS storage (This is the default)
 
 # OCP Install
-
 Follow the [quickstart](docs/quickstart.md) guide for OCP installation on PowerVS.
+
+# Known Issues
+Please check the following [doc](docs/known_issues.md) for list of known issues.
 
 # Contributing
 Please see the [contributing doc](https://github.com/ocp-power-automation/ocp4-upi-powervs/blob/master/CONTRIBUTING.md) for more details.
