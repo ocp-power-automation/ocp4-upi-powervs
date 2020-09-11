@@ -1,12 +1,25 @@
 # Installation Quickstart
 
-- [Setup Repository](#setup-repository)
-- [Setup Variables](#setup-variables)
-- [Setup Data Files](#setup-data-files)
-- [Start Install](#start-install)
-- [Post Install](#post-install)
-- [Cluster Access](#cluster-access)
-- [Clean up](#clean-up)
+- [Installation Quickstart](#installation-quickstart)
+  - [Setup Repository](#setup-repository)
+  - [Setup Variables.](#setup-variables)
+    - [Setup IBM Cloud PowerVS Variables](#setup-ibm-cloud-powervs-variables)
+  - [Retrieve PowerVS specific variables](#retrieve-powervs-specific-variables)
+    - [IBM Cloud CLI](#ibm-cloud-cli)
+    - [Setup Node Variables](#setup-node-variables)
+    - [Setup Additional Variables](#setup-additional-variables)
+    - [Setup OpenShift Variables](#setup-openshift-variables)
+    - [Setup Additional OpenShift Variables (Optional)](#setup-additional-openshift-variables-optional)
+    - [Setup Storage Variables (Optional)](#setup-storage-variables-optional)
+    - [Setup Local Registry Variables (Optional)](#setup-local-registry-variables-optional)
+    - [Setup OCP Upgrade Variables (Optional)](#setup-ocp-upgrade-variables-optional)
+  - [Setup Data Files](#setup-data-files)
+  - [Start Install](#start-install)
+  - [Post Install](#post-install)
+    - [Delete Bootstrap Node](#delete-bootstrap-node)
+    - [Create API and Ingress DNS Records](#create-api-and-ingress-dns-records)
+  - [Cluster Access](#cluster-access)
+  - [Clean up](#clean-up)
 
 
 ## Setup Repository
@@ -19,17 +32,40 @@ $ cd ocp4-upi-powervs
 
 ## Setup Variables.
 
-Update the var.tfvars with values explained in the following sections. You can also set the variables using other ways mentioned [here](https://www.terraform.io/docs/configuration/variables.html#assigning-values-to-root-module-variables) such as -var option or environment variables.
+Update the var.tfvars with values explained in the following sections. You can also set the variables using other ways mentioned [here](https://www.terraform.io/docs/configuration/variables.html#assigning-values-to-root-module-variables) such as `-var` option or environment variables.
+
+The default values are set in [var.tfvars](../var.tfvars) file.
 
 ### Setup IBM Cloud PowerVS Variables
 
+## Retrieve PowerVS specific variables
+You'll need the PowerVS service instance and the location. It's advisable to use the IBM Cloud CLI to retrieve the respective details
+
+### IBM Cloud CLI
+1. Run `ibmcloud pi service-list`. It will list the service instance name with ID.
+2. The ID will be of the form `crn:v1:bluemix:public:power-iaas:eu-de-1:a/65b64c1f1c29460e8c2e4bbfbd893c2c:360a5df8-3f00-44b2-bd9f-d9a51fe53de6::`
+3. The 6th field is the **ibmcloud_zone** and 8th field is the **service_instance_id**
+   ```
+   $ echo "crn:v1:bluemix:public:power-iaas:eu-de-1:a/65b64c1f1c29460e8c2e4bbfbd893c2c:360a5df8-3f00-44b2-bd9f-d9a51fe53de6::" | cut -f6,8 -d":"
+   eu-de-1:360a5df8-3f00-44b2-bd9f-d9a51fe53de6
+   ```
+   In the above example `ibmcloud_zone` is `eu-de-1`, `service_instance_id` is `360a5df8-3f00-44b2-bd9f-d9a51fe53de6`. `ibmcloud_region` becomes `eu-de`. Following are the region and zone mapping:
+
+
+   | ibmcloud_region | ibmcloud_zone  |
+   |-----------------|----------------|
+   | eu-de           | eu-de-1        |
+   | lon             | lon0           |
+   | tor             | tor01          |
+
+
 Update the following variables specific to your environment.
 
- * `ibmcloud_api_key` : (Required) [IBM Cloud API key](https://cloud.ibm.com/iam/apikeys) associated with user's identity to authenticate with the IBM Cloud platform.
- * `ibmcloud_region` : (Required) The IBM Cloud region where you want to create the resources.
- * `ibmcloud_zone` : (Required) The zone of an IBM Cloud region where you want to create Power System resources. This value is required only when you want to work with a resource in a multizone-capable region.
- * `service_instance_id` : (Required) The cloud instance ID of your account. You can get the ID from instance name by using IBM Cloud CLI command: `ibmcloud resource service-instance <Name> | grep GUID`
- * `network_name` : (Required) The name of the network to be used for deploy operations.
+ * `ibmcloud_api_key` : (Required) [IBM Cloud API key](https://cloud.ibm.com/iam/apikeys) associated with your IBM Cloud user id.
+ * `ibmcloud_region` : (Required) This is the region having your PowerVS service instance (eg. `eu-de`)
+ * `ibmcloud_zone` : (Required) This is the zone having your PowerVS service instance (eg. `eu-de-1`)
+ * `service_instance_id` : (Required) This is the PowerVS service instance ID (eg. `360a5df8-3f00-44b2-bd9f-d9a51fe53de6` )
+ * `network_name` : (Required) This is the private network created for OCP in your PowerVS service instance (eg. `ocp-net`)
  * `processor_type` : (Optional) The type of processor mode in which the VM will run (shared/dedicated).
  * `system_type` : (Optional) The type of system on which to create the VM (s922/e980).
 
@@ -50,18 +86,16 @@ Update the following variables specific to your cluster requirement.
     * `memory` : Memory in GBs required for master nodes. Minimum is 16GB (default).
     * `processors` : Number of vCPUs to use for master nodes. Minimum is 2 vCPU (default).
     * `count` : Number of master nodes. Minimum required is 3 (default).
- * `worker` : (Optional) Map of below parameters for worker hosts. (Atleaset 2 Workers are required for running router pods in HA mode)
-    * `memory` : Memory in GBs required for worker nodes. Default is 16GB.
-    * `processors` : Number of vCPUs to use for worker nodes. Default is 2 vCPU.
+ * `worker` : (Optional) Map of below parameters for worker hosts. (Atleast 2 Workers are required for running router pods in HA mode)
+    * `memory` : Memory in GBs required for worker nodes. Minimum is 16GB (default).
+    * `processors` : Number of vCPUs to use for worker nodes. Minimum is 2 vCPU (default).
     * `count` : Number of worker nodes. Minimum required is 2 (default).
 
 ### Setup Additional Variables
 
-Update the following variables specific to the nodes if required.
-
- * `rhel_username` : (Optional) The user that we should use for the connection to the bastion host. The default value is set as "root user.
- * `public_key_file` : (Optional) An OpenSSH-formatted public key file. Default path is 'data/id_rsa.pub'.
- * `private_key_file` : (Optional) Corresponding private key file. Default path is 'data/id_rsa'.
+ * `rhel_username` : (Optional) The default user in the RHEL image. The default value is set to "root".
+ * `public_key_file` : (Required) An OpenSSH-formatted public key file. Default path is 'data/id_rsa.pub'.
+ * `private_key_file` : (Required) Corresponding private key file. Default path is 'data/id_rsa'.
  * `private_key` : (Optional) The contents of an SSH key to use for the connection. Ignored if `public_key_file` is provided.
  * `public_key` : (Optional) The contents of corresponding key to use for the connection. Ignored if `public_key_file` is provided.
  * `rhel_subscription_username` : (Optional) The username required for RHEL subscription on bastion host. Leave empty if repos are already setup in the RHEL image(`rhel_image_name`) and subscription is not needed.
@@ -78,6 +112,7 @@ Update the following variables specific to OCP.
  * `cluster_id_prefix` : (Required) Cluster identifier prefix. Should not be more than 8 characters. Nodes are pre-fixed with this value, please keep it unique.
  * `cluster_id` : (Optional) Cluster identifier, when not set random value will be used. Length cannot exceed 14 characters when combined with cluster_id_prefix.
  * `release_image_override` : (Optional) This is set to OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE while creating ignition files. Not applicable when using local registry setup.
+ * `pull_secret_file` : (Required) Location of the OCP pull-secret file to be used. Default path is 'data/pull-secret.txt'.
 
 ### Setup Additional OpenShift Variables (Optional)
 
@@ -87,7 +122,6 @@ Update the following variables specific to OCP.
  * `helpernode_tag` : (Optional) [ocp4-helpernode](https://github.com/RedHatOfficial/ocp4-helpernode) ansible playbook version to checkout.
  * `install_playbook_repo` : (Optional) [ocp4-playbooks](https://github.com/ocp-power-automation/ocp4-playbooks) git repo URL.
  * `install_playbook_tag` : (Optional) [ocp4-playbooks](https://github.com/ocp-power-automation/ocp4-playbooks) ansible playbooks version to checkout.
- * `pull_secret_file` : (Optional) Location of the OCP pull-secret file to be used. Default path is 'data/pull-secret.txt'.
  * `dns_forwarders` : (Optional) External DNS servers to forward DNS queries that cannot resolve locally. Eg: `"8.8.8.8; 9.9.9.9"`.
  * `rhcos_kernel_options` : (Optional) List of [kernel arguments](https://docs.openshift.com/container-platform/4.4/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes eg: ["slub_max_order=0","loglevel=7"]. Note that this will be applied after the cluster is installed, hence wait till all the nodes are in `Ready` status before you start using the cluster. Check nodes status using the command `oc get nodes`.
  * `chrony_config` : (Optional) Set to true to configure chrony (NTP) client on the CoreOS node. Default value is true.

@@ -29,7 +29,7 @@ Install the following required packages on the system.
 - **Terraform >= 0.12.2, < 0.13**: Please refer to the [link](https://learn.hashicorp.com/terraform/getting-started/install.html) for instructions on installing Terraform. For validating the version run `terraform version` command after install.
 - **IBM Cloud Terraform Provider v1.9.0**: Please refer to the section "Install the IBM Cloud Provider plug-in" from the [link](https://cloud.ibm.com/docs/terraform?topic=terraform-getting-started#install) for instructions on installing the provider plugin.
 You could also install the provider locally by running the command `go get -u github.com/IBM-Cloud/terraform-provider-ibm` and moving the binary from `$GOPATH/bin/` to [plugins directory](https://www.terraform.io/docs/configuration/providers.html#third-party-plugins).
-
+- **PowerVS CLI**: Please download and install the CLI by referring to the following [instructions](https://cloud.ibm.com/docs/power-iaas-cli-plugin?topic=power-iaas-cli-plugin-power-iaas-cli-reference)
 
 # Image and LPAR requirements
 
