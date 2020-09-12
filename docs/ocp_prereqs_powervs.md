@@ -87,11 +87,14 @@ Further, the image disk should be minimum of 120 GB in size.
 
 ### Uploading to IBM Cloud Object Storage
 
-- Create IBM Cloud Object Storage service and bucket
+- **Create IBM Cloud Object Storage service and bucket**
 Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-getting-started-cloud-object-storage) for instructions to create IBM Cloud Object Storage service and required storage bucket to upload the OVA images.
-
-- Create secret and access keys with Hash-based Message Authentication Code (HMAC)
+<br>
+- **Create secret and access keys with Hash-based Message Authentication Code (HMAC)**
 Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main) for instructions to create the keys required for importing the images into your PowerVS service instance.
+<br>
+- **Upload the OVA image to Cloud Object storage bucket**
+Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-upload) for uploading the OVA image to the respective bucket. Alternatively you can also use the following [python script](https://github.com/ocp-power-automation/infra/blob/master/scripts/images/upload_image.py).
 
 
 ### Importing the images in PowerVS
