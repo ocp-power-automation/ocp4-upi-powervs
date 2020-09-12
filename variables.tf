@@ -99,7 +99,7 @@ variable "system_type" {
 
 variable "network_name" {
     description = "The name of the network to be used for deploy operations"
-    default = "my_network_name"
+    default = "ocp-net"
 }
 
 variable "rhel_username" {
@@ -109,13 +109,13 @@ variable "rhel_username" {
 variable "public_key_file" {
     description = "Path to public key file"
     # if empty, will default to ${path.cwd}/data/id_rsa.pub
-    default     = "~/.ssh/id_rsa.pub"
+    default     = "data/id_rsa.pub"
 }
 
 variable "private_key_file" {
     description = "Path to private key file"
     # if empty, will default to ${path.cwd}/data/id_rsa
-    default     = "~/.ssh/id_rsa"
+    default     = "data/id_rsa"
 }
 
 variable "private_key" {
@@ -158,7 +158,7 @@ variable "installer_log_level" {
 
 variable "helpernode_repo" {
     description = "Set the repo URL for using ocp4-helpernode"
-    # Repo for running ocp4 installations steps.
+    # Repo for running ocp4 installation steps.
     default = "https://github.com/RedHatOfficial/ocp4-helpernode"
 }
 
@@ -190,7 +190,7 @@ variable "pull_secret_file" {
 }
 
 variable "dns_forwarders" {
-    default   = "8.8.8.8; 8.8.4.4"
+    default   = "1.1.1.1; 9.9.9.9"
 }
 
 variable "rhcos_kernel_options" {
