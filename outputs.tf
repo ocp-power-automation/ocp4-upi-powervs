@@ -31,7 +31,7 @@ output "bastion_public_ip" {
 }
 
 output "bastion_ssh_command" {
-    value = "ssh ${var.rhel_username}@${module.prepare.bastion_public_ip}"
+    value = "ssh -i ${var.private_key_file} ${var.rhel_username}@${module.prepare.bastion_public_ip}"
 }
 
 output "bootstrap_ip" {
