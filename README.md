@@ -12,7 +12,7 @@
 
 This repo contains Terraform templates to help deployment of OpenShift Container Platform (OCP) 4.x on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
 
-This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
+This project leverages the [helpernode ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally to install and configure services required for running OCP on IBM Power Systems Virtual Servers (PowerVS).
 
 :heavy_exclamation_mark: *For bugs/enhancement requests etc. please open a GitHub issue*
 
