@@ -37,9 +37,9 @@ In order to retrieve the PowerVS region, zone and instance specific details plea
 
    Tieing all these, the values to be used will be as shown below:
    ```
-   ibmcloud_region     = eu-de
-   ibmcloud_zone       = eu-de-1
-   service_instance_id = 360a5df8-3f00-44b2-bd9f-d9a51fe53de6
+   ibmcloud_region     = "eu-de"
+   ibmcloud_zone       = "eu-de-1"
+   service_instance_id = "360a5df8-3f00-44b2-bd9f-d9a51fe53de6"
    ```
 
 
@@ -179,9 +179,13 @@ install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playb
 install_playbook_tag       = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
 ```
 
-These variables can be used when debugging ansible playbooks
+This variable can be used when debugging `openshift-install` commands.
 ```
 installer_log_level         = "info"
+```
+
+This variable can be used when debugging ansible playbooks.
+```
 ansible_extra_options       = "-v"
 ```
 

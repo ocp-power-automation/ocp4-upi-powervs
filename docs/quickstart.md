@@ -12,6 +12,7 @@
     - [Using Web UI](#using-web-ui)
   - [Clean up](#clean-up)
 
+----------------------
 
 ## Download the Automation Code
 

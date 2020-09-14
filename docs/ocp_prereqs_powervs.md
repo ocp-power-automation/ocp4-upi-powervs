@@ -1,4 +1,16 @@
-# **PowerVS Prerequisites**
+# PowerVS Prerequisites
+
+- [PowerVS Prerequisites](#powervs-prerequisites)
+  * [IBM Cloud Account](#ibm-cloud-account)
+  * [Create Power Systems Virtual Server Service Instance](#create-power-systems-virtual-server-service-instance)
+  * [Create Private Network](#create-private-network)
+  * [Raise a Service Request to enable IP communication between PowerVS instances on private network](#raise-a-service-request-to-enable-ip-communication-between-powervs-instances-on-private-network)
+  * [RHCOS and RHEL 8.2 Images for OpenShift](#rhcos-and-rhel-82-images-for-openshift)
+    + [Creating OVA images](#creating-ova-images)
+    + [Uploading to IBM Cloud Object Storage](#uploading-to-ibm-cloud-object-storage)
+    + [Importing the images in PowerVS](#importing-the-images-in-powervs)
+
+
 ----------------------
 
 ## IBM Cloud Account
@@ -87,19 +99,16 @@ Further, the image disk should be minimum of 120 GB in size.
 
 ### Uploading to IBM Cloud Object Storage
 
-- **Create IBM Cloud Object Storage service and bucket**
-Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-getting-started-cloud-object-storage) for instructions to create IBM Cloud Object Storage service and required storage bucket to upload the OVA images.
-<br>
-- **Create secret and access keys with Hash-based Message Authentication Code (HMAC)**
-Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main) for instructions to create the keys required for importing the images into your PowerVS service instance.
-<br>
-- **Upload the OVA image to Cloud Object storage bucket**
-Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-upload) for uploading the OVA image to the respective bucket. Alternatively you can also use the following [python script](https://github.com/ocp-power-automation/infra/blob/master/scripts/images/upload_image.py).
+- **Create IBM Cloud Object Storage service and bucket** Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-getting-started-cloud-object-storage) for instructions to create IBM Cloud Object Storage service and required storage bucket to upload the OVA images.
+
+- **Create secret and access keys with Hash-based Message Authentication Code (HMAC)** Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main) for instructions to create the keys required for importing the images into your PowerVS service instance.
+
+- **Upload the OVA image to Cloud Object storage bucket** Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-upload) for uploading the OVA image to the respective bucket. Alternatively you can also use the following [python script](https://github.com/ocp-power-automation/infra/blob/master/scripts/images/upload_image.py).
 
 
 ### Importing the images in PowerVS
-Choose the previously created PowerVS "Service Instance", click "View full details" and select "Boot images".
-Click the "Importing image" option and fill the requisite details like image name, storage type and cloud object storage details.
+Choose the previously created PowerVS "**Service Instance**", click "**View full details**" and select "**Boot images**".
+Click the "**Importing image**" option and fill the requisite details like image name, storage type and cloud object storage details.
 
 Example screenshot showing import of RHEL image that is used for bastion
 ![Image Import-RHEL](./media/image-import1.png)
