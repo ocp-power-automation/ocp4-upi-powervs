@@ -4,6 +4,12 @@
 ## IBM Cloud Account
 You'll need to have an IBM Cloud Account to be able to use Power Systems Virtual Server (PowerVS).
 
+### IBM CLoud CLI
+In order to gather certain information about your Services, etc., e.g. for populating the Terraform variables, you will need to use the lastest version of the `ibmcloud` cli.
+    Install both the cli and the `power-iaas` plugin.
+    Instructions for installation and setup can be found here: https://cl ud.ibm.com/docs/power-iaas-cli-plugin?topic=power-iaas-cli-plugin-power-iaas-cli-reference
+
+
 ## Create Power Systems Virtual Server Service Instance
 
 Login to [IBM Cloud Dashboard](https://cloud.ibm.com) and search for "**Power**" in the **Catalog**.
