@@ -1,14 +1,14 @@
-# **Table of Contents**
+# Table of Contents
 
-- [**Table of Contents**](#table-of-contents)
-- [Introduction](#introduction)
-- [Automation Host Prerequisites](#automation-host-prerequisites)
-- [PowerVS Prerequisites](#powervs-prerequisites)
-- [OCP Install](#ocp-install)
-- [Contributing](#contributing)
+- [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Automation Host Prerequisites](#automation-host-prerequisites)
+  - [PowerVS Prerequisites](#powervs-prerequisites)
+  - [OCP Install](#ocp-install)
+  - [Contributing](#contributing)
 
 
-# Introduction
+## Introduction
 
 This repo contains Terraform templates to help deployment of OpenShift Container Platform (OCP) 4.x on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
 
@@ -22,7 +22,12 @@ For general PowerVS usage instructions please refer to the following links:
 - https://www.youtube.com/playlist?list=PLVrJaTKVPbKM_9HU8fm4QsklgzLGUwFpv
 
 
-# Automation Host Prerequisites
+:heavy_exclamation_mark:  **Always refer to release version specific README before deploying.**
+**As an example for the latest stable release refer to the following [README](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/release-4.5).**
+**This README is specific to frequently changing master.**
+
+
+## Automation Host Prerequisites
 
 The automation needs to run from a system with internet access. This could be your laptop or a VM with public internet connectivity. This automation code have been tested on the following Operating Systems:
 - Mac OSX (Darwin)
@@ -31,15 +36,15 @@ The automation needs to run from a system with internet access. This could be yo
 
 Follow the [guide](docs/automation_host_prereqs.md) to complete the prerequisites.
 
-# PowerVS Prerequisites
+## PowerVS Prerequisites
 
 Follow the [guide](docs/ocp_prereqs_powervs.md) to complete the PowerVS prerequisites.
 
-# OCP Install
+## OCP Install
 
 Follow the [quickstart](docs/quickstart.md) guide for OCP installation on PowerVS.
 
 
-# Contributing
+## Contributing
 Please see the [contributing doc](https://github.com/ocp-power-automation/ocp4-upi-powervs/blob/master/CONTRIBUTING.md) for more details.
 PRs are most welcome !!

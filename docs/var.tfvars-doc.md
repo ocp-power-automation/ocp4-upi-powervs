@@ -1,5 +1,15 @@
 # How to use var.tfvars
 
+- [How to use var.tfvars](#how-to-use-vartfvars)
+  - [Introduction](#introduction)
+    - [IBM Cloud Details](#ibm-cloud-details)
+    - [OpenShift Cluster Details](#openshift-cluster-details)
+    - [OpenShift Installation Details](#openshift-installation-details)
+    - [Misc Customizations](#misc-customizations)
+
+
+## Introduction
+
 This guide gives an overview of the various terraform variables that are used for the deployment.
 The default values are set in [variables.tf](../variables.tf)
 
