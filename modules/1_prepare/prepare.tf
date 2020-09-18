@@ -218,7 +218,7 @@ mv /etc/yum.repos.d/* /etc/yum.repos.d.bak/
 # Give some more time to subscription-manager
 sudo subscription-manager config --server.server_timeout=600
 sudo subscription-manager clean
-sudo subscription-manager register --username=${var.rhel_subscription_username} --password=${var.rhel_subscription_password} --force
+sudo subscription-manager register --username='${var.rhel_subscription_username}' --password='${var.rhel_subscription_password}' --force
 sudo subscription-manager refresh
 sudo subscription-manager attach --auto
 EOF

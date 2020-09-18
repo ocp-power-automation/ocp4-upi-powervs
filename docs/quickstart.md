@@ -16,7 +16,7 @@
 
 ## Download the Automation Code
 
-Head to the [release](https://github.com/ocp-power-automation/ocp4-upi-powervs/releases) page and download the latest stable release.
+Head to the [release](https://github.com/ocp-power-automation/ocp4-upi-powervs/releases) page and download the **latest stable** release.
 Extract the release bundle on your system.
 
 You can also use `curl` or `wget` to download the stable release code as shown below.
@@ -25,6 +25,7 @@ $ curl -L https://github.com/ocp-power-automation/ocp4-upi-powervs/archive/v4.5.
 $ unzip v4.5.zip
 $ cd ocp4-upi-powervs-4.5
 ```
+> Note: The zip file name will correspond to the stable release version you want to download. For example v4.5.1.zip for stable release v4.5.1
 
 You can also clone git repository on your system.
 Ensure you checkout the release branch when using git.
