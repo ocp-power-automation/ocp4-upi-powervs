@@ -36,6 +36,8 @@ module "prepare" {
     processor_type                  = var.processor_type
     system_type                     = var.system_type
     network_name                    = var.network_name
+    #Specify dns for public network. Trim spaces that may be present in splitted values.
+    network_dns                     = var.dns_forwarders == "" ? [] : [for dns in split(";", var.dns_forwarders): trimspace(dns)]
     rhel_username                   = var.rhel_username
     private_key                     = local.private_key
     public_key                      = local.public_key
