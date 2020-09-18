@@ -93,7 +93,9 @@ resource "ibm_pi_instance" "bootstrap" {
     pi_sys_type             = var.system_type
     pi_cloud_instance_id    = var.service_instance_id
     pi_network_ids          = [data.ibm_pi_network.network.id]
-    pi_user_data            = base64encode(data.ignition_config.bootstrap.rendered)
+
+    # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
+    pi_user_data            = base64encode(replace(data.ignition_config.bootstrap.rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
 
     # Not needed by RHCOS but required by resource
     pi_key_pair_name        = "${var.cluster_id}-keypair"
@@ -139,7 +141,9 @@ resource "ibm_pi_instance" "master" {
     pi_cloud_instance_id    = var.service_instance_id
     pi_network_ids          = [data.ibm_pi_network.network.id]
     pi_volume_ids           = var.master_volume_size == "" ? null : ibm_pi_volume.master[count.index].*.volume_id
-    pi_user_data            = base64encode(data.ignition_config.master[count.index].rendered)
+
+    # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
+    pi_user_data            = base64encode(replace(data.ignition_config.master[count.index].rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
 
     # Not needed by RHCOS but required by resource
     pi_key_pair_name        = "${var.cluster_id}-keypair"
@@ -197,7 +201,9 @@ resource "ibm_pi_instance" "worker" {
     pi_cloud_instance_id    = var.service_instance_id
     pi_network_ids          = [data.ibm_pi_network.network.id]
     pi_volume_ids           = var.worker_volume_size == "" ? null : ibm_pi_volume.worker[count.index].*.volume_id
-    pi_user_data            = base64encode(data.ignition_config.worker[count.index].rendered)
+
+    # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
+    pi_user_data            = base64encode(replace(data.ignition_config.worker[count.index].rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
 
     # Not needed by RHCOS but required by resource
     pi_key_pair_name        = "${var.cluster_id}-keypair"
