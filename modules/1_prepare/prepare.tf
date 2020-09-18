@@ -41,9 +41,10 @@ data "ibm_pi_network" "network" {
 
 ## Fix for Terraform CRASH.. always create new public network
 resource "ibm_pi_network" "public_network" {
-    pi_network_name           = "${var.cluster_id}-pub-net"
-    pi_cloud_instance_id      = var.service_instance_id
-    pi_network_type           = "pub-vlan"
+    pi_network_name         = "${var.cluster_id}-pub-net"
+    pi_cloud_instance_id    = var.service_instance_id
+    pi_network_type         = "pub-vlan"
+    pi_dns                  = var.network_dns
 }
 
 ## Use this when public network issues are fixed.
