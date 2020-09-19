@@ -129,6 +129,9 @@ resource "null_resource" "bastion_init" {
             "echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null",
             # Set SMT to user specified value; Should not fail for invalid values.
             "sudo ppc64_cpu --smt=${var.rhel_smt} | true",
+            # Set mtu to 1450 for public interface.
+            "sudo ip link set dev $(ip r | grep ${ibm_pi_network.public_network.pi_cidr} | awk '{print $3}') mtu 1450",
+            "echo MTU=1450 | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${ibm_pi_network.public_network.pi_cidr} | awk '{print $3}')"
         ]
     }
 }
