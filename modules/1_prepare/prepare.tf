@@ -95,7 +95,7 @@ resource "ibm_pi_instance" "bastion" {
             host        = compact(self.addresses.*.external_ip)[0]
             private_key = var.private_key
             agent       = var.ssh_agent
-            timeout     = "15m"
+            timeout     = "2m"
         }
         when        = destroy
         on_failure  = continue
