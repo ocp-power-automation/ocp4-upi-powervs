@@ -229,7 +229,7 @@ EOF
             host        = self.triggers.external_ip
             private_key = self.triggers.private_key
             agent       = self.triggers.ssh_agent
-            timeout     = "15m"
+            timeout     = "2m"
         }
         when        = destroy
         on_failure  = continue
