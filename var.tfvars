@@ -7,15 +7,25 @@ service_instance_id         = "<cloud_instance_ID>"
 
 ### OpenShift Cluster Details
 
-### This is default minimalistic config. For PowerVS processors are equal to entitled physical count
+
+### For PowerVS processors are equal to entitled physical count
 ### So N processors == N physical core entitlements == ceil[N] vCPUs.
 ### Example 0.5 processors == 0.5 physical core entitlements == ceil[0.5] = 1 vCPU == 8 logical OS CPUs (SMT=8)
 ### Example 1.5 processors == 1.5 physical core entitlements == ceil[1.5] = 2 vCPU == 16 logical OS CPUs (SMT=8)
 ### Example 2 processors == 2 physical core entitlements == ceil[2] = 2 vCPU == 16 logical OS CPUs (SMT=8)
+
+### Minimalistic config suitable for trying out cloud-native applications
+#bastion                     = {memory      = "16",   processors  = "1"}
+#bootstrap                   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
+#master                      = {memory      = "16",   processors  = "0.5",  "count"   = 3}
+#worker                      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
+
+### Minimalistic config suitable for trying out Cloud Pak for Data (CP4D)
 bastion                     = {memory      = "16",   processors  = "1"}
 bootstrap                   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
 master                      = {memory      = "16",   processors  = "0.5",  "count"   = 3}
-worker                      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
+worker                      = {memory      = "64",   processors  = "1.5",  "count"   = 3}
+
 
 rhel_image_name             = "rhel-8.2"
 rhcos_image_name            = "rhcos-4.5.4"
