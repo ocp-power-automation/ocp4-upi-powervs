@@ -5,33 +5,25 @@ echo "Starting fix_default_route.sh"
 echo ------------------------------------------
 echo "The public gateway: ${pub_gateway}"
 
-for device in $(nmcli device | grep ethernet | awk '{print $1}'); do
+## Record initial routes
+route -n >> /tmp/initial_routes
 
-    ifcfg_file=/etc/sysconfig/network-scripts/ifcfg-$device
-    gateway=$(grep GATEWAY /etc/sysconfig/network-scripts/ifcfg-$device | cut -d= -f2)
-    defroute=$(grep DEFROUTE /etc/sysconfig/network-scripts/ifcfg-$device | cut -d= -f2)
-    echo "Looping DEVICE: $device GATEWAY: $gateway DEFROUTE: $defroute"
+## Perform a public network test
+ping -c 5 8.8.8.8 &> /dev/null && echo "Can reach 8.8.8.8" && exit 0 || echo "Cannot reach 8.8.8.8 fixing public network..."
 
-    if [[ $gateway == ${pub_gateway} ]]; then
-        echo "This is a public interface: $device"
-        if [[ $defroute == "no" ]]; then
-            echo "Changing DEFROUTE=yes for public interface: $device"
-            sed -i 's/DEFROUTE=no/DEFROUTE=yes/g' $ifcfg_file
-        fi
-    elif [[ ! -z $gateway ]]; then
-        echo "This is other interface(not public) : $device"
-        if [[ $defroute == "yes" ]]; then
-            echo "Changing DEFROUTE=no for other interface: $device"
-            sed -i 's/DEFROUTE=yes/DEFROUTE=no/g' $ifcfg_file
-            # Force delete the private route in case network is already configured
-            ip route del default via $gateway | true
-        fi
-    else
-        echo "No gateway, ignoring this interface: $device"
-    fi
-done
+PUB_GW_DEV=`awk "/${pub_gateway}/{ print FILENAME; nextfile }" /etc/sysconfig/network-scripts/ifcfg-* | xargs basename | sed 's/ifcfg-//g'`
+echo "Public network device name is $PUB_GW_DEV"
+
+## Fix routes
+find /etc/sysconfig/network-scripts -name ifcfg'*' -print0 | xargs -0 sed -i.bak '/GATEWAY/s/^/#/g'
+echo "GATEWAY=${pub_gateway}" >> /etc/sysconfig/network
+echo "GATEWAYDEV=$PUB_GW_DEV" >> /etc/sysconfig/network
+
+## Reload routes when connection is already available
+nmcli connection reload
+nmcli networking off
+nmcli networking on
 
 echo ------------------------------------------
 echo "Ending fix_default_route.sh"
 echo ------------------------------------------
-
