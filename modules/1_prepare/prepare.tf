@@ -197,19 +197,19 @@ resource "null_resource" "bastion_register" {
     }
 
     provisioner "remote-exec" {
-        inline = [<<EOF
-# FIX for existing stale repos
-echo "Moving all file from /etc/yum.repos.d/ to /etc/yum.repos.d.bak/"
-mkdir /etc/yum.repos.d.bak/
-mv /etc/yum.repos.d/* /etc/yum.repos.d.bak/
+        inline = [
+          "echo \"registring bastion with subscription manager...\"",
+          "set -e",
+          "# FIX for existing stale repos",
+          "mkdir /etc/yum.repos.d.bak || true",
+          "mv /etc/yum.repos.d/* /etc/yum.repos.d.bak || true",
 
-# Give some more time to subscription-manager
-sudo subscription-manager config --server.server_timeout=600
-sudo subscription-manager clean
-sudo subscription-manager register --username='${var.rhel_subscription_username}' --password='${var.rhel_subscription_password}' --force
-sudo subscription-manager refresh
-sudo subscription-manager attach --auto
-EOF
+          "# Give some more time to subscription-manager",
+          "sudo subscription-manager config --server.server_timeout=600",
+          "sudo subscription-manager clean",
+          "sudo subscription-manager register --username='${var.rhel_subscription_username}' --password='${var.rhel_subscription_password}' --force",
+          "sudo subscription-manager refresh",
+          "sudo subscription-manager attach --auto"
         ]
     }
     provisioner "remote-exec" {
