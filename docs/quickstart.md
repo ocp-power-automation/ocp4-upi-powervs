@@ -37,7 +37,15 @@ All further instructions assumes you are in the code directory eg. `ocp4-upi-pow
 ## Setup Terraform Variables
 
 Update the [var.tfvars](../var.tfvars) based on your environment. Description of the variables are available in the following [link](./var.tfvars-doc.md).
+You can use environment variables for sensitive data that should not be saved to disk.
 
+```
+$ set +o history
+$ export IBMCLOUD_API_KEY=xxxxxxxxxxxxxxx
+$ export RHEL_SUBS_USERNAME=xxxxxxxxxxxxxxx
+$ export RHEL_SUBS_PASSWORD=xxxxxxxxxxxxxxx
+$ set -o history
+```
 
 ## Start Install
 
@@ -46,6 +54,11 @@ Run the following commands from within the directory.
 ```
 $ terraform init
 $ terraform apply -var-file var.tfvars -parallelism=3
+```
+If using environment variables for sensitive data, then do the following, instead.
+```
+$ terraform init
+$ terraform apply -var-file var.tfvars -parallelism=3 -var ibmcloud_api_key="$IBMCLOUD_API_KEY" -var rhel_subscription_username="$RHEL_SUBS_USERNAME" -var rhel_subscription_password="$RHEL_SUBS_PASSWORD"
 ```
 
 > **Note**: We have used [parallelism](https://www.terraform.io/docs/commands/apply.html#parallelism-n) to restrict parallel instance creation requests using the PowerVS client. This is due to a known issue where the apply fails at random parallel instance create requests. If you still get the error while creating the instance, you will have to delete the failed instance from PowerVS console and then run the apply command again.
