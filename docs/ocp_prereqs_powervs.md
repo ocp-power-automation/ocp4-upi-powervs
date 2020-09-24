@@ -1,14 +1,14 @@
 # PowerVS Prerequisites
 
 - [PowerVS Prerequisites](#powervs-prerequisites)
-  * [IBM Cloud Account](#ibm-cloud-account)
-  * [Create Power Systems Virtual Server Service Instance](#create-power-systems-virtual-server-service-instance)
-  * [Create Private Network](#create-private-network)
-  * [Raise a Service Request to enable IP communication between PowerVS instances on private network](#raise-a-service-request-to-enable-ip-communication-between-powervs-instances-on-private-network)
-  * [RHCOS and RHEL 8.2 Images for OpenShift](#rhcos-and-rhel-82-images-for-openshift)
-    + [Creating OVA images](#creating-ova-images)
-    + [Uploading to IBM Cloud Object Storage](#uploading-to-ibm-cloud-object-storage)
-    + [Importing the images in PowerVS](#importing-the-images-in-powervs)
+  - [IBM Cloud Account](#ibm-cloud-account)
+  - [Create Power Systems Virtual Server Service Instance](#create-power-systems-virtual-server-service-instance)
+  - [Create Private Network](#create-private-network)
+  - [Raise a Service Request to enable IP communication between PowerVS instances on private network](#raise-a-service-request-to-enable-ip-communication-between-powervs-instances-on-private-network)
+  - [RHCOS and RHEL 8.2 Images for OpenShift](#rhcos-and-rhel-82-images-for-openshift)
+    - [Creating OVA images](#creating-ova-images)
+    - [Uploading to IBM Cloud Object Storage](#uploading-to-ibm-cloud-object-storage)
+    - [Importing the images in PowerVS](#importing-the-images-in-powervs)
 
 
 ----------------------
@@ -93,7 +93,7 @@ Further, the image disk should be minimum of 120 GB in size.
 ### Creating OVA images
 
 - If you have PowerVC then you can follow the instructions provided in the [link](https://www.ibm.com/support/knowledgecenter/en/SSXK2N_1.4.4/com.ibm.powervc.standard.help.doc/powervc_export_image_hmc.html) to export an existing PowerVC image to OVA image.
-- You can also use the following [python script](https://github.com/ocp-power-automation/infra/blob/master/scripts/images/convert_qcow2_ova.py) to convert Qcow2 image to OVA
+- Alternatively, you can use the following [guide](https://github.com/ocp-power-automation/infra/tree/master/scripts/images) to convert Qcow2 image to OVA, using a python script running on a Power LPAR.
   - RHEL 8.2 Qcow2 image is available from the following [link](https://access.redhat.com/downloads/content/279/ver=/rhel---8/8.2/ppc64le/product-software)
   - RHCOS Qcow2 image is available from the following [link](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/4.5/)
 

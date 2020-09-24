@@ -119,7 +119,7 @@ Please note that only OpenSSH formatted keys are supported. Refer to the followi
 Create the SSH key-pair and keep it under the `data` directory
 
 These set of variables specify the RHEL subscription details.
-Update the variables with your subscription id and password.
+This is sensitive data, and if you don't want to save it on disk, use environment variables `RHEL_SUBS_USERNAME` and `RHEL_SUBS_PASSWORD` and pass them to `terraform apply` command as shown in the [Quickstart guide](./quickstart.md#setup-terraform-variables).
 
 ```
 rhel_subscription_username  = "user@test.com"
