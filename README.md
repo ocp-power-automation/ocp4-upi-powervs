@@ -1,48 +1,34 @@
-# Table of Contents
+![GitHub release (latest release)](https://img.shields.io/github/v/release/ocp-power-automation/ocp4-upi-powervs?label=latest%20release)
+[![License](https://img.shields.io/packagist/l/phplicengine/bitly)](LICENSE) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/ocp-power-automation/ocp4-upi-powervs/blob/master/CONTRIBUTING.md)
 
-- [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Automation Host Prerequisites](#automation-host-prerequisites)
-  - [PowerVS Prerequisites](#powervs-prerequisites)
-  - [OCP Install](#ocp-install)
-  - [Contributing](#contributing)
+# Welcome
 
+This repository contains Terraform templates, configurations and automation which leverages the [helpernode ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) to assist in deploying [OpenShift Container Platform (OCP) 4.x](https://www.openshift.com/products/container-platform) on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
 
-## Introduction
+# Contributing
 
-This repo contains Terraform templates to help deployment of OpenShift Container Platform (OCP) 4.x on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
+Take a look at [contributing](https://github.com/ocp-power-automation/ocp4-upi-powervs/blob/master/CONTRIBUTING.md) to learn how to help make this a better project.
 
-This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
+:heavy_exclamation_mark: For any bugs, enhancement, requests, fixes, etc. [open a new GitHub issue](https://github.com/ocp-power-automation/ocp4-upi-powervs/issues/new) and ensure it is not duplicated.
 
-:heavy_exclamation_mark: *For bugs/enhancement requests etc. please open a GitHub issue*
+:heavy_exclamation_mark: [Checkout the latest stable version](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/release-4.5).
 
-For general PowerVS usage instructions please refer to the following links:
-- https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-getting-started
-- https://www.youtube.com/watch?v=RywSfXT_LLs
-- https://www.youtube.com/playlist?list=PLVrJaTKVPbKM_9HU8fm4QsklgzLGUwFpv
+:heavy_exclamation_mark: Ensure that you're working from the desired release-specific version of this `README` as you deploy by first selecting the appropriate branch from the drop-down above. At the time of this writing, the latest release is 4.5: [README](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/release-4.5). The `README` document located in the `master` branch changes frequently and should not be considered final.
 
+# PowerVS Preparation
 
-:heavy_exclamation_mark: **Ensure that you're working from the desired release-specific version of this `README` as you deploy by first selecting the appropriate branch from the drop-down above. At the time of this writing, the latest release is 4.5: [README](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/release-4.5). The `README` document located in the `master` branch changes frequently and should not be considered final.**
+You first need to create and configure a PowerVS Service Intance in IBM Cloud before running this automation. You may follow this [guide](docs/ocp_prereqs_powervs.md) for instructions. To get started with PowerVS, [click here](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-getting-started). You can also learn more about PowerVS by watching some YouTube videos by clicking [here](https://www.youtube.com/watch?v=RywSfXT_LLs) and [here](https://www.youtube.com/playlist?list=PLVrJaTKVPbKM_9HU8fm4QsklgzLGUwFpv).
 
+# Automation Host Preparation
 
-## Automation Host Prerequisites
+You can run this automation from any system (laptop, virtual machine, etc.) with internet access. It has been tested on the following operating systems:
 
-The automation needs to run from a system with internet access. This could be your laptop or a VM with public internet connectivity. This automation code have been tested on the following Operating Systems:
-- Mac OSX (Darwin)
-- Linux (x86_64)
+- Mac OSX (Darwin and Catalina)
+- Linux (amd64/x86_64)
 - Windows 10
 
-Follow the [guide](docs/automation_host_prereqs.md) to complete the prerequisites.
+Follow this [guide](docs/automation_host_prereqs.md) to complete the host preparation prerequisites.
 
-## PowerVS Prerequisites
+# Installing OCP
 
-Follow the [guide](docs/ocp_prereqs_powervs.md) to complete the PowerVS prerequisites.
-
-## OCP Install
-
-Follow the [quickstart](docs/quickstart.md) guide for OCP installation on PowerVS.
-
-
-## Contributing
-Please see the [contributing doc](https://github.com/ocp-power-automation/ocp4-upi-powervs/blob/master/CONTRIBUTING.md) for more details.
-PRs are most welcome !!
+Are you ready to get started? Follow the [quickstart](docs/quickstart.md) tutorial to install OpenShift Container Platform on PowerVS.
