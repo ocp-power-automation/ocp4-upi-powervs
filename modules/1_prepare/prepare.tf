@@ -87,23 +87,6 @@ resource "ibm_pi_instance" "bastion" {
                                     {pub_gateway = cidrhost(ibm_pi_network.public_network.pi_cidr,1)}
                                 )
                               )
-
-    provisioner "remote-exec" {
-        connection {
-            type        = "ssh"
-            user        = var.rhel_username
-            host        = compact(self.addresses.*.external_ip)[0]
-            private_key = var.private_key
-            agent       = var.ssh_agent
-            timeout     = "2m"
-        }
-        when        = destroy
-        on_failure  = continue
-        inline = [
-            "sudo subscription-manager unregister",
-            "sudo subscription-manager remove --all",
-        ]
-    }
 }
 
 data "ibm_pi_instance_ip" "bastion_ip" {
@@ -200,16 +183,21 @@ EOF
 }
 
 resource "null_resource" "bastion_register" {
+    triggers = {
+        external_ip     = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
+        rhel_username   = var.rhel_username
+        private_key     = var.private_key
+        ssh_agent       = var.ssh_agent
+    }
     depends_on  = [null_resource.bastion_init, null_resource.setup_proxy_info]
     count       = var.rhel_subscription_username != "" ? 1 : 0
     connection {
         type        = "ssh"
-        user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
-        private_key = var.private_key
-        agent       = var.ssh_agent
+        user        = self.triggers.rhel_username
+        host        = self.triggers.external_ip
+        private_key = self.triggers.private_key
+        agent       = self.triggers.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
 
     provisioner "remote-exec" {
@@ -231,6 +219,23 @@ EOF
     provisioner "remote-exec" {
         inline = [
             "sudo rm -rf /tmp/terraform_*"
+        ]
+    }
+
+    provisioner "remote-exec" {
+        connection {
+            type        = "ssh"
+            user        = self.triggers.rhel_username
+            host        = self.triggers.external_ip
+            private_key = self.triggers.private_key
+            agent       = self.triggers.ssh_agent
+            timeout     = "2m"
+        }
+        when        = destroy
+        on_failure  = continue
+        inline = [
+            "sudo subscription-manager unregister",
+            "sudo subscription-manager remove --all",
         ]
     }
 }
