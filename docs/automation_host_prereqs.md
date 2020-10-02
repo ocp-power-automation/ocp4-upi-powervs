@@ -4,7 +4,6 @@
 - [Automation Host Prerequisites](#automation-host-prerequisites)
   - [Automation Host Setup](#automation-host-setup)
     - [Terraform](#terraform)
-    - [IBM Cloud Terraform Provider](#ibm-cloud-terraform-provider)
     - [Additional Terraform Providers](#additional-terraform-providers)
       - [Ignition provider v2.1.0](#ignition-provider-v210)
     - [PowerVS CLI](#powervs-cli)
@@ -17,10 +16,6 @@ Install the following packages on the automation host. Select the appropriate in
 ### Terraform
 
 **Terraform >= 0.13.0**: Please refer to the [link](https://learn.hashicorp.com/terraform/getting-started/install.html) for instructions on installing Terraform. For validating the version run `terraform version` command after install.
-
-### IBM Cloud Terraform Provider
-
-**IBM Cloud Terraform Provider v1.11.2**: Please refer to the section "Install the IBM Cloud Provider plug-in" from the [link](https://cloud.ibm.com/docs/terraform?topic=terraform-getting-started#install) for instructions on installing the provider plugin.
 
 ### Additional Terraform Providers
 
