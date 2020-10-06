@@ -94,12 +94,18 @@ Further, the image disk should be minimum of 120 GB in size.
 
 - If you have PowerVC then you can follow the instructions provided in the [link](https://www.ibm.com/support/knowledgecenter/en/SSXK2N_1.4.4/com.ibm.powervc.standard.help.doc/powervc_export_image_hmc.html) to export an existing PowerVC image to OVA image.
 - Alternatively, you can use the following [guide](https://github.com/ocp-power-automation/infra/tree/master/scripts/images) to convert Qcow2 image to OVA, using a python script running on a Power LPAR.
-  - RHEL 8.2 Qcow2 image is available from the following [link](https://access.redhat.com/downloads/content/279/ver=/rhel---8/8.2/ppc64le/product-software)
-  - RHCOS Qcow2 image is available from the following [link](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/4.5/)
+  - RHEL 8.2 Qcow2 image is available from the following [link](https://access.redhat.com/downloads/content/279/ver=/rhel---8/8.2/ppc64le/product-software).
+
+    Although the image is named KVM Guest Image, the same works for both KVM and PowerVM based systems.
+  - RHCOS Qcow2 image is available from the following [link](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/4.5/4.5.4/rhcos-4.5.4-ppc64le-openstack.ppc64le.qcow2.gz).
+
+    Ensure you use the file with `openstack` in its name.
 
 ### Uploading to IBM Cloud Object Storage
 
 - **Create IBM Cloud Object Storage service and bucket** Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-getting-started-cloud-object-storage) for instructions to create IBM Cloud Object Storage service and required storage bucket to upload the OVA images.
+
+  Ensure you create the bucket in either `us-east`, `us-south` or `eu-de` region. PowerVS currently supports import of images only from these regions. 
 
 - **Create secret and access keys with Hash-based Message Authentication Code (HMAC)** Please refer to the following [link](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-uhc-hmac-credentials-main) for instructions to create the keys required for importing the images into your PowerVS service instance.
 

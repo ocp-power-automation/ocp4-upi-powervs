@@ -12,7 +12,7 @@ Install the following packages on the automation host. Select the appropriate in
 
 ### Terraform
 
-**Terraform >= 0.12.2, < 0.13**:
+**Terraform 0.12.29**:
 
 1. Download Terraform 0.12.29 release binary for your Operating System from the following [link](https://releases.hashicorp.com/terraform/0.12.29/)
 2. Extract the package and move it to a directory included in your system's `PATH` .
