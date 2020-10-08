@@ -33,9 +33,12 @@ variable service_instance_id {}
 
 variable "gateway_ip" {}
 variable "cidr" {}
+variable "public_cidr" {}
+variable "bastion_count" {}
 
 variable "bastion_vip" {}
 variable "bastion_ip" {}
+variable "bastion_internal_vip" {}
 variable "bastion_public_ip" {}
 variable "rhel_username" {}
 variable "private_key" {}

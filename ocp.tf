@@ -73,11 +73,14 @@ module "install" {
     dns_forwarders                  = var.dns_forwarders
     gateway_ip                      = module.prepare.gateway_ip
     cidr                            = module.prepare.cidr
+    public_cidr                     = module.prepare.public_cidr
+    bastion_count                   = lookup(var.bastion, "count", 1)
     bastion_vip                     = module.prepare.bastion_vip
     bastion_ip                      = module.prepare.bastion_ip
     rhel_username                   = var.rhel_username
     private_key                     = local.private_key
     ssh_agent                       = var.ssh_agent
+    bastion_internal_vip            = module.prepare.bastion_internal_vip
     bastion_public_ip               = module.prepare.bastion_public_ip
     bootstrap_ip                    = module.nodes.bootstrap_ip
     master_ips                      = module.nodes.master_ips

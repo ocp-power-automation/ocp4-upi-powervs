@@ -1,5 +1,4 @@
 [bastion]
-${bastion_ip} ansible_connection=local
 %{ for ip in bastion_ip ~}
 ${ip} ansible_connection=ssh ansible_user=root
 %{ endfor ~}
