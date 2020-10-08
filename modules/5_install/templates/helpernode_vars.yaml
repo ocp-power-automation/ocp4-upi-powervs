@@ -1,8 +1,22 @@
 ---
 disk: vda
 helper:
-  name: "helper"
+  name: "${cluster_id}-bastion"
   ipaddr: "${bastion_ip}"
+%{ if isHA }
+high_availability:
+  helpernodes:
+    - name: "${cluster_id}-bastion-0"
+      ipaddr: "${bastion_master_ip}"
+      state: MASTER
+      priority: 100
+%{ for idx,b in bastion_backup_ip ~}
+    - name: "${cluster_id}-bastion-${idx + 1}"
+      ipaddr: "${b}"
+      state: BACKUP
+      priority: 90
+%{ endfor ~}
+%{ endif }
 dns:
   domain: "${cluster_domain}"
   clusterid: "${cluster_id}"
@@ -65,3 +79,6 @@ ocp_installer: "${install_tarball}"
 ocp_bios: "file:///dev/null"
 ocp_initramfs: "file:///dev/null"
 ocp_install_kernel: "file:///dev/null"
+
+# This is required in latest helpernode. TODO: Remove when https://github.com/RedHatOfficial/ocp4-helpernode/pull/140 is merged
+helm_source: "https://get.helm.sh/helm-v3.3.4-linux-ppc64le.tar.gz"

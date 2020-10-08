@@ -12,7 +12,8 @@ resource "random_id" "label" {
 
 locals {
     # Generates cluster_id as combination of cluster_id_prefix + (random_id or user-defined cluster_id)
-    cluster_id  = var.cluster_id == "" ? random_id.label[0].hex : "${var.cluster_id_prefix}-${var.cluster_id}"
+    cluster_id      = var.cluster_id == "" ? random_id.label[0].hex : "${var.cluster_id_prefix}-${var.cluster_id}"
+    storage_type    = lookup(var.bastion, "count", 1) > 1 ? "none" : var.storage_type
 }
 
 module "prepare" {
@@ -35,7 +36,7 @@ module "prepare" {
     rhel_subscription_username      = var.rhel_subscription_username
     rhel_subscription_password      = var.rhel_subscription_password
     rhel_smt                        = var.rhel_smt
-    storage_type                    = var.storage_type
+    storage_type                    = local.storage_type
     volume_type                     = var.volume_type
     volume_size                     = var.volume_size
     volume_shareable                = var.volume_shareable
@@ -51,7 +52,7 @@ module "nodes" {
     processor_type                  = var.processor_type
     system_type                     = var.system_type
     network_name                    = var.network_name
-    bastion_ip                      = module.prepare.bastion_ip[0]
+    bastion_ip                      = lookup(var.bastion, "count", 1) > 1 ? module.prepare.bastion_vip : module.prepare.bastion_ip[0]
     cluster_domain                  = var.cluster_domain
     cluster_id                      = local.cluster_id
     bootstrap                       = var.bootstrap
@@ -72,6 +73,7 @@ module "install" {
     dns_forwarders                  = var.dns_forwarders
     gateway_ip                      = module.prepare.gateway_ip
     cidr                            = module.prepare.cidr
+    bastion_vip                     = module.prepare.bastion_vip
     bastion_ip                      = module.prepare.bastion_ip
     rhel_username                   = var.rhel_username
     private_key                     = local.private_key
@@ -87,7 +89,7 @@ module "install" {
     pull_secret                     = file(coalesce(var.pull_secret_file, "/dev/null"))
     openshift_install_tarball       = var.openshift_install_tarball
     openshift_client_tarball        = var.openshift_client_tarball
-    storage_type                    = var.storage_type
+    storage_type                    = local.storage_type
     release_image_override          = var.release_image_override
     enable_local_registry           = var.enable_local_registry
     local_registry_image            = var.local_registry_image
