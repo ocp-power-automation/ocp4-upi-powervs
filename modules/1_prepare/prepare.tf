@@ -191,7 +191,7 @@ EOF
 }
 
 resource "null_resource" "bastion_register" {
-    count       = var.rhel_subscription_username != "" ? 1 : 0
+    count       = var.rhel_subscription_username != "" ? local.bastion_count : 0
     depends_on  = [null_resource.bastion_init, null_resource.setup_proxy_info]
     triggers = {
         external_ip     = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
@@ -327,5 +327,13 @@ resource "ibm_pi_network_port" "bastion_vip" {
     depends_on              = [ibm_pi_instance.bastion]
 
     pi_network_name         = data.ibm_pi_network.network.name
+    pi_cloud_instance_id    = var.service_instance_id
+}
+
+resource "ibm_pi_network_port" "bastion_internal_vip" {
+    count                   = local.bastion_count > 1 ? 1 : 0
+    depends_on              = [ibm_pi_instance.bastion]
+
+    pi_network_name         = ibm_pi_network.public_network.pi_network_name
     pi_cloud_instance_id    = var.service_instance_id
 }

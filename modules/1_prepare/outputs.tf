@@ -36,7 +36,16 @@ output "cidr" {
     value = data.ibm_pi_network.network.cidr
 }
 
+output "public_cidr" {
+    value = ibm_pi_network.public_network.pi_cidr
+}
+
 output "bastion_vip" {
     depends_on  = [null_resource.bastion_init]
     value       = local.bastion_count > 1 ? ibm_pi_network_port.bastion_vip[0].pi_network_port_ipaddress : ""
+}
+
+output "bastion_internal_vip" {
+    depends_on  = [null_resource.bastion_init]
+    value       = local.bastion_count > 1 ? ibm_pi_network_port.bastion_internal_vip[0].pi_network_port_ipaddress : ""
 }
