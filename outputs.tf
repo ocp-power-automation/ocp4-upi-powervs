@@ -23,15 +23,15 @@ output "cluster_id" {
 }
 
 output "bastion_private_ip" {
-    value = module.prepare.bastion_ip
+    value = join(", ", module.prepare.bastion_ip)
 }
 
 output "bastion_public_ip" {
-    value = module.prepare.bastion_public_ip
+    value = join(", ", module.prepare.bastion_public_ip)
 }
 
 output "bastion_ssh_command" {
-    value = "ssh -i ${var.private_key_file} ${var.rhel_username}@${module.prepare.bastion_public_ip}"
+    value = join(", ", formatlist("ssh -i ${var.private_key_file} ${var.rhel_username}@%s", module.prepare.bastion_public_ip))
 }
 
 output "bootstrap_ip" {
@@ -70,5 +70,5 @@ output "install_status" {
 }
 
 output "cluster_authentication_details" {
-    value = "Cluster authentication details are available in ${module.prepare.bastion_public_ip} under ~/openstack-upi/auth"
+    value = "Cluster authentication details are available in ${join(", ", module.prepare.bastion_public_ip)} under ~/openstack-upi/auth"
 }

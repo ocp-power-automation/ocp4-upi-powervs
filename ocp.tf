@@ -51,7 +51,7 @@ module "nodes" {
     processor_type                  = var.processor_type
     system_type                     = var.system_type
     network_name                    = var.network_name
-    bastion_ip                      = module.prepare.bastion_ip
+    bastion_ip                      = module.prepare.bastion_ip[0]
     cluster_domain                  = var.cluster_domain
     cluster_id                      = local.cluster_id
     bootstrap                       = var.bootstrap
@@ -71,11 +71,11 @@ module "install" {
     cluster_domain                  = var.cluster_domain
     cluster_id                      = local.cluster_id
     dns_forwarders                  = var.dns_forwarders
-    bastion_ip                      = module.prepare.bastion_ip
+    bastion_ip                      = module.prepare.bastion_ip[0]
     rhel_username                   = var.rhel_username
     private_key                     = local.private_key
     ssh_agent                       = var.ssh_agent
-    bastion_public_ip               = module.prepare.bastion_public_ip
+    bastion_public_ip               = module.prepare.bastion_public_ip[0]
     bootstrap_ip                    = module.nodes.bootstrap_ip
     master_ips                      = module.nodes.master_ips
     worker_ips                      = module.nodes.worker_ips
