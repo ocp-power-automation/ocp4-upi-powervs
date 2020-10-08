@@ -67,15 +67,16 @@ module "install" {
     source                          = "./modules/5_install"
 
     service_instance_id             = var.service_instance_id
-    network_name                    = var.network_name
     cluster_domain                  = var.cluster_domain
     cluster_id                      = local.cluster_id
     dns_forwarders                  = var.dns_forwarders
-    bastion_ip                      = module.prepare.bastion_ip[0]
+    gateway_ip                      = module.prepare.gateway_ip
+    cidr                            = module.prepare.cidr
+    bastion_ip                      = module.prepare.bastion_ip
     rhel_username                   = var.rhel_username
     private_key                     = local.private_key
     ssh_agent                       = var.ssh_agent
-    bastion_public_ip               = module.prepare.bastion_public_ip[0]
+    bastion_public_ip               = module.prepare.bastion_public_ip
     bootstrap_ip                    = module.nodes.bootstrap_ip
     master_ips                      = module.nodes.master_ips
     worker_ips                      = module.nodes.worker_ips

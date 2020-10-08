@@ -28,8 +28,11 @@ variable "cluster_id" {
 variable "dns_forwarders" {
     default   = "8.8.8.8; 9.9.9.9"
 }
-variable network_name {}
+
 variable service_instance_id {}
+
+variable "gateway_ip" {}
+variable "cidr" {}
 
 variable "bastion_ip" {}
 variable "bastion_public_ip" {}

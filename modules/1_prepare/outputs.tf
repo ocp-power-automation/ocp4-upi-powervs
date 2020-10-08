@@ -27,3 +27,11 @@ output "bastion_public_ip" {
     depends_on = [null_resource.bastion_packages]
     value = data.ibm_pi_instance_ip.bastion_public_ip.*.external_ip
 }
+
+output "gateway_ip" {
+    value = data.ibm_pi_network.network.gateway
+}
+
+output "cidr" {
+    value = data.ibm_pi_network.network.cidr
+}
