@@ -48,6 +48,7 @@ variable "ibmcloud_zone" {
 variable "bastion" {
     # only one node is supported
     default = {
+        count       = 1
         memory      = "16"
         processors  = "1"
     }
