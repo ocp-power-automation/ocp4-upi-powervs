@@ -39,19 +39,12 @@ data "ibm_pi_network" "network" {
     pi_cloud_instance_id    = var.service_instance_id
 }
 
-## Fix for Terraform CRASH.. always create new public network
 resource "ibm_pi_network" "public_network" {
     pi_network_name         = "${var.cluster_id}-pub-net"
     pi_cloud_instance_id    = var.service_instance_id
     pi_network_type         = "pub-vlan"
     pi_dns                  = var.network_dns
 }
-
-## Use this when public network issues are fixed.
-#data "ibm_pi_public_network" "public_network" {
-#    depends_on              = ["ibm_pi_network.public_network"]
-#    pi_cloud_instance_id    = var.service_instance_id
-#}
 
 resource "ibm_pi_key" "key" {
     pi_cloud_instance_id = var.service_instance_id
@@ -91,8 +84,17 @@ resource "ibm_pi_instance" "bastion" {
 
 data "ibm_pi_instance_ip" "bastion_ip" {
     depends_on              = [ibm_pi_instance.bastion]
+
     pi_instance_name        = ibm_pi_instance.bastion.pi_instance_name
     pi_network_name         = data.ibm_pi_network.network.name
+    pi_cloud_instance_id    = var.service_instance_id
+}
+
+data "ibm_pi_instance_ip" "bastion_public_ip" {
+    depends_on              = [ibm_pi_instance.bastion]
+
+    pi_instance_name        = ibm_pi_instance.bastion.pi_instance_name
+    pi_network_name         = ibm_pi_network.public_network.pi_network_name
     pi_cloud_instance_id    = var.service_instance_id
 }
 
@@ -100,11 +102,10 @@ resource "null_resource" "bastion_init" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
     provisioner "remote-exec" {
         inline = [
@@ -142,11 +143,10 @@ resource "null_resource" "setup_proxy_info" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
     # Setup proxy
     provisioner "remote-exec" {
@@ -184,7 +184,7 @@ EOF
 
 resource "null_resource" "bastion_register" {
     triggers = {
-        external_ip     = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
+        external_ip     = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
         rhel_username   = var.rhel_username
         private_key     = var.private_key
         ssh_agent       = var.ssh_agent
@@ -245,11 +245,10 @@ resource "null_resource" "bastion_packages" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
 
     provisioner "remote-exec" {
@@ -288,11 +287,10 @@ resource "null_resource" "setup_nfs_disk" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip.external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
     provisioner "file" {
         content     = templatefile("${path.module}/templates/create_disk_link.sh", local.disk_config)
