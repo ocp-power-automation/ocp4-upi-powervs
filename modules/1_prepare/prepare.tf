@@ -321,3 +321,11 @@ resource "null_resource" "setup_nfs_disk" {
         ]
     }
 }
+
+resource "ibm_pi_network_port" "bastion_vip" {
+    count                   = local.bastion_count > 1 ? 1 : 0
+    depends_on              = [ibm_pi_instance.bastion]
+
+    pi_network_name         = data.ibm_pi_network.network.name
+    pi_cloud_instance_id    = var.service_instance_id
+}

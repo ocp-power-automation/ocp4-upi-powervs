@@ -33,7 +33,10 @@ locals {
     helpernode_vars = {
         cluster_domain  = local.cluster_domain
         cluster_id      = var.cluster_id
-        bastion_ip      = var.bastion_ip[0]
+        bastion_ip      = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
+        isHA            = var.bastion_vip != ""
+        bastion_master_ip   = var.bastion_ip[0]
+        bastion_backup_ip   = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
         forwarders      = var.dns_forwarders
         gateway_ip      = var.gateway_ip
         netmask         = cidrnetmask(var.cidr)
@@ -70,11 +73,11 @@ locals {
     }
 
     helpernode_inventory = {
-        bastion_ip      = var.bastion_ip[0]
+        bastion_ip      = var.bastion_ip
     }
 
     install_inventory = {
-        bastion_ip      = var.bastion_ip[0]
+        bastion_ip      = var.bastion_ip
         bootstrap_ip    = var.bootstrap_ip
         master_ips      = var.master_ips
         worker_ips      = var.worker_ips
@@ -89,6 +92,7 @@ locals {
     local_registry_ocp_image = "registry.${var.cluster_id}.${local.cluster_domain}:5000/${local.local_registry.ocp_release_repo}:${var.ocp_release_tag}"
 
     install_vars = {
+        bastion_vip             = var.bastion_vip
         cluster_id              = var.cluster_id
         cluster_domain          = local.cluster_domain
         pull_secret             = var.pull_secret

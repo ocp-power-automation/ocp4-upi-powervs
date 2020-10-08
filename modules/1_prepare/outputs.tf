@@ -35,3 +35,8 @@ output "gateway_ip" {
 output "cidr" {
     value = data.ibm_pi_network.network.cidr
 }
+
+output "bastion_vip" {
+    depends_on  = [null_resource.bastion_init]
+    value       = local.bastion_count > 1 ? ibm_pi_network_port.bastion_vip[0].pi_network_port_ipaddress : ""
+}

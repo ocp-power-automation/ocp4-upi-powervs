@@ -52,6 +52,10 @@ variable "bastion" {
         memory      = "16"
         processors  = "1"
     }
+    validation {
+        condition       = lookup(var.bastion, "count", 1) >= 1 && lookup(var.bastion, "count", 1) <= 3
+        error_message   = "The bastion.count value must be a valid integer between 1 to 3."
+    }
 }
 
 variable "bootstrap" {
@@ -59,6 +63,10 @@ variable "bootstrap" {
         count       = 1
         memory      = "16"
         processors  = "0.5"
+    }
+    validation {
+        condition       = var.bootstrap["count"] == 0 || var.bootstrap["count"] == 1
+        error_message   = "The bootstrap.count value must be a valid integer 0 or 1."
     }
 }
 
@@ -166,7 +174,7 @@ variable "helpernode_repo" {
 variable "helpernode_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-helpernode repo"
     # Checkout level for https://github.com/RedHatOfficial/ocp4-helpernode which is used for setting up services required on bastion node
-    default = "5eab3db53976bb16be582f2edc2de02f7510050d"
+    default = "dd8a0767c677fc862e45b6d70e5d04656ced5d28"
 }
 
 variable "install_playbook_repo" {
@@ -178,7 +186,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
     # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
-    default = "b988d620bd70284c7674e7a94e107c456c940dd0"
+    default = "1ffcf9a39a5a28742eee4c1db1f074366da33ffc"
 }
 
 variable "ansible_extra_options" {
