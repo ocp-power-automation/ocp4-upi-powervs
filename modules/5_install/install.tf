@@ -18,15 +18,9 @@
 #
 ################################################################
 
-
-data "ibm_pi_network" "network" {
-    pi_network_name         = var.network_name
-    pi_cloud_instance_id    = var.service_instance_id
-}
-
-
 locals {
-    cluster_domain  = var.cluster_domain == "nip.io" || var.cluster_domain == "xip.io" || var.cluster_domain == "sslip.io" ? "${var.bastion_public_ip}.${var.cluster_domain}" : var.cluster_domain
+    wildcard_dns    = ["nip.io", "xip.io", "sslip.io"]
+    cluster_domain  = contains(local.wildcard_dns, var.cluster_domain) ? "${var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
 
     local_registry  = {
         enable_local_registry   = var.enable_local_registry
@@ -39,14 +33,14 @@ locals {
     helpernode_vars = {
         cluster_domain  = local.cluster_domain
         cluster_id      = var.cluster_id
-        bastion_ip      = var.bastion_ip
+        bastion_ip      = var.bastion_ip[0]
         forwarders      = var.dns_forwarders
-        gateway_ip      = data.ibm_pi_network.network.gateway
-        netmask         = cidrnetmask(data.ibm_pi_network.network.cidr)
-        broadcast       = cidrhost(data.ibm_pi_network.network.cidr,-1)
-        ipid            = cidrhost(data.ibm_pi_network.network.cidr, 0)
-        pool            = {"start": cidrhost(data.ibm_pi_network.network.cidr,2),
-                            "end": cidrhost(data.ibm_pi_network.network.cidr,-2)}
+        gateway_ip      = var.gateway_ip
+        netmask         = cidrnetmask(var.cidr)
+        broadcast       = cidrhost(var.cidr,-1)
+        ipid            = cidrhost(var.cidr, 0)
+        pool            = {"start": cidrhost(var.cidr,2),
+                            "end": cidrhost(var.cidr,-2)}
         chrony_config           = var.chrony_config
         chrony_config_servers   = var.chrony_config_servers
 
@@ -75,8 +69,12 @@ locals {
         install_tarball          = var.openshift_install_tarball
     }
 
-    inventory = {
-        bastion_ip      = var.bastion_ip
+    helpernode_inventory = {
+        bastion_ip      = var.bastion_ip[0]
+    }
+
+    install_inventory = {
+        bastion_ip      = var.bastion_ip[0]
         bootstrap_ip    = var.bootstrap_ip
         master_ips      = var.master_ips
         worker_ips      = var.worker_ips
@@ -102,11 +100,11 @@ locals {
         rhcos_kernel_options    = var.rhcos_kernel_options
         chrony_config           = var.chrony_config
         chrony_config_servers   = var.chrony_config_servers
-        chrony_allow_range      = data.ibm_pi_network.network.cidr
+        chrony_allow_range      = var.cidr
         setup_squid_proxy       = var.setup_squid_proxy
-        squid_source_range      = data.ibm_pi_network.network.cidr
+        squid_source_range      = var.cidr
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
-        no_proxy                = data.ibm_pi_network.network.cidr
+        no_proxy                = var.cidr
     }
 
     upgrade_vars = {
@@ -120,11 +118,10 @@ resource "null_resource" "config" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = var.bastion_ip
+        host        = var.bastion_public_ip[0]
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = var.bastion_public_ip
     }
 
     provisioner "remote-exec" {
@@ -137,6 +134,10 @@ resource "null_resource" "config" {
         ]
     }
     provisioner "file" {
+        content     = templatefile("${path.module}/templates/helpernode_inventory", local.helpernode_inventory)
+        destination = "~/ocp4-helpernode/inventory"
+    }
+    provisioner "file" {
         source      = "data/pull-secret.txt"
         destination = "~/.openshift/pull-secret"
     }
@@ -146,7 +147,7 @@ resource "null_resource" "config" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sed -i \"/^helper:.*/a \\ \\ networkifacename: $(ip r | grep ${data.ibm_pi_network.network.cidr} | awk '{print $3}')\" ocp4-helpernode/helpernode_vars.yaml",
+            "sed -i \"/^helper:.*/a \\ \\ networkifacename: $(ip r | grep ${var.cidr} | awk '{print $3}')\" ocp4-helpernode/helpernode_vars.yaml",
             "echo 'Running ocp4-helpernode playbook...'",
             "cd ocp4-helpernode && ansible-playbook -e @helpernode_vars.yaml tasks/main.yml ${var.ansible_extra_options}"
         ]
@@ -159,11 +160,10 @@ resource "null_resource" "install" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = var.bastion_ip
+        host        = var.bastion_public_ip[0]
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = var.bastion_public_ip
     }
 
     provisioner "remote-exec" {
@@ -175,7 +175,7 @@ resource "null_resource" "install" {
         ]
     }
     provisioner "file" {
-        content     = templatefile("${path.module}/templates/inventory", local.inventory)
+        content     = templatefile("${path.module}/templates/install_inventory", local.install_inventory)
         destination = "~/ocp4-playbooks/inventory"
     }
     provisioner "file" {
@@ -197,11 +197,10 @@ resource "null_resource" "upgrade" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = var.bastion_ip
+        host        = var.bastion_public_ip[0]
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = var.bastion_public_ip
     }
 
     provisioner "file" {
