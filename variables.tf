@@ -54,7 +54,7 @@ variable "bastion" {
     }
     validation {
         condition       = lookup(var.bastion, "count", 1) >= 1 && lookup(var.bastion, "count", 1) <= 3
-        error_message   = "The bastion.count value must be a valid integer between 1 to 3."
+        error_message   = "The bastion.count value must be either 1 or 2."
     }
 }
 
@@ -66,7 +66,7 @@ variable "bootstrap" {
     }
     validation {
         condition       = var.bootstrap["count"] == 0 || var.bootstrap["count"] == 1
-        error_message   = "The bootstrap.count value must be a valid integer 0 or 1."
+        error_message   = "The bootstrap.count value must be either 0 or 1."
     }
 }
 

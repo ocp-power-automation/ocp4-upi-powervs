@@ -68,7 +68,7 @@ worker      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 
 `memory` is in `GBs` and `count` specifies the number of VMs that should be created for each type.
 
-To enable high availability (HA) for cluster services running on the bastion set the `bastion.count` value to 2 or 3 depending on your requirement. Note that in case of HA, the automation will not setup additional storage (eg: NFS). Value 1 for `bastion.count` implies the default non-HA bastion setup.
+To enable high availability (HA) for cluster services running on the bastion set the `bastion.count` value to 2. Note that in case of HA, the automation will not setup additional storage (eg: NFS). Value 1 for `bastion.count` implies the default non-HA bastion setup.
 
 For PowerVS processors are equal to entitled physical count. So **N** processors == **N** physical core entitlements == **ceil[N]** vCPUs.
 Here are some examples to help you understand the relationship.

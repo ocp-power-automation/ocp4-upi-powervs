@@ -2,7 +2,7 @@ vrrp_instance OCP_PLB {
   state <STATE>
   interface <INTERFACE>
   virtual_router_id ${virtual_router_id}
-  priority 100
+  priority <PRIORITY>
   virtual_ipaddress {
     ${virtual_ipaddress}
   }
