@@ -19,6 +19,7 @@
 ################################################################
 
 locals {
+    # FIXME: Remove below logic when API for reading external IP from public network_port is available.
     # Since Power Virtual Server API or Terraform module does not allow to read the external IP from network port...
     # Provide a workaround to get the external VIP address
     # 1. Split public vip to a list eg: ["192","XXX","XXX","2"] and get the last octect eg: "2".
@@ -192,8 +193,9 @@ resource "null_resource" "configure_public_vip" {
     }
     provisioner "remote-exec" {
         inline = [
-            # Set state to MASTER for first bastion and BACKUP for others.
+            # Set state=MASTER,priority=100 for first bastion and state=BACKUP,priority=90 for others.
             "sed -i \"s/state <STATE>/state ${count.index == 0 ? "MASTER" : "BACKUP"}/\" /tmp/keepalived_vrrp_instance",
+            "sed -i \"s/priority <PRIORITY>/priority ${count.index == 0 ? "100" : "90"}/\" /tmp/keepalived_vrrp_instance",
             "sed -i \"s/interface <INTERFACE>/interface $(ip r | grep ${var.public_cidr} | awk '{print $3}')/\" /tmp/keepalived_vrrp_instance",
             "cat /tmp/keepalived_vrrp_instance >> /etc/keepalived/keepalived.conf",
             "sudo systemctl restart keepalived"
