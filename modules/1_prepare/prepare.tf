@@ -19,6 +19,7 @@
 ################################################################
 
 locals {
+    bastion_count   = lookup(var.bastion, "count", 1)
     proxy = {
         server    = lookup(var.proxy, "server", ""),
         port        = lookup(var.proxy, "port", "3128"),
@@ -39,19 +40,12 @@ data "ibm_pi_network" "network" {
     pi_cloud_instance_id    = var.service_instance_id
 }
 
-## Fix for Terraform CRASH.. always create new public network
 resource "ibm_pi_network" "public_network" {
     pi_network_name         = "${var.cluster_id}-pub-net"
     pi_cloud_instance_id    = var.service_instance_id
     pi_network_type         = "pub-vlan"
     pi_dns                  = var.network_dns
 }
-
-## Use this when public network issues are fixed.
-#data "ibm_pi_public_network" "public_network" {
-#    depends_on              = ["ibm_pi_network.public_network"]
-#    pi_cloud_instance_id    = var.service_instance_id
-#}
 
 resource "ibm_pi_key" "key" {
     pi_cloud_instance_id = var.service_instance_id
@@ -70,9 +64,11 @@ resource "ibm_pi_volume" "volume" {
 }
 
 resource "ibm_pi_instance" "bastion" {
+    count                   = local.bastion_count
+
     pi_memory               = var.bastion["memory"]
     pi_processors           = var.bastion["processors"]
-    pi_instance_name        = "${var.cluster_id}-bastion"
+    pi_instance_name        = "${var.cluster_id}-bastion-${count.index}"
     pi_proc_type            = var.processor_type
     pi_image_id             = data.ibm_pi_image.bastion.id
     pi_network_ids          = [ibm_pi_network.public_network.network_id, data.ibm_pi_network.network.id]
@@ -90,21 +86,33 @@ resource "ibm_pi_instance" "bastion" {
 }
 
 data "ibm_pi_instance_ip" "bastion_ip" {
+    count                   = local.bastion_count
     depends_on              = [ibm_pi_instance.bastion]
-    pi_instance_name        = ibm_pi_instance.bastion.pi_instance_name
+
+    pi_instance_name        = ibm_pi_instance.bastion[count.index].pi_instance_name
     pi_network_name         = data.ibm_pi_network.network.name
     pi_cloud_instance_id    = var.service_instance_id
 }
 
+data "ibm_pi_instance_ip" "bastion_public_ip" {
+    count                   = local.bastion_count
+    depends_on              = [ibm_pi_instance.bastion]
+
+    pi_instance_name        = ibm_pi_instance.bastion[count.index].pi_instance_name
+    pi_network_name         = ibm_pi_network.public_network.pi_network_name
+    pi_cloud_instance_id    = var.service_instance_id
+}
+
 resource "null_resource" "bastion_init" {
+    count                   = local.bastion_count
+
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
     provisioner "remote-exec" {
         inline = [
@@ -123,8 +131,8 @@ resource "null_resource" "bastion_init" {
         inline = [
             "sudo chmod 600 ~/.ssh/id_rsa*",
             "sudo sed -i.bak -e 's/^ - set_hostname/# - set_hostname/' -e 's/^ - update_hostname/# - update_hostname/' /etc/cloud/cloud.cfg",
-            "sudo hostnamectl set-hostname --static ${lower(var.cluster_id)}-bastion.${var.cluster_domain}",
-            "echo 'HOSTNAME=${lower(var.cluster_id)}-bastion.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null",
+            "sudo hostnamectl set-hostname --static ${lower(var.cluster_id)}-bastion-${count.index}.${var.cluster_domain}",
+            "echo 'HOSTNAME=${lower(var.cluster_id)}-bastion-${count.index}.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null",
             "sudo hostname -F /etc/hostname",
             "echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null",
             # Set SMT to user specified value; Should not fail for invalid values.
@@ -137,16 +145,16 @@ resource "null_resource" "bastion_init" {
 }
 
 resource "null_resource" "setup_proxy_info" {
+    count       = !var.setup_squid_proxy && local.proxy.server != "" ? local.bastion_count : 0
     depends_on  = [null_resource.bastion_init]
-    count       = !var.setup_squid_proxy && local.proxy.server != "" ? 1 : 0
+
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
     # Setup proxy
     provisioner "remote-exec" {
@@ -183,14 +191,15 @@ EOF
 }
 
 resource "null_resource" "bastion_register" {
+    count       = var.rhel_subscription_username != "" ? local.bastion_count : 0
+    depends_on  = [null_resource.bastion_init, null_resource.setup_proxy_info]
     triggers = {
-        external_ip     = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
+        external_ip     = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
         rhel_username   = var.rhel_username
         private_key     = var.private_key
         ssh_agent       = var.ssh_agent
     }
-    depends_on  = [null_resource.bastion_init, null_resource.setup_proxy_info]
-    count       = var.rhel_subscription_username != "" ? 1 : 0
+
     connection {
         type        = "ssh"
         user        = self.triggers.rhel_username
@@ -241,15 +250,16 @@ EOF
 }
 
 resource "null_resource" "bastion_packages" {
-    depends_on = [null_resource.bastion_init, null_resource.setup_proxy_info, null_resource.bastion_register]
+    count           = local.bastion_count
+    depends_on      = [null_resource.bastion_init, null_resource.setup_proxy_info, null_resource.bastion_register]
+
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
 
     provisioner "remote-exec" {
@@ -283,16 +293,16 @@ locals {
 }
 
 resource "null_resource" "setup_nfs_disk" {
-    depends_on  = [null_resource.bastion_packages]
     count       = var.storage_type == "nfs" ? 1 : 0
+    depends_on  = [null_resource.bastion_packages]
+
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = data.ibm_pi_instance_ip.bastion_ip.ip
+        host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = compact(ibm_pi_instance.bastion.addresses.*.external_ip)[0]
     }
     provisioner "file" {
         content     = templatefile("${path.module}/templates/create_disk_link.sh", local.disk_config)
@@ -310,4 +320,20 @@ resource "null_resource" "setup_nfs_disk" {
             "sudo mount ${local.storage_path}",
         ]
     }
+}
+
+resource "ibm_pi_network_port" "bastion_vip" {
+    count                   = local.bastion_count > 1 ? 1 : 0
+    depends_on              = [ibm_pi_instance.bastion]
+
+    pi_network_name         = data.ibm_pi_network.network.name
+    pi_cloud_instance_id    = var.service_instance_id
+}
+
+resource "ibm_pi_network_port" "bastion_internal_vip" {
+    count                   = local.bastion_count > 1 ? 1 : 0
+    depends_on              = [ibm_pi_instance.bastion]
+
+    pi_network_name         = ibm_pi_network.public_network.pi_network_name
+    pi_cloud_instance_id    = var.service_instance_id
 }

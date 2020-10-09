@@ -34,3 +34,7 @@ chronyconfig:
 
 proxy_url: "${proxy_url}"
 no_proxy: "${no_proxy}"
+
+%{ if bastion_vip != "" }
+bastion_vip: "${bastion_vip}"
+%{ endif ~}

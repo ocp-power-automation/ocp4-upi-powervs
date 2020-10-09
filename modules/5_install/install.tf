@@ -18,15 +18,25 @@
 #
 ################################################################
 
-
-data "ibm_pi_network" "network" {
-    pi_network_name         = var.network_name
-    pi_cloud_instance_id    = var.service_instance_id
-}
-
-
 locals {
-    cluster_domain  = var.cluster_domain == "nip.io" || var.cluster_domain == "xip.io" || var.cluster_domain == "sslip.io" ? "${var.bastion_public_ip}.${var.cluster_domain}" : var.cluster_domain
+    # FIXME: Remove below logic when API for reading external IP from public network_port is available.
+    # Since Power Virtual Server API or Terraform module does not allow to read the external IP from network port...
+    # Provide a workaround to get the external VIP address
+    # 1. Split public vip to a list eg: ["192","XXX","XXX","2"] and get the last octect eg: "2".
+    # 2. Split the 1st bastion external ip and slice it to length 3 eg: ["158","XXX","XXX"]
+    # 3. Concat the last octect to form the external vip and convert it to a string eg: "158.XXX.XXX.2"
+    pub_vip_last_octet      = var.bastion_internal_vip == "" ? "" : split(".", var.bastion_internal_vip)[3]
+    ext_ip_prefix           = var.bastion_internal_vip == "" ? [] : slice(split(".", var.bastion_public_ip[0]),0,3)
+    bastion_external_vip    = var.bastion_internal_vip == "" ? "" : "${join(".",local.ext_ip_prefix)}.${local.pub_vip_last_octet}"
+
+    public_vrrp = {
+        virtual_router_id   = local.pub_vip_last_octet
+        virtual_ipaddress   = var.bastion_internal_vip
+        password            = uuid()
+    }
+
+    wildcard_dns    = ["nip.io", "xip.io", "sslip.io"]
+    cluster_domain  = contains(local.wildcard_dns, var.cluster_domain) ? "${local.bastion_external_vip != "" ? local.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
 
     local_registry  = {
         enable_local_registry   = var.enable_local_registry
@@ -39,14 +49,17 @@ locals {
     helpernode_vars = {
         cluster_domain  = local.cluster_domain
         cluster_id      = var.cluster_id
-        bastion_ip      = var.bastion_ip
+        bastion_ip      = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
+        isHA            = var.bastion_vip != ""
+        bastion_master_ip   = var.bastion_ip[0]
+        bastion_backup_ip   = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
         forwarders      = var.dns_forwarders
-        gateway_ip      = data.ibm_pi_network.network.gateway
-        netmask         = cidrnetmask(data.ibm_pi_network.network.cidr)
-        broadcast       = cidrhost(data.ibm_pi_network.network.cidr,-1)
-        ipid            = cidrhost(data.ibm_pi_network.network.cidr, 0)
-        pool            = {"start": cidrhost(data.ibm_pi_network.network.cidr,2),
-                            "end": cidrhost(data.ibm_pi_network.network.cidr,-2)}
+        gateway_ip      = var.gateway_ip
+        netmask         = cidrnetmask(var.cidr)
+        broadcast       = cidrhost(var.cidr,-1)
+        ipid            = cidrhost(var.cidr, 0)
+        pool            = {"start": cidrhost(var.cidr,2),
+                            "end": cidrhost(var.cidr,-2)}
         chrony_config           = var.chrony_config
         chrony_config_servers   = var.chrony_config_servers
 
@@ -75,7 +88,11 @@ locals {
         install_tarball          = var.openshift_install_tarball
     }
 
-    inventory = {
+    helpernode_inventory = {
+        bastion_ip      = var.bastion_ip
+    }
+
+    install_inventory = {
         bastion_ip      = var.bastion_ip
         bootstrap_ip    = var.bootstrap_ip
         master_ips      = var.master_ips
@@ -91,6 +108,7 @@ locals {
     local_registry_ocp_image = "registry.${var.cluster_id}.${local.cluster_domain}:5000/${local.local_registry.ocp_release_repo}:${var.ocp_release_tag}"
 
     install_vars = {
+        bastion_vip             = var.bastion_vip
         cluster_id              = var.cluster_id
         cluster_domain          = local.cluster_domain
         pull_secret             = var.pull_secret
@@ -102,11 +120,11 @@ locals {
         rhcos_kernel_options    = var.rhcos_kernel_options
         chrony_config           = var.chrony_config
         chrony_config_servers   = var.chrony_config_servers
-        chrony_allow_range      = data.ibm_pi_network.network.cidr
+        chrony_allow_range      = var.cidr
         setup_squid_proxy       = var.setup_squid_proxy
-        squid_source_range      = data.ibm_pi_network.network.cidr
+        squid_source_range      = var.cidr
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
-        no_proxy                = data.ibm_pi_network.network.cidr
+        no_proxy                = var.cidr
     }
 
     upgrade_vars = {
@@ -120,11 +138,10 @@ resource "null_resource" "config" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = var.bastion_ip
+        host        = var.bastion_public_ip[0]
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = var.bastion_public_ip
     }
 
     provisioner "remote-exec" {
@@ -137,6 +154,10 @@ resource "null_resource" "config" {
         ]
     }
     provisioner "file" {
+        content     = templatefile("${path.module}/templates/helpernode_inventory", local.helpernode_inventory)
+        destination = "~/ocp4-helpernode/inventory"
+    }
+    provisioner "file" {
         source      = "data/pull-secret.txt"
         destination = "~/.openshift/pull-secret"
     }
@@ -146,24 +167,52 @@ resource "null_resource" "config" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sed -i \"/^helper:.*/a \\ \\ networkifacename: $(ip r | grep ${data.ibm_pi_network.network.cidr} | awk '{print $3}')\" ocp4-helpernode/helpernode_vars.yaml",
+            "sed -i \"/^helper:.*/a \\ \\ networkifacename: $(ip r | grep ${var.cidr} | awk '{print $3}')\" ocp4-helpernode/helpernode_vars.yaml",
             "echo 'Running ocp4-helpernode playbook...'",
             "cd ocp4-helpernode && ansible-playbook -e @helpernode_vars.yaml tasks/main.yml ${var.ansible_extra_options}"
         ]
     }
 }
 
-resource "null_resource" "install" {
-    depends_on = [null_resource.config]
+resource "null_resource" "configure_public_vip" {
+    count       = var.bastion_count > 1 ? var.bastion_count : 0
+    depends_on  = [null_resource.config]
 
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = var.bastion_ip
+        host        = var.bastion_public_ip[count.index]
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = var.bastion_public_ip
+    }
+
+    provisioner "file" {
+        content     = templatefile("${path.module}/templates/keepalived_vrrp_instance.tpl", local.public_vrrp)
+        destination = "/tmp/keepalived_vrrp_instance"
+    }
+    provisioner "remote-exec" {
+        inline = [
+            # Set state=MASTER,priority=100 for first bastion and state=BACKUP,priority=90 for others.
+            "sed -i \"s/state <STATE>/state ${count.index == 0 ? "MASTER" : "BACKUP"}/\" /tmp/keepalived_vrrp_instance",
+            "sed -i \"s/priority <PRIORITY>/priority ${count.index == 0 ? "100" : "90"}/\" /tmp/keepalived_vrrp_instance",
+            "sed -i \"s/interface <INTERFACE>/interface $(ip r | grep ${var.public_cidr} | awk '{print $3}')/\" /tmp/keepalived_vrrp_instance",
+            "cat /tmp/keepalived_vrrp_instance >> /etc/keepalived/keepalived.conf",
+            "sudo systemctl restart keepalived"
+        ]
+    }
+}
+
+resource "null_resource" "install" {
+    depends_on = [null_resource.config, null_resource.configure_public_vip]
+
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = var.bastion_public_ip[0]
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
     }
 
     provisioner "remote-exec" {
@@ -175,7 +224,7 @@ resource "null_resource" "install" {
         ]
     }
     provisioner "file" {
-        content     = templatefile("${path.module}/templates/inventory", local.inventory)
+        content     = templatefile("${path.module}/templates/install_inventory", local.install_inventory)
         destination = "~/ocp4-playbooks/inventory"
     }
     provisioner "file" {
@@ -197,11 +246,10 @@ resource "null_resource" "upgrade" {
     connection {
         type        = "ssh"
         user        = var.rhel_username
-        host        = var.bastion_ip
+        host        = var.bastion_public_ip[0]
         private_key = var.private_key
         agent       = var.ssh_agent
         timeout     = "15m"
-        bastion_host = var.bastion_public_ip
     }
 
     provisioner "file" {
