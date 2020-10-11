@@ -53,7 +53,7 @@ variable "bastion" {
         processors  = "1"
     }
     validation {
-        condition       = lookup(var.bastion, "count", 1) >= 1 && lookup(var.bastion, "count", 1) <= 3
+        condition       = lookup(var.bastion, "count", 1) >= 1 && lookup(var.bastion, "count", 1) <= 2
         error_message   = "The bastion.count value must be either 1 or 2."
     }
 }
