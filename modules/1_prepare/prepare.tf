@@ -76,13 +76,6 @@ resource "ibm_pi_instance" "bastion" {
     pi_sys_type             = var.system_type
     pi_cloud_instance_id    = var.service_instance_id
     pi_volume_ids           = var.storage_type == "nfs" ? ibm_pi_volume.volume.*.volume_id : null
-    # Fix for default route on public interface
-    pi_user_data            = base64encode(
-                                templatefile(
-                                    "${path.module}/templates/fix_default_route.sh",
-                                    {pub_gateway = cidrhost(ibm_pi_network.public_network.pi_cidr,1)}
-                                )
-                              )
 }
 
 data "ibm_pi_instance_ip" "bastion_ip" {
