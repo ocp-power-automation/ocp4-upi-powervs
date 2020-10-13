@@ -30,16 +30,14 @@ data "ibm_pi_image" "rhcos" {
 
 #bootstrap
 data "ignition_config" "bootstrap" {
-    append {
+    merge {
         source  = "http://${var.bastion_ip}:8080/ignition/bootstrap.ign"
     }
-    files       = [
-        data.ignition_file.b_hostname.rendered,
-    ]
+    files       = [data.ignition_file.b_hostname.rendered]
 }
 
 data "ignition_file" "b_hostname" {
-    filesystem  = "root"
+    overwrite   = true
     mode        = "420" // 0644
     path        = "/etc/hostname"
     content {
@@ -73,7 +71,7 @@ resource "ibm_pi_instance" "bootstrap" {
 #master
 data "ignition_config" "master" {
     count       = var.master["count"]
-    append {
+    merge {
         source  = "http://${var.bastion_ip}:8080/ignition/master.ign"
     }
     files       = [data.ignition_file.m_hostname[count.index].rendered]
@@ -81,7 +79,7 @@ data "ignition_config" "master" {
 
 data "ignition_file" "m_hostname" {
     count       = var.master["count"]
-    filesystem  = "root"
+    overwrite   = true
     mode        = "420" // 0644
     path        = "/etc/hostname"
     content {
@@ -126,7 +124,7 @@ resource "ibm_pi_volume" "master" {
 #worker
 data "ignition_file" "w_hostname" {
     count       = var.worker["count"]
-    filesystem  = "root"
+    overwrite   = true
     mode        = "420" // 0644
     path        = "/etc/hostname"
 
@@ -139,7 +137,7 @@ EOF
 
 data "ignition_config" "worker" {
     count       = var.worker["count"]
-    append {
+    merge {
         source  = "http://${var.bastion_ip}:8080/ignition/worker.ign"
     }
     files       = [data.ignition_file.w_hostname[count.index].rendered]
