@@ -33,9 +33,7 @@ data "ignition_config" "bootstrap" {
     append {
         source  = "http://${var.bastion_ip}:8080/ignition/bootstrap.ign"
     }
-    files       = [
-        data.ignition_file.b_hostname.rendered,
-    ]
+    files       = [data.ignition_file.b_hostname.rendered]
 }
 
 data "ignition_file" "b_hostname" {
