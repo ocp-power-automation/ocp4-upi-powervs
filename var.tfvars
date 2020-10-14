@@ -15,13 +15,13 @@ service_instance_id         = "<cloud_instance_ID>"
 ### Example 2 processors == 2 physical core entitlements == ceil[2] = 2 vCPU == 16 logical OS CPUs (SMT=8)
 
 ### Minimalistic config suitable for trying out cloud-native applications
-#bastion                     = {memory      = "16",   processors  = "1"}
+#bastion                     = {memory      = "16",   processors  = "1",    "count"   = 1}
 #bootstrap                   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
 #master                      = {memory      = "16",   processors  = "0.5",  "count"   = 3}
 #worker                      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 
 ### Minimalistic config suitable for trying out Cloud Pak for Data (CP4D)
-bastion                     = {memory      = "16",   processors  = "1"}
+bastion                     = {memory      = "16",   processors  = "1",    "count"   = 1}
 bootstrap                   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
 master                      = {memory      = "16",   processors  = "0.5",  "count"   = 3}
 worker                      = {memory      = "64",   processors  = "1.5",  "count"   = 3}
@@ -62,9 +62,9 @@ cluster_id                  = ""
 
 
 #helpernode_repo            = "https://github.com/RedHatOfficial/ocp4-helpernode"
-#helpernode_tag             = "5eab3db53976bb16be582f2edc2de02f7510050d"
+#helpernode_tag             = ""
 #install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playbooks"
-#install_playbook_tag       = "ce013a57ca0b64d9e61fd6f075f00c643baff819"
+#install_playbook_tag       = ""
 
 #installer_log_level        = "info"
 #ansible_extra_options      = "-v"

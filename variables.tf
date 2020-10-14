@@ -48,8 +48,13 @@ variable "ibmcloud_zone" {
 variable "bastion" {
     # only one node is supported
     default = {
+        count       = 1
         memory      = "16"
         processors  = "1"
+    }
+    validation {
+        condition       = lookup(var.bastion, "count", 1) >= 1 && lookup(var.bastion, "count", 1) <= 2
+        error_message   = "The bastion.count value must be either 1 or 2."
     }
 }
 
@@ -58,6 +63,10 @@ variable "bootstrap" {
         count       = 1
         memory      = "16"
         processors  = "0.5"
+    }
+    validation {
+        condition       = var.bootstrap["count"] == 0 || var.bootstrap["count"] == 1
+        error_message   = "The bootstrap.count value must be either 0 or 1."
     }
 }
 
@@ -165,7 +174,7 @@ variable "helpernode_repo" {
 variable "helpernode_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-helpernode repo"
     # Checkout level for https://github.com/RedHatOfficial/ocp4-helpernode which is used for setting up services required on bastion node
-    default = "5eab3db53976bb16be582f2edc2de02f7510050d"
+    default = "dd8a0767c677fc862e45b6d70e5d04656ced5d28"
 }
 
 variable "install_playbook_repo" {
@@ -177,7 +186,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
     # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
-    default = "ce013a57ca0b64d9e61fd6f075f00c643baff819"
+    default = "9f5fcbee73bdb03afab309ba50d05362939e3ad6"
 }
 
 variable "ansible_extra_options" {

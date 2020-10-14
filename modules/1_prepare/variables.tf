@@ -20,14 +20,7 @@
 
 variable "cluster_domain" {}
 variable "cluster_id" {}
-variable "bastion" {
-    # only one node is supported
-    default = {
-        memory      = "4"
-        image_name  = "RHEL82"
-        processors  = "1"
-    }
-}
+variable "bastion" {}
 
 variable "service_instance_id" {}
 variable "rhel_image_name" {}
