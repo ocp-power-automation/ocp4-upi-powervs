@@ -39,13 +39,14 @@ masters:
     ipaddr: "${m.ip}"
     macaddr: "${m.mac}"
 %{ endfor ~}
+%{ if length(worker_info) > 1 }
 workers:
 %{ for w in worker_info ~}
   - name: "${w.name}"
     ipaddr: "${w.ip}"
     macaddr: "${w.mac}"
 %{ endfor ~}
-
+%{ endif }
 ppc64le: true
 ssh_gen_key: false
 
