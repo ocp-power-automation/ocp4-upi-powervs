@@ -39,7 +39,7 @@ masters:
     ipaddr: "${m.ip}"
     macaddr: "${m.mac}"
 %{ endfor ~}
-%{ if length(worker_info) > 1 }
+%{ if length(worker_info) > 0 }
 workers:
 %{ for w in worker_info ~}
   - name: "${w.name}"
