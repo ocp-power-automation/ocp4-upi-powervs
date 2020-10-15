@@ -1,7 +1,7 @@
 ---
 disk: vda
 helper:
-  name: "${cluster_id}-bastion"
+  name: "${bastion_name}"
   ipaddr: "${bastion_ip}"
 %{ if isHA }
 high_availability:
