@@ -3,6 +3,7 @@
 
 - [Automation Host Prerequisites](#automation-host-prerequisites)
   - [Automation Host Setup](#automation-host-setup)
+    - [Firewall Config](#configure-your-firewall)
     - [Terraform](#terraform)
     - [PowerVS CLI](#powervs-cli)
     - [Git [*OPTIONAL*]](#git-optional)
@@ -10,6 +11,13 @@
 ## Automation Host Setup
 
 Install the following packages on the automation host. Select the appropriate install binaries based on your automation host platform - Mac/Linux/Windows.
+
+### Configure Your Firewall
+If your system is behind a firewall, you will need to ensure the following ports are open in order to use ssh, http, and https:
+- 22, 443, 80
+
+These additional ports are required for the ocp cli (`oc`) post-install:
+- 6443
 
 ### Terraform
 
