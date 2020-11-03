@@ -26,15 +26,15 @@ network_name                = "ocp-net"
 rhel_username               = "root"
 public_key_file             = "data/id_rsa.pub"
 private_key_file            = "data/id_rsa"
-rhel_subscription_username  = "<subscription-id>"
-rhel_subscription_password  = "<subscription-password>"
+rhel_subscription_username  = "<subscription-id>"          #Leave this as-is if using CentOS as bastion image
+rhel_subscription_password  = "<subscription-password>"    #Leave this as-is if using CentOS as bastion image
 rhel_smt                    = 4
 
 
 ### OpenShift Installation Details
 
-openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest-4.6/openshift-install-linux.tar.gz"
-openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest-4.6/openshift-client-linux.tar.gz"
+openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
+openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
 pull_secret_file            = "data/pull-secret.txt"
 
 cluster_domain              = "ibm.com"  #Set domain to nip.io or xip.io if you prefer using online wildcard domain and avoid modifying /etc/hosts
