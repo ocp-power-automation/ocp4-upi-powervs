@@ -50,6 +50,7 @@ locals {
         cluster_domain  = local.cluster_domain
         cluster_id      = var.cluster_id
         bastion_ip      = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
+        bastion_name    = var.bastion_vip != "" ? "${var.cluster_id}-bastion" : "${var.cluster_id}-bastion-0"
         isHA            = var.bastion_vip != ""
         bastion_master_ip   = var.bastion_ip[0]
         bastion_backup_ip   = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
@@ -93,10 +94,10 @@ locals {
     }
 
     install_inventory = {
-        bastion_ip      = var.bastion_ip
-        bootstrap_ip    = var.bootstrap_ip
-        master_ips      = var.master_ips
-        worker_ips      = var.worker_ips
+        bastion_hosts   = [for ix in range(length(var.bastion_ip)) : "${var.cluster_id}-bastion-${ix}"]
+        bootstrap_host  = "bootstrap"
+        master_hosts    = [for ix in range(length(var.master_ips)) : "master-${ix}"]
+        worker_hosts    = [for ix in range(length(var.worker_ips)) : "worker-${ix}"]
     }
 
     proxy = {
