@@ -91,7 +91,7 @@ Note that in case of HA, the automation will not setup NFS storage. `count` of 1
 You can optionally set the worker `count` value to 0 in which case all the cluster pods will be running on the master/supervisor nodes.
 Ensure you use proper sizing for master/supervisor nodes to avoid resource starvation for containers.
 
-For PowerVS, processors are equal to entitled physical count. So **N** processors == **N** physical core entitlements == **ceil[N]** vCPUs.
+For PowerVS processors are equal to entitled physical count. So **N** processors == **N** physical core entitlements == **ceil[N]** vCPUs.
 Here are some examples to help you understand the relationship.
 
 - Example 1
