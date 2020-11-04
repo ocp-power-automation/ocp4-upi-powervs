@@ -15,24 +15,14 @@
 
 ## Download the Automation Code
 
-Head to the [release](https://github.com/ocp-power-automation/ocp4-upi-powervs/releases) page and download the latest stable release.
-Extract the release bundle on your system.
+You'll need to use git to clone the deployment code when working off the master branch
 
-You can also use `curl` or `wget` to download the stable release code as shown below.
 ```
-$ curl -L https://github.com/ocp-power-automation/ocp4-upi-powervs/archive/v4.5.zip -o v4.5.zip
-$ unzip v4.5.zip
-$ cd ocp4-upi-powervs-4.5
+$ git clone https://github.com/ocp-power-automation/ocp4-upi-powervs.git
+$ cd ocp4-upi-powervs
 ```
 
-You can also clone git repository on your system.
-Ensure you checkout the release branch when using git.
-```
-$ git clone https://github.com/ocp-power-automation/ocp4-upi-powervs.git -b release-4.5 ocp4-upi-powervs-4.5
-$ cd ocp4-upi-powervs-4.5
-```
-
-All further instructions assumes you are in the code directory eg. `ocp4-upi-powervs-4.5`
+All further instructions assumes you are in the code directory eg. `ocp4-upi-powervs`
 
 ## Setup Terraform Variables
 
