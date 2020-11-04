@@ -20,19 +20,19 @@ Extract the release bundle on your system.
 
 You can also use `curl` or `wget` to download the stable release code as shown below.
 ```
-$ curl -L https://github.com/ocp-power-automation/ocp4-upi-powervs/archive/v4.5.zip -o v4.5.zip
-$ unzip v4.5.zip
-$ cd ocp4-upi-powervs-4.5
+$ curl -L https://github.com/ocp-power-automation/ocp4-upi-powervs/archive/v4.6.zip -o v4.6.zip
+$ unzip v4.6.zip
+$ cd ocp4-upi-powervs-4.6
 ```
 
 You can also clone git repository on your system.
 Ensure you checkout the release branch when using git.
 ```
-$ git clone https://github.com/ocp-power-automation/ocp4-upi-powervs.git -b release-4.5 ocp4-upi-powervs-4.5
-$ cd ocp4-upi-powervs-4.5
+$ git clone https://github.com/ocp-power-automation/ocp4-upi-powervs.git -b release-4.6 ocp4-upi-powervs-4.6
+$ cd ocp4-upi-powervs-4.6
 ```
 
-All further instructions assumes you are in the code directory eg. `ocp4-upi-powervs-4.5`
+All further instructions assumes you are in the code directory eg. `ocp4-upi-powervs-4.6`
 
 ## Setup Terraform Variables
 
@@ -210,12 +210,12 @@ $ scp -r -i data/id_rsa root@158.175.161.118:~/openstack-upi/auth/\* .
 
 OpenShift CLI `oc` can be downloaded from the following links. Use the one specific to your client system architecture.
 
-- [Mac OSX](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.5/macosx/oc.tar.gz)
-- [Linux (x86_64)](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.5/linux/oc.tar.gz)
-- [Windows](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.5/windows/oc.zip)
+- [Mac OSX](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.6/macosx/oc.tar.gz)
+- [Linux (x86_64)](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.6/linux/oc.tar.gz)
+- [Windows](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.6/windows/oc.zip)
 
 Download the specific file, extract it and place the binary in a directory that is on your `PATH`
-For more details check the following [link](https://docs.openshift.com/container-platform/4.5/cli_reference/openshift_cli/getting-started-cli.html)
+For more details check the following [link](https://docs.openshift.com/container-platform/4.6/cli_reference/openshift_cli/getting-started-cli.html)
 
 The CLI login URL `oc_server_url` will be printed at the end of successful install.
 Alternatively you can retrieve it anytime by running `terraform output` from the install directory.
@@ -240,11 +240,11 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'
 
 $ oc get nodes
 NAME       STATUS   ROLES    AGE   VERSION
-master-0   Ready    master   13h   v1.18.3+b74c5ed
-master-1   Ready    master   13h   v1.18.3+b74c5ed
-master-2   Ready    master   13h   v1.18.3+b74c5ed
-worker-0   Ready    worker   13h   v1.18.3+b74c5ed
-worker-1   Ready    worker   13h   v1.18.3+b74c5ed
+master-0   Ready    master   13h   v1.19.0+d59ce34
+master-1   Ready    master   13h   v1.19.0+d59ce34
+master-2   Ready    master   13h   v1.19.0+d59ce34
+worker-0   Ready    worker   13h   v1.19.0+d59ce34
+worker-1   Ready    worker   13h   v1.19.0+d59ce34
 ```
 
 >**Note:** The OpenShift command-line client `oc` is already configured on the bastion node with kubeconfig placed at `~/.kube/config`.
