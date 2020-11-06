@@ -76,6 +76,11 @@ variable "master" {
         memory      = "16"
         processors  = "0.5"
     }
+
+    validation {
+        condition       = lookup(var.master, "count", 1) >= 3
+        error_message   = "Number of master server must be 3 or more."
+    }
 }
 
 variable "worker" {
@@ -119,12 +124,22 @@ variable "public_key_file" {
     description = "Path to public key file"
     # if empty, will default to ${path.cwd}/data/id_rsa.pub
     default     = "data/id_rsa.pub"
+
+    validation {
+        condition       = fileexists(var.public_key_file)
+        error_message   = "Missing public ssh key for the bastion server."
+    }
 }
 
 variable "private_key_file" {
     description = "Path to private key file"
     # if empty, will default to ${path.cwd}/data/id_rsa
     default     = "data/id_rsa"
+
+    validation {
+        condition       = fileexists(var.private_key_file)
+        error_message   = "Missing private ssh key for the bastion server."
+    }
 }
 
 variable "private_key" {
@@ -196,6 +211,11 @@ variable "ansible_extra_options" {
 
 variable "pull_secret_file" {
     default   = "data/pull-secret.txt"
+
+    validation {
+        condition = fileexists(var.pull_secret_file)
+        error_message = "Openshift pull secret file is missing."
+    }
 }
 
 variable "dns_forwarders" {
