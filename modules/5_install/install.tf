@@ -159,6 +159,10 @@ resource "null_resource" "config" {
         ]
     }
     provisioner "file" {
+        source      = "addanode.sh"
+        destination = "~/addanode.sh"
+    }
+    provisioner "file" {
         content     = templatefile("${path.module}/templates/helpernode_inventory", local.helpernode_inventory)
         destination = "~/ocp4-helpernode/inventory"
     }
@@ -174,7 +178,8 @@ resource "null_resource" "config" {
         inline = [
             "sed -i \"/^helper:.*/a \\ \\ networkifacename: $(ip r | grep ${var.cidr} | awk '{print $3}')\" ocp4-helpernode/helpernode_vars.yaml",
             "echo 'Running ocp4-helpernode playbook...'",
-            "cd ocp4-helpernode && ansible-playbook -e @helpernode_vars.yaml tasks/main.yml ${var.ansible_extra_options}"
+            "cd ocp4-helpernode && ansible-playbook -e @helpernode_vars.yaml tasks/main.yml ${var.ansible_extra_options}",
+            "chmod +x ~/addanode.sh && ~/addanode.sh"
         ]
     }
 }
