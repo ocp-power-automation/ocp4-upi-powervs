@@ -262,3 +262,9 @@ upgrade_image = ""
 upgrade_pause_time = "90"
 upgrade_delay_time = "600"
 ```
+
+The following variables are specific to enable the connectivity between OCP nodes in PowerVS and IBM Cloud infrastructure over DirectLink.
+```
+ibm_cloud_dl_endpoint_net_cidr = ""  #Set this to IBM Cloud DirectLink endpoint network cidr eg. 10.0.0.0/8
+ibm_cloud_http_proxy = ""            #Set this to IBM Cloud http/squid proxy eg. http://10.166.13.64:3128
+```
