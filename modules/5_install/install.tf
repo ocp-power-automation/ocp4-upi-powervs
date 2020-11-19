@@ -119,6 +119,12 @@ locals {
         no_proxy                = var.cidr
     }
 
+    powervs_config_vars = {
+        ibm_cloud_dl_endpoint_net_cidr = var.ibm_cloud_dl_endpoint_net_cidr
+        ibm_cloud_http_proxy           = var.ibm_cloud_http_proxy
+        ocp_node_net_gw                = var.gateway_ip
+    }
+
     upgrade_vars = {
         upgrade_image   = var.upgrade_image
         pause_time      = var.upgrade_pause_time
@@ -231,8 +237,34 @@ resource "null_resource" "install" {
     }
 }
 
-resource "null_resource" "upgrade" {
+resource "null_resource" "powervs_config" {
     depends_on = [null_resource.install]
+    count      = var.ibm_cloud_dl_endpoint_net_cidr != "" && var.ibm_cloud_http_proxy != "" ? 1 : 0
+
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = var.bastion_public_ip[0]
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
+    }
+
+    provisioner "file" {
+        content     = templatefile("${path.module}/templates/powervs_config_vars.yaml", local.powervs_config_vars)
+        destination = "~/ocp4-playbooks/powervs_config_vars.yaml"
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "sed -i \"$ a ocp_node_net_intf: \\\"$(ip r | grep ${var.cidr} | awk '{print $3}')\\\"\" ocp4-playbooks/powervs_config_vars.yaml",
+            "echo 'Running powervs specific nodes configuration playbook...'",
+            "cd ocp4-playbooks && ansible-playbook -i inventory -e @powervs_config_vars.yaml playbooks/powervs_config.yaml ${var.ansible_extra_options}"
+        ]
+    }
+}
+
+resource "null_resource" "upgrade" {
+    depends_on = [null_resource.install, null_resource.powervs_config]
     count      = var.upgrade_image != "" ? 1 : 0
 
     connection {

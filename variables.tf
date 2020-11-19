@@ -186,7 +186,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
     description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
     # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
-    default = "c6e6038dba0856e621697c876bd3a65927f46166"
+    default = "070f6eb3feb3415000e19fec5c438d82be44329b"
 }
 
 variable "ansible_extra_options" {
@@ -342,4 +342,19 @@ variable "ocp_release_tag" {
 variable "ocp_release_name" {
     description = "The release name of OpenShift you want to sync."
     default = "ocp-release"
+}
+
+################################################################
+# IBM Cloud DirectLink configuration variables
+################################################################
+variable "ibm_cloud_dl_endpoint_net_cidr" {
+    type = string
+    description = "IBM Cloud DirectLink endpoint network cidr eg. 10.0.0.0/8"
+    default = ""
+}
+
+variable "ibm_cloud_http_proxy" {
+    type = string
+    description = "IBM Cloud http/squid proxy eg. http://10.166.13.64:3128"
+    default = ""
 }

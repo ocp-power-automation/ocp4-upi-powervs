@@ -113,4 +113,6 @@ module "install" {
     upgrade_image                   = var.upgrade_image
     upgrade_pause_time              = var.upgrade_pause_time
     upgrade_delay_time              = var.upgrade_delay_time
+    ibm_cloud_dl_endpoint_net_cidr  = var.ibm_cloud_dl_endpoint_net_cidr
+    ibm_cloud_http_proxy            = var.ibm_cloud_http_proxy
 }
