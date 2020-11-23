@@ -19,7 +19,14 @@
 ################################################################
 
 variable "cluster_domain" {}
-variable "cluster_id" {}
+variable "cluster_id" {
+    type = string
+    
+    validation {
+        condition     = length(var.cluster_id) <= 14
+        error_message = "Length cannot exceed 14 characters when combined with cluster_id_prefix."
+    }
+}
 variable "bastion" {}
 
 variable "service_instance_id" {}
