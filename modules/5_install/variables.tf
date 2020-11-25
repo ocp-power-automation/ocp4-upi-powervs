@@ -83,3 +83,6 @@ variable "upgrade_delay_time" {}
 
 variable "setup_squid_proxy" {}
 variable "proxy" {}
+
+variable "ibm_cloud_dl_endpoint_net_cidr" {}
+variable "ibm_cloud_http_proxy" {}
