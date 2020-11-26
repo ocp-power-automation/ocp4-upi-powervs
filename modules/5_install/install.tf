@@ -19,24 +19,15 @@
 ################################################################
 
 locals {
-    # FIXME: Remove below logic when API for reading external IP from public network_port is available.
-    # Since Power Virtual Server API or Terraform module does not allow to read the external IP from network port...
-    # Provide a workaround to get the external VIP address
-    # 1. Split public vip to a list eg: ["192","XXX","XXX","2"] and get the last octect eg: "2".
-    # 2. Split the 1st bastion external ip and slice it to length 3 eg: ["158","XXX","XXX"]
-    # 3. Concat the last octect to form the external vip and convert it to a string eg: "158.XXX.XXX.2"
-    pub_vip_last_octet      = var.bastion_internal_vip == "" ? "" : split(".", var.bastion_internal_vip)[3]
-    ext_ip_prefix           = var.bastion_internal_vip == "" ? [] : slice(split(".", var.bastion_public_ip[0]),0,3)
-    bastion_external_vip    = var.bastion_internal_vip == "" ? "" : "${join(".",local.ext_ip_prefix)}.${local.pub_vip_last_octet}"
 
     public_vrrp = {
-        virtual_router_id   = local.pub_vip_last_octet
+        virtual_router_id   = var.bastion_internal_vip == "" ? "" : split(".", var.bastion_internal_vip)[3]
         virtual_ipaddress   = var.bastion_internal_vip
         password            = uuid()
     }
 
     wildcard_dns    = ["nip.io", "xip.io", "sslip.io"]
-    cluster_domain  = contains(local.wildcard_dns, var.cluster_domain) ? "${local.bastion_external_vip != "" ? local.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
+    cluster_domain  = contains(local.wildcard_dns, var.cluster_domain) ? "${var.bastion_external_vip != "" ? var.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
 
     local_registry  = {
         enable_local_registry   = var.enable_local_registry
