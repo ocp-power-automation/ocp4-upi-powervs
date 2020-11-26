@@ -39,6 +39,7 @@ variable "bastion_count" {}
 variable "bastion_vip" {}
 variable "bastion_ip" {}
 variable "bastion_internal_vip" {}
+variable "bastion_external_vip" {}
 variable "bastion_public_ip" {}
 variable "rhel_username" {}
 variable "private_key" {}

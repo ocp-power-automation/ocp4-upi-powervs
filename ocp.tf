@@ -81,6 +81,7 @@ module "install" {
     private_key                     = local.private_key
     ssh_agent                       = var.ssh_agent
     bastion_internal_vip            = module.prepare.bastion_internal_vip
+    bastion_external_vip            = module.prepare.bastion_external_vip
     bastion_public_ip               = module.prepare.bastion_public_ip
     bootstrap_ip                    = module.nodes.bootstrap_ip
     master_ips                      = module.nodes.master_ips
