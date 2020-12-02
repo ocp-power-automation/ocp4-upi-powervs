@@ -35,5 +35,5 @@ output "web_console_url" {
 
 output "bastion_external_vip" {
     depends_on = [null_resource.configure_public_vip]
-    value = local.bastion_external_vip
+    value = var.bastion_external_vip
 }
