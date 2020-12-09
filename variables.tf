@@ -73,7 +73,7 @@ variable "bootstrap" {
 variable "master" {
     default = {
         count       = 3
-        memory      = "16"
+        memory      = "32"
         processors  = "0.5"
     }
 }
@@ -81,7 +81,7 @@ variable "master" {
 variable "worker" {
     default = {
         count       = 2
-        memory      = "16"
+        memory      = "32"
         processors  = "0.5"
     }
 }
