@@ -100,7 +100,7 @@ variable "master" {
     type    = object({ count = number, memory = string, processors = string })
     default = {
         count       = 3
-        memory      = "16"
+        memory      = "32"
         processors  = "0.5"
     }
     validation {
@@ -113,7 +113,7 @@ variable "worker" {
     type    = object({ count = number, memory = string, processors = string })
     default = {
         count       = 2
-        memory      = "16"
+        memory      = "32"
         processors  = "0.5"
     }
 }
