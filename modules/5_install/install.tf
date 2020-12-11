@@ -256,7 +256,7 @@ resource "null_resource" "powervs_config" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sed -i \"$ a ocp_node_net_intf: \\\"$(ip r | grep ${var.cidr} | awk '{print $3}')\\\"\" ocp4-playbooks/powervs_config_vars.yaml",
+            "sed -i \"$ a ocp_node_net_intf: \\\"$(ip r | grep \"${var.cidr} dev\" | awk '{print $3}')\\\"\" ocp4-playbooks/powervs_config_vars.yaml",
             "echo 'Running powervs specific nodes configuration playbook...'",
             "cd ocp4-playbooks && ansible-playbook -i inventory -e @powervs_config_vars.yaml playbooks/powervs_config.yaml ${var.ansible_extra_options}"
         ]
