@@ -156,7 +156,7 @@ resource "null_resource" "config" {
         destination = "~/ocp4-helpernode/inventory"
     }
     provisioner "file" {
-        source      = "data/pull-secret.txt"
+        content     = var.pull_secret
         destination = "~/.openshift/pull-secret"
     }
     provisioner "file" {
