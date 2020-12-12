@@ -76,11 +76,11 @@ The default flavors present under the compute-vars folder:
 
 `memory` is in `GBs` and `count` specifies the number of VMs that should be created for each type.
 
-To enable high availability (HA) for the bastion node set the bastion `count` value to `2`.
-Note that when HA is enabled, the automation will not setup NFS storage on bastion. Value `1` for bastion `count` implies the default non-HA bastion setup.
+To enable high availability (HA) for cluster services running on the bastion set the bastion `count` value to 2.
+Note that in case of HA, the automation will not setup NFS storage. `count` of 1 for bastion implies the default non-HA bastion setup.
 
-You can optionally set worker `count` value to `0` in which case all the cluster pods will be running on the master/supervisor nodes. 
-Ensure that you use proper sizing for master/supervisor nodes to avoid resource starvation for containers.
+You can optionally set the worker `count` value to 0 in which case all the cluster pods will be running on the master/supervisor nodes.
+Ensure you use proper sizing for master/supervisor nodes to avoid resource starvation for containers.
 
 For PowerVS, processors are equal to entitled physical count. So **N** processors == **N** physical core entitlements == **ceil[N]** vCPUs.
 Here are some examples to help you understand the relationship.

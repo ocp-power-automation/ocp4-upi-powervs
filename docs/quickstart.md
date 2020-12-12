@@ -212,9 +212,9 @@ $ scp -r -i data/id_rsa root@158.175.161.118:~/openstack-upi/auth/\* .
 
 OpenShift CLI `oc` can be downloaded from the following links. Use the one specific to your client system architecture.
 
-- [Mac OSX](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.6/macosx/oc.tar.gz)
-- [Linux (x86_64)](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.6/linux/oc.tar.gz)
-- [Windows](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/oc/4.6/windows/oc.zip)
+- [Mac OSX](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.6/openshift-client-mac.tar.gz)
+- [Linux (x86_64)](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.6/openshift-client-linux.tar.gz)
+- [Windows](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.6/openshift-client-windows.zip)
 
 Download the specific file, extract it and place the binary in a directory that is on your `PATH`
 For more details check the following [link](https://docs.openshift.com/container-platform/4.6/cli_reference/openshift_cli/getting-started-cli.html)
@@ -240,11 +240,11 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'
 
 $ oc get nodes
 NAME       STATUS   ROLES    AGE   VERSION
-master-0   Ready    master   13h   v1.19.0+d59ce34
-master-1   Ready    master   13h   v1.19.0+d59ce34
-master-2   Ready    master   13h   v1.19.0+d59ce34
-worker-0   Ready    worker   13h   v1.19.0+d59ce34
-worker-1   Ready    worker   13h   v1.19.0+d59ce34
+master-0   Ready    master   11h   v1.19.0+43983cd
+master-1   Ready    master   11h   v1.19.0+43983cd
+master-2   Ready    master   11h   v1.19.0+43983cd
+worker-0   Ready    worker   11h   v1.19.0+43983cd
+worker-1   Ready    worker   11h   v1.19.0+43983cd
 ```
 
 >**Note:** The OpenShift command-line client `oc` is already configured on the bastion node with kubeconfig placed at `~/.kube/config`.
