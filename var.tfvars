@@ -13,11 +13,11 @@ service_instance_id         = "<cloud_instance_ID>"
 ### Example 1.5 processors == 1.5 physical core entitlements == ceil[1.5] = 2 vCPU == 16 logical OS CPUs (SMT=8)
 ### Example 2 processors == 2 physical core entitlements == ceil[2] = 2 vCPU == 16 logical OS CPUs (SMT=8)
 bastion                     = {memory      = "16",   processors  = "1",    "count"   = 1}
-bootstrap                   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
+bootstrap                   = {memory      = "32",   processors  = "0.5",  "count"   = 1}
 master                      = {memory      = "32",   processors  = "0.5",  "count"   = 3}
 worker                      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 
-rhel_image_name             = "rhel-8.2"
+rhel_image_name             = "rhel-8.3"
 rhcos_image_name            = "rhcos-4.6"
 processor_type              = "shared"
 system_type                 = "s922"
