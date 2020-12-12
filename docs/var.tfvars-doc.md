@@ -61,17 +61,17 @@ Change the values as per your requirement.
 The defaults (recommended config) should suffice for most of the common use-cases.
 ```
 bastion     = {memory      = "16",   processors  = "1",    "count"   = 1}
-bootstrap   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
-master      = {memory      = "16",   processors  = "0.5",  "count"   = 3}
+bootstrap   = {memory      = "32",   processors  = "0.5",  "count"   = 1}
+master      = {memory      = "32",   processors  = "0.5",  "count"   = 3}
 worker      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 ```
 
 `memory` is in `GBs` and `count` specifies the number of VMs that should be created for each type.
 
-To enable high availability (HA) for cluster services running on the bastion set the bastion `count` value to 2. 
+To enable high availability (HA) for cluster services running on the bastion set the bastion `count` value to 2.
 Note that in case of HA, the automation will not setup NFS storage. `count` of 1 for bastion implies the default non-HA bastion setup.
 
-You can optionally set the worker `count` value to 0 in which case all the cluster pods will be running on the master/supervisor nodes. 
+You can optionally set the worker `count` value to 0 in which case all the cluster pods will be running on the master/supervisor nodes.
 Ensure you use proper sizing for master/supervisor nodes to avoid resource starvation for containers.
 
 For PowerVS processors are equal to entitled physical count. So **N** processors == **N** physical core entitlements == **ceil[N]** vCPUs.
