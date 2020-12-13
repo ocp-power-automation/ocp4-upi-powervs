@@ -61,7 +61,7 @@ variable "bastion" {
 variable "bootstrap" {
     default = {
         count       = 1
-        memory      = "16"
+        memory      = "32"
         processors  = "0.5"
     }
     validation {
@@ -88,7 +88,7 @@ variable "worker" {
 
 variable "rhel_image_name" {
     description = "Name of the RHEL image that you want to use for the bastion node"
-    default = "rhel-8.2"
+    default = "rhel-8.3"
 }
 
 variable "rhcos_image_name" {
