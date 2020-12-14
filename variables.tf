@@ -87,7 +87,7 @@ variable "bootstrap" {
     type    = object({ count = number, memory = string, processors = string })
     default = {
         count       = 1
-        memory      = "16"
+        memory      = "32"
         processors  = "0.5"
     }
     validation {
@@ -121,7 +121,7 @@ variable "worker" {
 variable "rhel_image_name" {
     type        = string
     description = "Name of the RHEL image that you want to use for the bastion node"
-    default     = "rhel-8.2"
+    default     = "rhel-8.3"
 }
 
 variable "rhcos_image_name" {
@@ -401,7 +401,7 @@ variable "volume_size" {
 
 variable "volume_type" {
     type        = string
-    description = "The volume type (ssd, standard, tier1, tier3)"    
+    description = "The volume type (ssd, standard, tier1, tier3)"
     default     = "tier3"
 }
 
