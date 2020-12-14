@@ -23,7 +23,7 @@ chronyconfig:
   enabled: true
   allow:
     - ${chrony_allow_range}
-%{ if chrony_config_servers != [] ~}
+%{ if length(chrony_config_servers) > 0 ~}
   content:
 %{ endif ~}
 %{ for item in chrony_config_servers ~}
