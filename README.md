@@ -10,7 +10,7 @@
 
 ## Introduction
 
-The `ocp4-upi-powervs` [project](https://github.com/ocp-power-automation/ocp4-upi-powervs) provides Terraform based automation code to help the deployment of OpenShift Container Platform (OCP) 4.x on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
+The `ocp4-upi-powervs` [project](https://github.com/ocp-power-automation/ocp4-upi-powervs) provides Terraform based automation code to help with the deployment of OpenShift Container Platform (OCP) 4.x on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
 
 This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
 
