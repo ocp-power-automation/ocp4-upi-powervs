@@ -54,6 +54,14 @@ output "worker_ips" {
     value = module.nodes.worker_ips
 }
 
+output "dns_entries" {
+    value = var.cluster_domain == "nip.io" || var.cluster_domain == "xip.io" || var.cluster_domain == "sslip.io" ? "" : <<-EOF
+
+api.${local.cluster_id}.${var.cluster_domain}.  IN  A  ${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip}
+*.apps.${local.cluster_id}.${var.cluster_domain}.  IN  A  ${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip}
+EOF
+}
+
 output "etc_hosts_entries" {
     value = var.cluster_domain == "nip.io" || var.cluster_domain == "xip.io" || var.cluster_domain == "sslip.io" ? "" : <<-EOF
 
