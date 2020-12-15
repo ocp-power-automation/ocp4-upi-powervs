@@ -39,7 +39,7 @@ output "bastion_public_ip" {
 }
 
 output "bastion_ssh_command" {
-    value = join(", ", formatlist("ssh -i ${var.private_key_file} ${var.rhel_username}@%s", module.prepare.bastion_public_ip))
+    value = "ssh -i ${var.private_key_file} ${var.rhel_username}@${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip}"
 }
 
 output "bootstrap_ip" {
@@ -52,6 +52,14 @@ output "master_ips" {
 
 output "worker_ips" {
     value = module.nodes.worker_ips
+}
+
+output "dns_entries" {
+    value = var.cluster_domain == "nip.io" || var.cluster_domain == "xip.io" || var.cluster_domain == "sslip.io" ? "" : <<-EOF
+
+api.${local.cluster_id}.${var.cluster_domain}.  IN  A  ${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip}
+*.apps.${local.cluster_id}.${var.cluster_domain}.  IN  A  ${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip}
+EOF
 }
 
 output "etc_hosts_entries" {
