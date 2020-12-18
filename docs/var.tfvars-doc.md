@@ -207,6 +207,11 @@ This variable can be used when debugging ansible playbooks.
 ansible_extra_options       = "-v"
 ```
 
+This variable can be used to change the repository name for installing ansible package on RHEL.
+```
+ansible_repo_name           = "ansible-2.9-for-rhel-8-ppc64le-rpms"
+```
+
 This variable specifies the external DNS servers to forward DNS queries that cannot be resolved locally.
 ```
 dns_forwarders              = "1.1.1.1; 9.9.9.9"
