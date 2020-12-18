@@ -194,6 +194,10 @@ variable "ansible_extra_options" {
     default     = "-v"
 }
 
+variable "ansible_repo_name" {
+    default = "ansible-2.9-for-rhel-8-ppc64le-rpms"
+}
+
 variable "pull_secret_file" {
     default   = "data/pull-secret.txt"
 }

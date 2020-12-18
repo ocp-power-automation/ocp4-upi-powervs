@@ -38,6 +38,7 @@ variable "ssh_agent" {}
 
 variable "rhel_subscription_username" {}
 variable "rhel_subscription_password" {}
+variable "ansible_repo_name" {}
 
 variable "rhel_smt" {}
 
