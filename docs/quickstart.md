@@ -146,14 +146,15 @@ For all other domains, you can use one of the following options.
 
     The general format is shown below:
     ```
-    api.<cluster_id>.  IN  A  <bastion_public_ip>
-    *.apps.<cluster_id>.  IN  A  <bastion_public_ip>
+    api.<cluster_id>.<cluster_domain>.  IN  A  <bastion_address>
+    *.apps.<cluster_id>.<cluster_domain>.  IN  A  <bastion_address>
     ```
-    You'll need `bastion_public_ip` and `cluster_id`. This is printed at the end of a successful install. Or you can retrieve it anytime by running `terraform output` from the install directory.
-    For example, if `bastion_public_ip = 16.20.34.5` and `cluster_id = test-cluster-9a4f` then the following DNS records will need to be added.
+    You’ll need `dns_entries`. This is printed at the end of a successful install.
+    Alternatively, you can retrieve it anytime by running `terraform output dns_entries` from the install directory.
+    An example `dns_entries` output:
     ```
-    api.test-cluster-9a4f.  IN  A  16.20.34.5
-    *.apps.test-cluster-9a4f.  IN  A  16.20.34.5
+    api.test-cluster-9a4f.mydomain.com.  IN  A  16.20.34.5
+    *.apps.test-cluster-9a4f.mydomain.com.  IN  A  16.20.34.5
     ```
 
 2. **Add entries to your client system `hosts` file**
@@ -162,21 +163,14 @@ For all other domains, you can use one of the following options.
 
     The general format is shown below:
     ```
-    <bastion_public_ip> api.<cluster_id>
-    <bastion_public_ip> console-openshift-console.apps.<cluster_id>
-    <bastion_public_ip> integrated-oauth-server-openshift-authentication.apps.<cluster_id>
-    <bastion_public_ip> oauth-openshift.apps.<cluster_id>
-    <bastion_public_ip> prometheus-k8s-openshift-monitoring.apps.<cluster_id>
-    <bastion_public_ip> grafana-openshift-monitoring.apps.<cluster_id>
-    <bastion_public_ip> <app name>.apps.<cluster_id>
+    <bastion_address> api.<cluster_id>.<cluster_domain> console-openshift-console.apps.<cluster_id>.<cluster_domain> integrated-oauth-server-openshift-authentication.apps.<cluster_id>.<cluster_domain> oauth-openshift.apps.<cluster_id>.<cluster_domain> prometheus-k8s-openshift-monitoring.apps.<cluster_id>.<cluster_domain> grafana-openshift-monitoring.apps.<cluster_id>.<cluster_domain> <app name>.apps.<cluster_id>.<cluster_domain>
     ```
 
     You'll need `etc_host_entries`. This is printed at the end of a successful install.
-    Alternatively you can retrieve it anytime by running `terraform output` from the install directory.
+    Alternatively you can retrieve it anytime by running `terraform output etc_hosts_entries` from the install directory.
 
     As an example, for the following `etc_hosts_entries`
     ```
-    etc_hosts_entries =
     16.20.34.5 api.test-cluster-9a4f.mydomain.com console-openshift-console.apps.test-cluster-9a4f.mydomain.com integrated-oauth-server-openshift-authentication.apps.test-cluster-9a4f.mydomain.com oauth-openshift.apps.test-cluster-9a4f.mydomain.com prometheus-k8s-openshift-monitoring.apps.test-cluster-9a4f.mydomain.com grafana-openshift-monitoring.apps.test-cluster-9a4f.mydomain.com example.apps.test-cluster-9a4f.mydomain.com
     ```
     just add the following entry to the `hosts` file
@@ -220,11 +214,9 @@ Download the specific file, extract it and place the binary in a directory that 
 For more details check the following [link](https://docs.openshift.com/container-platform/4.5/cli_reference/openshift_cli/getting-started-cli.html)
 
 The CLI login URL `oc_server_url` will be printed at the end of successful install.
-Alternatively you can retrieve it anytime by running `terraform output` from the install directory.
+Alternatively you can retrieve it anytime by running `terraform output oc_server_url` from the install directory.
 ```
-[...]
-oc_server_url = https://test-cluster-9a4f.mydomain.com:6443
-[...]
+https://test-cluster-9a4f.mydomain.com:6443
 ```
 In order to login the cluster you can use the `oc login <oc_server_url> -u kubeadmin -p <kubeadmin-password>`
 Example:
@@ -254,11 +246,9 @@ worker-1   Ready    worker   13h   v1.18.3+b74c5ed
 ### Using Web UI
 
 The web console URL will be printed at the end of a successful install.
-Alternatively you can retrieve it anytime by running `terraform output` from the install directory.
+Alternatively you can retrieve it anytime by running `terraform output web_console_url` from the install directory.
 ```
-[...]
-web_console_url = https://console-openshift-console.apps.test-cluster-9a4f.mydomain.com
-[...]
+https://console-openshift-console.apps.test-cluster-9a4f.mydomain.com
 ```
 
 Open this URL in your browser and login with user `kubeadmin` and password mentioned in the `kubeadmin-password` file.
