@@ -238,9 +238,35 @@ EOF
     }
 }
 
-resource "null_resource" "bastion_packages" {
+resource "null_resource" "enable_repos" {
     count           = local.bastion_count
     depends_on      = [null_resource.bastion_init, null_resource.setup_proxy_info, null_resource.bastion_register]
+
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
+    }
+
+    provisioner "remote-exec" {
+        inline = [<<EOF
+# Additional repo for installing ansible package
+if [[ -z "${var.rhel_subscription_username}" ]] || [[ "${var.rhel_subscription_username}" == "<subscription-id>" ]]; then
+  sudo yum install -y epel-release
+else
+  sudo subscription-manager repos --enable ${var.ansible_repo_name}
+fi
+EOF
+        ]
+    }
+}
+
+resource "null_resource" "bastion_packages" {
+    count           = local.bastion_count
+    depends_on      = [null_resource.bastion_init, null_resource.setup_proxy_info, null_resource.bastion_register, null_resource.enable_repos]
 
     connection {
         type        = "ssh"
@@ -259,16 +285,16 @@ resource "null_resource" "bastion_packages" {
     }
     provisioner "remote-exec" {
         inline = [
-            "pip3 install ansible -q"
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
             "sudo systemctl unmask NetworkManager",
             "sudo systemctl start NetworkManager",
             "for i in $(nmcli device | grep unmanaged | awk '{print $1}'); do echo NM_CONTROLLED=yes | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$i; done",
             "sudo systemctl restart NetworkManager",
             "sudo systemctl enable NetworkManager"
+        ]
+    }
+    provisioner "remote-exec" {
+        inline = [
+           "sudo yum install -y ansible"
         ]
     }
 }

@@ -196,10 +196,15 @@ install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playb
 install_playbook_tag       = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
 ```
 
-These variables can be used when debugging ansible playbooks
+These variables can be used when debugging ansible playbooks.
 ```
 installer_log_level         = "info"
 ansible_extra_options       = "-v"
+```
+
+This variable can be used to change the repository name for installing ansible package on RHEL.
+```
+ansible_repo_name           = "ansible-2.9-for-rhel-8-ppc64le-rpms"
 ```
 
 This variable specifies the external DNS servers to forward DNS queries that cannot be resolved locally.
