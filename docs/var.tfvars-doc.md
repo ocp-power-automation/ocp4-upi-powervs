@@ -42,8 +42,15 @@ In order to retrieve the PowerVS region, zone and instance specific details plea
    | ibmcloud_region | ibmcloud_zone  |
    |-----------------|----------------|
    | eu-de           | eu-de-1        |
-   | lon             | lon0           |
+   | eu-de           | eu-de-2        |
+   | lon             | lon04          |
+   | lon             | lon06          |
    | tor             | tor01          |
+   | syd             | syd04          |
+   | sao             | sao01          |
+   | dal             | dal12          |
+   | us-east         | us-east        |
+   | tok	     | tok04          |  
 
    Tieing all these, the values to be used will be as shown below:
    ```
