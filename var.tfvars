@@ -87,8 +87,8 @@ cluster_id                  = ""
 #master_volume_size         = "500"   #Value in GB
 #worker_volume_size         = "500"   #Value in GB
 
-#upgrade_image              = ""
-#upgrade_pause_time         = "90"
+#upgrade_version            = ""
+#upgrade_pause_time         = "70"
 #upgrade_delay_time         = "600"
 
 #ibm_cloud_dl_endpoint_net_cidr = ""  #Set this to IBM Cloud DirectLink endpoint network cidr eg. 10.0.0.0/8

@@ -263,8 +263,8 @@ worker_volume_size          = "500"
 
 The following variables are specific to upgrading an existing installation.
 ```
-upgrade_image = ""
-upgrade_pause_time = "90"
+upgrade_version    = ""
+upgrade_pause_time = "70"
 upgrade_delay_time = "600"
 ```
 
