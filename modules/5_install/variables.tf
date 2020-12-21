@@ -78,7 +78,7 @@ variable "rhcos_kernel_options" {}
 variable "chrony_config" { default = true }
 variable "chrony_config_servers" {}
 
-variable "upgrade_image" {}
+variable "upgrade_version" {}
 variable "upgrade_pause_time" {}
 variable "upgrade_delay_time" {}
 

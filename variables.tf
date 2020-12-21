@@ -429,16 +429,16 @@ variable "worker_volume_size" {
     default     = ""
 }
 
-variable "upgrade_image" {
+variable "upgrade_version" {
     type        = string
-    description = "OCP upgrade image"
+    description = "OCP upgrade version"
     default     = ""
 }
 
 variable "upgrade_pause_time" {
     type        = string
     description = "Number of minutes to pause the playbook execution before starting to check the upgrade status once the upgrade command is executed."
-    default     = "90"
+    default     = "70"
 }
 
 variable "upgrade_delay_time" {
