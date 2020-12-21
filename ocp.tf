@@ -111,7 +111,7 @@ module "install" {
     rhcos_kernel_options            = var.rhcos_kernel_options
     chrony_config                   = var.chrony_config
     chrony_config_servers           = var.chrony_config_servers
-    upgrade_image                   = var.upgrade_image
+    upgrade_version                 = var.upgrade_version
     upgrade_pause_time              = var.upgrade_pause_time
     upgrade_delay_time              = var.upgrade_delay_time
     ibm_cloud_dl_endpoint_net_cidr  = var.ibm_cloud_dl_endpoint_net_cidr
