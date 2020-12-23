@@ -42,8 +42,17 @@ In order to retrieve the PowerVS region, zone and instance specific details plea
    | ibmcloud_region | ibmcloud_zone  |
    |-----------------|----------------|
    | eu-de           | eu-de-1        |
-   | lon             | lon0           |
+   | eu-de           | eu-de-2        |
+   | dal             | dal12          |
+   | lon             | lon04          |
+   | lon             | lon06          |
+   | syd             | syd04          |
+   | sao             | sao01          |
    | tor             | tor01          |
+   | tok             | tok04          | 
+   | us-east         | us-east        |
+   
+   NOTE:  us-east is Washington, DC datacenter.
 
    Tieing all these, the values to be used will be as shown below:
    ```
