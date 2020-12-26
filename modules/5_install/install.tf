@@ -266,6 +266,9 @@ resource "null_resource" "powervs_config" {
 resource "null_resource" "upgrade" {
     depends_on = [null_resource.install, null_resource.powervs_config]
     count      = var.upgrade_version != "" ? 1 : 0
+    triggers = {
+       upgrade_version = var.upgrade_version
+    }
 
     connection {
         type        = "ssh"
