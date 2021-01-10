@@ -3,8 +3,10 @@
 ${bastion} ansible_connection=ssh ansible_user=root
 %{ endfor ~}
 
+%{ if bootstrap_host != "" ~}
 [bootstrap]
 ${bootstrap_host} ansible_connection=ssh ansible_user=core
+%{ endif ~}
 
 [masters]
 %{ for master in master_hosts ~}
