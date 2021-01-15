@@ -164,6 +164,36 @@ resource "ibm_pi_instance" "worker" {
     pi_health_status        = "WARNING"
 }
 
+resource "null_resource" "remove_worker" {
+    count       = var.worker["count"]
+    depends_on = [ibm_pi_instance.worker]
+    triggers = {
+        external_ip     = var.bastion_public_ip[0]
+        rhel_username   = var.rhel_username
+        private_key     = var.private_key
+        ssh_agent       = var.ssh_agent
+    }
+
+    provisioner "remote-exec" {
+        connection {
+            type        = "ssh"
+            user        = self.triggers.rhel_username
+            host        = self.triggers.external_ip
+            private_key = self.triggers.private_key
+            agent       = self.triggers.ssh_agent
+            timeout     = "2m"
+        }
+        when        = destroy
+        on_failure  = continue
+        inline = [<<EOF
+oc adm cordon worker-${count.index}
+oc adm drain worker-${count.index} --force --delete-local-data --ignore-daemonsets
+oc delete node worker-${count.index}
+EOF
+        ]
+    }
+}
+
 resource "ibm_pi_volume" "worker" {
     count               = var.worker_volume_size == "" ? 0 : var.worker["count"]
 

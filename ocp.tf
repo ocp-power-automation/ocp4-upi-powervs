@@ -63,6 +63,10 @@ module "nodes" {
     worker_volume_size              = var.worker_volume_size
     volume_type                     = var.volume_type
     volume_shareable                = var.volume_shareable
+    bastion_public_ip               = module.prepare.bastion_public_ip
+    rhel_username                   = var.rhel_username
+    private_key                     = local.private_key
+    ssh_agent                       = var.ssh_agent
 }
 
 module "install" {
