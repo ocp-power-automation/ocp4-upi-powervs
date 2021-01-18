@@ -38,3 +38,8 @@ variable "master_volume_size" {}
 variable "worker_volume_size" {}
 variable "volume_type" {}
 variable "volume_shareable" {}
+
+variable "bastion_public_ip" {}
+variable "rhel_username" {}
+variable "private_key" {}
+variable "ssh_agent" {}
