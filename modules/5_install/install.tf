@@ -133,6 +133,11 @@ locals {
 }
 
 resource "null_resource" "config" {
+
+    triggers = {
+       worker_count = length(var.worker_ips)
+    }
+
     connection {
         type        = "ssh"
         user        = var.rhel_username
@@ -176,6 +181,10 @@ resource "null_resource" "configure_public_vip" {
     count       = var.bastion_count > 1 ? var.bastion_count : 0
     depends_on  = [null_resource.config]
 
+    triggers = {
+       worker_count = length(var.worker_ips)
+    }
+
     connection {
         type        = "ssh"
         user        = var.rhel_username
@@ -203,6 +212,10 @@ resource "null_resource" "configure_public_vip" {
 
 resource "null_resource" "install" {
     depends_on = [null_resource.config, null_resource.configure_public_vip]
+
+    triggers = {
+       worker_count = length(var.worker_ips)
+    }
 
     connection {
         type        = "ssh"
