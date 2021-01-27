@@ -132,13 +132,18 @@ Please note that only OpenSSH formatted keys are supported. Refer to the followi
 
 Create the SSH key-pair and keep it under the `data` directory
 
-These set of variables specify the RHEL subscription details.
+These set of variables specify the RHEL subscription details, RHEL subscription supports two methods: one is using username and password, the other is using activation key.
 This is sensitive data, and if you don't want to save it on disk, use environment variables `RHEL_SUBS_USERNAME` and `RHEL_SUBS_PASSWORD` and pass them to `terraform apply` command as shown in the [Quickstart guide](./quickstart.md#setup-terraform-variables).
 If you are using CentOS as the bastion image, then leave these variables as-is.
 
 ```
 rhel_subscription_username  = "user@test.com"
 rhel_subscription_password  = "mypassword"
+```
+Or define following variables to use activation key for RHEL subscription:
+```
+rhel_subscription_org = "org-id"
+rhel_subscription_activationkey = "activation-key"
 ```
 
 This variable specifies the number of hardware threads (SMT) that's used for the bastion node.
