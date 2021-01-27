@@ -184,7 +184,7 @@ EOF
 }
 
 resource "null_resource" "bastion_register" {
-    count       = var.rhel_subscription_username == "" || var.rhel_subscription_username  == "<subscription-id>" ? 0 : local.bastion_count
+    count       = ( var.rhel_subscription_username == "" || var.rhel_subscription_username  == "<subscription-id>" ) && var.rhel_subscription_org == "" ? 0 : local.bastion_count
     depends_on  = [null_resource.bastion_init, null_resource.setup_proxy_info]
     triggers = {
         external_ip     = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
@@ -208,7 +208,11 @@ resource "null_resource" "bastion_register" {
 # Give some more time to subscription-manager
 sudo subscription-manager config --server.server_timeout=600
 sudo subscription-manager clean
-sudo subscription-manager register --username='${var.rhel_subscription_username}' --password='${var.rhel_subscription_password}' --force
+if [[ '${var.rhel_subscription_username}' != '' && '${var.rhel_subscription_username}' != '<subscription-id>' ]]; then 
+    sudo subscription-manager register --username='${var.rhel_subscription_username}' --password='${var.rhel_subscription_password}' --force
+else
+    sudo subscription-manager register --org='${var.rhel_subscription_org}' --activationkey='${var.rhel_subscription_activationkey}' --force
+fi
 sudo subscription-manager refresh
 sudo subscription-manager attach --auto
 EOF
@@ -254,7 +258,7 @@ resource "null_resource" "enable_repos" {
     provisioner "remote-exec" {
         inline = [<<EOF
 # Additional repo for installing ansible package
-if [[ -z "${var.rhel_subscription_username}" ]] || [[ "${var.rhel_subscription_username}" == "<subscription-id>" ]]; then
+if ( [[ -z "${var.rhel_subscription_username}" ]] || [[ "${var.rhel_subscription_username}" == "<subscription-id>" ]] ) && [[ -z "${var.rhel_subscription_org}" ]]; then
   sudo yum install -y epel-release
 else
   sudo subscription-manager repos --enable ${var.ansible_repo_name}
