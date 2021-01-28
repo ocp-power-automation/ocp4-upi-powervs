@@ -61,8 +61,8 @@ Change the values as per your requirement.
 The defaults (recommended config) should suffice for most of the common use-cases.
 ```
 bastion     = {memory      = "16",   processors  = "1",    "count"   = 1}
-bootstrap   = {memory      = "16",   processors  = "0.5",  "count"   = 1}
-master      = {memory      = "16",   processors  = "0.5",  "count"   = 3}
+bootstrap   = {memory      = "32",   processors  = "0.5",  "count"   = 1}
+master      = {memory      = "32",   processors  = "0.5",  "count"   = 3}
 worker      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 ```
 
