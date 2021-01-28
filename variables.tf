@@ -196,6 +196,15 @@ variable "rhel_subscription_password" {
     default = ""
 }
 
+variable "rhel_subscription_org" {
+    type    = string
+    default = ""
+}
+
+variable "rhel_subscription_activationkey" {
+    type    = string
+    default = ""
+}
 variable "rhel_smt" {
     type        = number
     description = "SMT value to set on the bastion node. Eg: on,off,2,4,8"
