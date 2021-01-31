@@ -117,6 +117,7 @@ locals {
         squid_source_range      = var.cidr
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
         no_proxy                = var.cidr
+        cni_network_provider    = var.cni_network_provider
     }
 
     powervs_config_vars = {

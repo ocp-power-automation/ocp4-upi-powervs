@@ -471,6 +471,11 @@ variable "upgrade_delay_time" {
     default     = "600"
 }
 
+variable "cni_network_provider" {
+    description = "Set the default Container Network Interface (CNI) network provider"
+    default     = "OpenshiftSDN"
+}
+
 ################################################################
 # Local registry variables ( used only for restricted network install )
 ################################################################

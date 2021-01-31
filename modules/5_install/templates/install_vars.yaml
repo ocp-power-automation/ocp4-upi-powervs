@@ -41,3 +41,5 @@ dhcp_shared_network: true
 %{ if bastion_vip != "" }
 bastion_vip: "${bastion_vip}"
 %{ endif ~}
+
+cni_network_provider: ${cni_network_provider}
