@@ -75,6 +75,14 @@ master      = {memory      = "32",   processors  = "0.5",  "count"   = 3}
 worker      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 ```
 
+You can also choose one of the default node configuration templates that are stored in the `compute-vars` directory, as per your requirements.
+The default flavors present under the compute-vars folder:
+   ```
+   small.tfvars
+   medium.tfvars
+   large.tfvars
+   ```
+
 `memory` is in `GBs` and `count` specifies the number of VMs that should be created for each type.
 
 To enable high availability (HA) for cluster services running on the bastion set the bastion `count` value to 2.
