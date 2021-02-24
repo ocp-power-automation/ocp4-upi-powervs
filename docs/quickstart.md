@@ -55,6 +55,14 @@ Run the following commands from within the directory.
 $ terraform init
 $ terraform apply -var-file var.tfvars -parallelism=3
 ```
+If using template flavors for nodes configuration, then do the following.
+```
+$ terraform init
+$ terraform apply -var-file var.tfvars -var-file compute-vars/<flavor-type>.tfvars
+```
+
+> Here, <flavor-type> is the node configuration template name. By default, `medium` flavor type is specified.
+
 If using environment variables for sensitive data, then do the following, instead.
 ```
 $ terraform init
