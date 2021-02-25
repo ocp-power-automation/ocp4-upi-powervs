@@ -18,7 +18,7 @@ master                      = {memory      = "32",   processors  = "0.5",  "coun
 worker                      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 
 rhel_image_name             = "rhel-8.3"
-rhcos_image_name            = "rhcos-4.6"
+rhcos_image_name            = "rhcos-4.7"
 processor_type              = "shared"
 system_type                 = "s922"
 network_name                = "ocp-net"
@@ -34,8 +34,8 @@ rhel_smt                    = 4
 
 ### OpenShift Installation Details
 
-openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
-openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
+openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.7/openshift-install-linux.tar.gz"
+openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.7/openshift-client-linux.tar.gz"
 pull_secret_file            = "data/pull-secret.txt"
 
 cluster_domain              = "ibm.com"  #Set domain to nip.io or xip.io if you prefer using online wildcard domain and avoid modifying /etc/hosts
