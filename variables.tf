@@ -127,7 +127,7 @@ variable "rhel_image_name" {
 variable "rhcos_image_name" {
     type        = string
     description = "Name of the RHCOS image that you want to use for OCP nodes"
-    default     = "rhcos-4.6"
+    default     = "rhcos-4.7"
 }
 
 variable "processor_type" {
@@ -342,12 +342,12 @@ locals {
 ################################################################
 variable "openshift_install_tarball" {
     type    = string
-    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
+    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.7/openshift-install-linux.tar.gz"
 }
 
 variable "openshift_client_tarball" {
     type    = string
-    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
+    default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.7/openshift-client-linux.tar.gz"
 }
 
 variable "release_image_override" {

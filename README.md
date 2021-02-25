@@ -24,7 +24,7 @@ For general PowerVS usage instructions please refer to the following links:
 - [PowerVS (Youtube video)](https://www.youtube.com/playlist?list=PLVrJaTKVPbKM_9HU8fm4QsklgzLGUwFpv)
 
 !!! Warning
-	**The [main](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/master) branch must be used with latest OCP pre-release versions only. For stable releases please checkout specific release branches - {[release-4.5](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/release-4.5), [release-4.6](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/release-4.6) ...} and follow the docs in the specific release branches.**
+	**This branch must be used with OCP 4.7.x versions only.**
 
 
 ## Automation Host Prerequisites
