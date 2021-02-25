@@ -122,4 +122,5 @@ module "install" {
     upgrade_delay_time              = var.upgrade_delay_time
     ibm_cloud_dl_endpoint_net_cidr  = var.ibm_cloud_dl_endpoint_net_cidr
     ibm_cloud_http_proxy            = var.ibm_cloud_http_proxy
+    cni_network_provider            = var.cni_network_provider
 }

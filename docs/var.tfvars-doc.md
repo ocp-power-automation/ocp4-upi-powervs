@@ -291,3 +291,9 @@ The following variables are specific to enable the connectivity between OCP node
 ibm_cloud_dl_endpoint_net_cidr = ""
 ibm_cloud_http_proxy = ""
 ```
+
+This variable is used to set the default Container Network Interface (CNI) network provider such as OpenShiftSDN or OVNKubernetes
+
+```
+cni_network_provider       = "OpenshiftSDN"
+```
