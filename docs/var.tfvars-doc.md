@@ -42,8 +42,17 @@ In order to retrieve the PowerVS region, zone and instance specific details plea
    | ibmcloud_region | ibmcloud_zone  |
    |-----------------|----------------|
    | eu-de           | eu-de-1        |
-   | lon             | lon0           |
+   | eu-de           | eu-de-2        |
+   | dal             | dal12          |
+   | lon             | lon04          |
+   | lon             | lon06          |
+   | syd             | syd04          |
+   | sao             | sao01          |
    | tor             | tor01          |
+   | tok             | tok04          | 
+   | us-east         | us-east        |
+   
+   NOTE:  us-east is Washington, DC datacenter.
 
    Tieing all these, the values to be used will be as shown below:
    ```
@@ -76,11 +85,11 @@ The default flavors present under the compute-vars folder:
 
 `memory` is in `GBs` and `count` specifies the number of VMs that should be created for each type.
 
-To enable high availability (HA) for the bastion node set the bastion `count` value to `2`.
-Note that when HA is enabled, the automation will not setup NFS storage on bastion. Value `1` for bastion `count` implies the default non-HA bastion setup.
+To enable high availability (HA) for cluster services running on the bastion set the bastion `count` value to 2.
+Note that in case of HA, the automation will not setup NFS storage. `count` of 1 for bastion implies the default non-HA bastion setup.
 
-You can optionally set worker `count` value to `0` in which case all the cluster pods will be running on the master/supervisor nodes. 
-Ensure that you use proper sizing for master/supervisor nodes to avoid resource starvation for containers.
+You can optionally set the worker `count` value to 0 in which case all the cluster pods will be running on the master/supervisor nodes.
+Ensure you use proper sizing for master/supervisor nodes to avoid resource starvation for containers.
 
 For PowerVS, processors are equal to entitled physical count. So **N** processors == **N** physical core entitlements == **ceil[N]** vCPUs.
 Here are some examples to help you understand the relationship.
@@ -131,13 +140,18 @@ Please note that only OpenSSH formatted keys are supported. Refer to the followi
 
 Create the SSH key-pair and keep it under the `data` directory
 
-These set of variables specify the RHEL subscription details.
+These set of variables specify the RHEL subscription details, RHEL subscription supports two methods: one is using username and password, the other is using activation key.
 This is sensitive data, and if you don't want to save it on disk, use environment variables `RHEL_SUBS_USERNAME` and `RHEL_SUBS_PASSWORD` and pass them to `terraform apply` command as shown in the [Quickstart guide](./quickstart.md#setup-terraform-variables).
 If you are using CentOS as the bastion image, then leave these variables as-is.
 
 ```
 rhel_subscription_username  = "user@test.com"
 rhel_subscription_password  = "mypassword"
+```
+Or define following variables to use activation key for RHEL subscription:
+```
+rhel_subscription_org = "org-id"
+rhel_subscription_activationkey = "activation-key"
 ```
 
 This variable specifies the number of hardware threads (SMT) that's used for the bastion node.
