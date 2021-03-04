@@ -160,6 +160,16 @@ variable "ssh_agent" {
     default     = false
 }
 
+variable "bastion_health_status" {
+    type        = string
+    description = "Specify if bastion should poll for the Health Status to be OK or WARNING. Default is OK."
+    default     = "OK"
+    validation {
+        condition     = contains(["OK","WARNING"], var.bastion_health_status)
+        error_message = "The bastion_health_status value must be either OK or WARNING."
+    }
+}
+
 variable "installer_log_level" {
     description = "Set the log level required for openshift-install commands"
     default = "info"

@@ -65,6 +65,7 @@ cluster_id                  = ""
 #install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playbooks"
 #install_playbook_tag       = ""
 
+#bastion_health_status      = "OK"
 #installer_log_level        = "info"
 #ansible_extra_options      = "-v"
 #ansible_repo_name          = "ansible-2.9-for-rhel-8-ppc64le-rpms"

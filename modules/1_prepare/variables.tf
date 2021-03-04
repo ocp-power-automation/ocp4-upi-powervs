@@ -33,6 +33,8 @@ variable "system_type" {}
 variable "network_name" {}
 variable "network_dns" {}
 
+variable "bastion_health_status" {}
+
 variable "rhel_username" {}
 variable "ssh_agent" {}
 
