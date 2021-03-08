@@ -30,7 +30,16 @@ locals {
     }
 }
 
+data "ibm_pi_catalog_images" "catalog_images" {
+    pi_cloud_instance_id = var.service_instance_id
+}
+
+locals {
+    catalog_bastion_image = [for x in data.ibm_pi_catalog_images.catalog_images.images: x.image_id if x.name == var.rhel_image_name]
+}
+
 data "ibm_pi_image" "bastion" {
+    count                   = length(local.catalog_bastion_image) == 0 ? 1 : 0
     pi_image_name           = var.rhel_image_name
     pi_cloud_instance_id    = var.service_instance_id
 }
@@ -70,7 +79,7 @@ resource "ibm_pi_instance" "bastion" {
     pi_processors           = var.bastion["processors"]
     pi_instance_name        = "${var.cluster_id}-bastion-${count.index}"
     pi_proc_type            = var.processor_type
-    pi_image_id             = data.ibm_pi_image.bastion.id
+    pi_image_id             = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].id : local.catalog_bastion_image[0]
     pi_network_ids          = [ibm_pi_network.public_network.network_id, data.ibm_pi_network.network.id]
     pi_key_pair_name        = ibm_pi_key.key.key_id
     pi_sys_type             = var.system_type
