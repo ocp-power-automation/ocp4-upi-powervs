@@ -75,6 +75,7 @@ resource "ibm_pi_instance" "bastion" {
     pi_key_pair_name        = ibm_pi_key.key.key_id
     pi_sys_type             = var.system_type
     pi_cloud_instance_id    = var.service_instance_id
+    pi_health_status        = var.bastion_health_status
     pi_volume_ids           = var.storage_type == "nfs" ? ibm_pi_volume.volume.*.volume_id : null
 }
 

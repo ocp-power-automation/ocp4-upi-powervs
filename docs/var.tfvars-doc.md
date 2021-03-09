@@ -205,6 +205,11 @@ install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playb
 install_playbook_tag       = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
 ```
 
+This variable specify if bastion should poll for the Health Status to be OK or WARNING. Default is OK.
+```
+bastion_health_status       = "OK"
+```
+
 This variable can be used when debugging `openshift-install` commands.
 ```
 installer_log_level         = "info"

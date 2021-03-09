@@ -29,6 +29,7 @@ module "prepare" {
     network_name                    = var.network_name
     #Specify dns for public network. Trim spaces that may be present in splitted values.
     network_dns                     = var.dns_forwarders == "" ? [] : [for dns in split(";", var.dns_forwarders): trimspace(dns)]
+    bastion_health_status           = var.bastion_health_status
     rhel_username                   = var.rhel_username
     private_key                     = local.private_key
     public_key                      = local.public_key
