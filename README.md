@@ -27,7 +27,7 @@ For general PowerVS usage instructions please refer to the following links:
 
 The automation needs to run from a system with internet access. This could be your laptop or a VM with public internet connectivity. This automation code have been tested on the following Operating Systems:
 - Mac OSX (Darwin)
-- Linux (x86_64)
+- Linux (x86_64/ppc64le)
 - Windows 10
 
 Follow the [guide](docs/automation_host_prereqs.md) to complete the prerequisites.
