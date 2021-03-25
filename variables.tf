@@ -321,6 +321,12 @@ variable "chrony_config_servers" {
     # example: chrony_config_servers = [ {server = "10.3.21.254", options = "iburst"}, {server = "10.5.21.254", options = "iburst"} ]
 }
 
+variable "setup_snat" {
+    type        = bool
+    description = "IMPORTANT: This is an experimental feature. Flag to configure bastion as SNAT and use the router on all cluster nodes. You need to set setup_squid_proxy to false to stop using the proxy service"
+    default     = false
+}
+
 variable "setup_squid_proxy" {
     type        = bool
     description = "Flag to install and configure squid proxy server on bastion node"

@@ -46,7 +46,7 @@ locals {
         bastion_master_ip   = var.bastion_ip[0]
         bastion_backup_ip   = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
         forwarders      = var.dns_forwarders
-        gateway_ip      = var.gateway_ip
+        gateway_ip      = var.setup_snat ? (var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]) : var.gateway_ip
         netmask         = cidrnetmask(var.cidr)
         broadcast       = cidrhost(var.cidr,-1)
         ipid            = cidrhost(var.cidr, 0)
@@ -210,8 +210,58 @@ resource "null_resource" "configure_public_vip" {
     }
 }
 
+
+resource "null_resource" "setup_snat" {
+    count       = var.setup_snat ? var.bastion_count : 0
+    depends_on  = [null_resource.config]
+
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = var.bastion_public_ip[count.index]
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
+    }
+
+    provisioner "remote-exec" {
+        inline = [<<EOF
+
+echo "Configuring SNAT (experimental)..."
+
+PRIVATE_INTERFACE=$(ip r | grep "${var.cidr} dev" | awk '{print $3}')
+PUBLIC_INTERFACE=$(ip r | grep "${var.public_cidr} dev" | awk '{print $3}')
+
+firewall-cmd --zone=public --add-masquerade --permanent
+firewall-cmd --reload
+
+# Masquerade will enable ip forwarding automatically; Uncomment below lines if not
+# Enable IP forwarding
+#echo 'net.ipv4.ip_forward = 1' | sudo tee --append /etc/sysctl.conf > /dev/null
+#sysctl -p /etc/sysctl.conf
+
+#sudo yum install -y iptables
+iptables -t nat -A POSTROUTING -o $PUBLIC_INTERFACE -j MASQUERADE
+iptables -A FORWARD -i $PRIVATE_INTERFACE -j ACCEPT
+iptables -A FORWARD -o $PRIVATE_INTERFACE -j ACCEPT
+
+ethtool -K $PUBLIC_INTERFACE tso off
+ethtool -K $PUBLIC_INTERFACE gso off
+ethtool -K $PRIVATE_INTERFACE tso off
+ethtool -K $PRIVATE_INTERFACE gso off
+
+# Set mtu to 1450 for private interface.
+sudo ip link set dev $PRIVATE_INTERFACE mtu 1450
+echo MTU=1450 | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$PRIVATE_INTERFACE
+
+EOF
+  ]
+    }
+}
+
+
 resource "null_resource" "install" {
-    depends_on = [null_resource.config, null_resource.configure_public_vip]
+    depends_on = [null_resource.config, null_resource.configure_public_vip, null_resource.setup_snat]
 
     triggers = {
        worker_count = length(var.worker_ips)
