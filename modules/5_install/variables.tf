@@ -82,6 +82,8 @@ variable "upgrade_version" {}
 variable "upgrade_pause_time" {}
 variable "upgrade_delay_time" {}
 
+variable "setup_snat" {}
+
 variable "setup_squid_proxy" {}
 variable "proxy" {}
 
