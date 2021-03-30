@@ -74,7 +74,6 @@ cluster_id                  = ""         # It will use random generated id with 
 
 #storage_type               = "nfs"
 #volume_size                = "300"    #Value in GB
-#volume_type                = "tier3"
 #volume_shareable           = false
 
 #master_volume_size         = "500"   #Value in GB

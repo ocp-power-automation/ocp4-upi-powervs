@@ -274,7 +274,6 @@ These variables specify details about NFS storage that is setup by default on th
 ```
 storage_type                = "nfs"
 volume_size                 = "300" # Value in GB
-volume_type                 = "tier3"
 volume_shareable            = false
 ```
 

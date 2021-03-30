@@ -35,7 +35,9 @@ data "ibm_pi_catalog_images" "catalog_images" {
 }
 
 locals {
-    catalog_bastion_image = [for x in data.ibm_pi_catalog_images.catalog_images.images: x.image_id if x.name == var.rhel_image_name]
+    catalog_bastion_image   = [for x in data.ibm_pi_catalog_images.catalog_images.images: x if x.name == var.rhel_image_name]
+    bastion_image_id        = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].id : local.catalog_bastion_image[0].image_id
+    bastion_storage_type    = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].storage_type : local.catalog_bastion_image[0].storage_type
 }
 
 data "ibm_pi_image" "bastion" {
@@ -67,7 +69,7 @@ resource "ibm_pi_volume" "volume" {
 
     pi_volume_size       = var.volume_size
     pi_volume_name       = "${var.cluster_id}-${var.storage_type}-volume"
-    pi_volume_type       = var.volume_type
+    pi_volume_type       = local.bastion_storage_type
     pi_volume_shareable  = var.volume_shareable
     pi_cloud_instance_id = var.service_instance_id
 }
@@ -79,7 +81,7 @@ resource "ibm_pi_instance" "bastion" {
     pi_processors           = var.bastion["processors"]
     pi_instance_name        = "${var.cluster_id}-bastion-${count.index}"
     pi_proc_type            = var.processor_type
-    pi_image_id             = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].id : local.catalog_bastion_image[0]
+    pi_image_id             = local.bastion_image_id
     pi_network_ids          = [ibm_pi_network.public_network.network_id, data.ibm_pi_network.network.id]
     pi_key_pair_name        = ibm_pi_key.key.key_id
     pi_sys_type             = var.system_type
