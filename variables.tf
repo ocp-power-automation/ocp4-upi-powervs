@@ -230,6 +230,12 @@ variable "bastion_health_status" {
     }
 }
 
+variable "private_network_mtu" {
+    type        = number
+    description = "MTU value for the private network interface on RHEL and RHCOS nodes"
+    default     = 1450
+}
+
 variable "installer_log_level" {
     type        = string
     description = "Set the log level required for openshift-install commands"
@@ -261,7 +267,7 @@ variable "install_playbook_tag" {
     type        = string
     description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
     # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
-    default     = "473383c07c19616acbfccbf729c77b226ce0163b"
+    default     = "e89bef76cec089a481d6de2b7fa07944ae0481a5"
 }
 
 variable "ansible_extra_options" {
@@ -323,7 +329,7 @@ variable "chrony_config_servers" {
 
 variable "setup_snat" {
     type        = bool
-    description = "IMPORTANT: This is an experimental feature. Flag to configure bastion as SNAT and use the router on all cluster nodes. You need to set setup_squid_proxy to false to stop using the proxy service"
+    description = "IMPORTANT: This is an experimental feature. Flag to configure bastion as SNAT and use the router on all cluster nodes"
     default     = false
 }
 
