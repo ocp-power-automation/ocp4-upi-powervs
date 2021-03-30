@@ -54,7 +54,6 @@ variable "ansible_repo_name" {}
 variable "rhel_smt" {}
 
 variable "storage_type" {}
-variable "volume_type" {}
 variable "volume_size" {}
 variable "volume_shareable" {}
 
