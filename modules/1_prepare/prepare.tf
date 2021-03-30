@@ -143,8 +143,11 @@ resource "null_resource" "bastion_init" {
             # Set SMT to user specified value; Should not fail for invalid values.
             "sudo ppc64_cpu --smt=${var.rhel_smt} | true",
             # Set mtu to 1450 for public interface.
-            "sudo ip link set dev $(ip r | grep ${ibm_pi_network.public_network.pi_cidr} | awk '{print $3}') mtu 1450",
-            "echo MTU=1450 | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${ibm_pi_network.public_network.pi_cidr} | awk '{print $3}')"
+            "sudo ip link set dev $(ip r | grep \"${ibm_pi_network.public_network.pi_cidr} dev\" | awk '{print $3}') mtu 1450",
+            "echo MTU=1450 | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${ibm_pi_network.public_network.pi_cidr} | awk '{print $3}')",
+            # Set specified mtu for private interface.
+            "sudo ip link set dev $(ip r | grep \"${data.ibm_pi_network.network.cidr} dev\" | awk '{print $3}') mtu ${var.private_network_mtu}",
+            "echo MTU=${var.private_network_mtu} | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${data.ibm_pi_network.network.cidr} | awk '{print $3}')"
         ]
     }
 }

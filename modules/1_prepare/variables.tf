@@ -41,6 +41,7 @@ variable "network_name" {}
 variable "network_dns" {}
 
 variable "bastion_health_status" {}
+variable "private_network_mtu" {}
 
 variable "rhel_username" {}
 variable "ssh_agent" {}

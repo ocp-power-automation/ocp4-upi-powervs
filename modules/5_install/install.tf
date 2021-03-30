@@ -118,6 +118,9 @@ locals {
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
         no_proxy                = var.cidr
         cni_network_provider    = var.cni_network_provider
+        # Set CNI network MTU to MTU - 100 for OVNKubernetes and MTU - 50 for OpenShiftSDN(default).
+        # Add new conditions here when we have more network providers
+        cni_network_mtu         = var.cni_network_provider == "OVNKubernetes" ? var.private_network_mtu - 100 : var.private_network_mtu - 50
     }
 
     powervs_config_vars = {
@@ -234,26 +237,13 @@ PRIVATE_INTERFACE=$(ip r | grep "${var.cidr} dev" | awk '{print $3}')
 PUBLIC_INTERFACE=$(ip r | grep "${var.public_cidr} dev" | awk '{print $3}')
 
 firewall-cmd --zone=public --add-masquerade --permanent
+# Masquerade will enable ip forwarding automatically
 firewall-cmd --reload
-
-# Masquerade will enable ip forwarding automatically; Uncomment below lines if not
-# Enable IP forwarding
-#echo 'net.ipv4.ip_forward = 1' | sudo tee --append /etc/sysctl.conf > /dev/null
-#sysctl -p /etc/sysctl.conf
-
-#sudo yum install -y iptables
-iptables -t nat -A POSTROUTING -o $PUBLIC_INTERFACE -j MASQUERADE
-iptables -A FORWARD -i $PRIVATE_INTERFACE -j ACCEPT
-iptables -A FORWARD -o $PRIVATE_INTERFACE -j ACCEPT
 
 ethtool -K $PUBLIC_INTERFACE tso off
 ethtool -K $PUBLIC_INTERFACE gso off
 ethtool -K $PRIVATE_INTERFACE tso off
 ethtool -K $PRIVATE_INTERFACE gso off
-
-# Set mtu to 1450 for private interface.
-sudo ip link set dev $PRIVATE_INTERFACE mtu 1450
-echo MTU=1450 | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$PRIVATE_INTERFACE
 
 EOF
   ]
@@ -293,6 +283,15 @@ resource "null_resource" "install" {
         content     = templatefile("${path.module}/templates/install_vars.yaml", local.install_vars)
         destination = "~/ocp4-playbooks/install_vars.yaml"
     }
+
+    # DHCP config for setting MTU; Since helpernode DHCP template does not support MTU setting
+    provisioner "remote-exec" {
+        inline = [
+            "sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf",
+            "sudo systemctl restart dhcpd.service"
+        ]
+    }
+
     provisioner "remote-exec" {
         inline = [
             "echo 'Running ocp install playbook...'",
