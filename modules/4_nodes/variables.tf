@@ -36,7 +36,6 @@ variable "worker" {}
 
 variable "master_volume_size" {}
 variable "worker_volume_size" {}
-variable "volume_type" {}
 variable "volume_shareable" {}
 
 variable "bastion_public_ip" {}
