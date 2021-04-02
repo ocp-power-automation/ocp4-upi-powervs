@@ -41,7 +41,6 @@ module "prepare" {
     ansible_repo_name               = var.ansible_repo_name
     rhel_smt                        = var.rhel_smt
     storage_type                    = local.storage_type
-    volume_type                     = var.volume_type
     volume_size                     = var.volume_size
     volume_shareable                = var.volume_shareable
     setup_squid_proxy               = var.setup_squid_proxy
@@ -64,7 +63,6 @@ module "nodes" {
     worker                          = var.worker
     master_volume_size              = var.master_volume_size
     worker_volume_size              = var.worker_volume_size
-    volume_type                     = var.volume_type
     volume_shareable                = var.volume_shareable
     bastion_public_ip               = module.prepare.bastion_public_ip
     rhel_username                   = var.rhel_username

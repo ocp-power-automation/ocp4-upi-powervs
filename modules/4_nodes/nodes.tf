@@ -115,7 +115,7 @@ resource "ibm_pi_volume" "master" {
 
     pi_volume_size       = var.master_volume_size
     pi_volume_name       = "${var.cluster_id}-master-${count.index}-volume"
-    pi_volume_type       = var.volume_type
+    pi_volume_type       = data.ibm_pi_image.rhcos.storage_type
     pi_volume_shareable  = var.volume_shareable
     pi_cloud_instance_id = var.service_instance_id
 }
@@ -199,7 +199,7 @@ resource "ibm_pi_volume" "worker" {
 
     pi_volume_size       = var.worker_volume_size
     pi_volume_name       = "${var.cluster_id}-worker-${count.index}-volume"
-    pi_volume_type       = var.volume_type
+    pi_volume_type       = data.ibm_pi_image.rhcos.storage_type
     pi_volume_shareable  = var.volume_shareable
     pi_cloud_instance_id = var.service_instance_id
 }
