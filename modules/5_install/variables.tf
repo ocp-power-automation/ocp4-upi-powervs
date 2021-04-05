@@ -60,6 +60,8 @@ variable "public_key" {}
 variable "pull_secret" {}
 variable "release_image_override" {}
 
+variable "private_network_mtu" {}
+
 variable "enable_local_registry" {}
 variable "local_registry_image" {}
 variable "ocp_release_tag" {}
@@ -81,6 +83,8 @@ variable "chrony_config_servers" {}
 variable "upgrade_version" {}
 variable "upgrade_pause_time" {}
 variable "upgrade_delay_time" {}
+
+variable "setup_snat" {}
 
 variable "setup_squid_proxy" {}
 variable "proxy" {}
