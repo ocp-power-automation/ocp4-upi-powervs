@@ -12,7 +12,7 @@ resource "random_id" "label" {
 
 locals {
     # Generates cluster_id as combination of cluster_id_prefix + (random_id or user-defined cluster_id)
-    cluster_id      = var.cluster_id == "" ? random_id.label[0].hex : "${var.cluster_id_prefix}-${var.cluster_id}"
+    cluster_id      = var.cluster_id == "" ? random_id.label[0].hex : (var.cluster_id_prefix == "" ? var.cluster_id : "${var.cluster_id_prefix}-${var.cluster_id}")
     storage_type    = lookup(var.bastion, "count", 1) > 1 ? "none" : var.storage_type
 }
 
@@ -30,6 +30,7 @@ module "prepare" {
     #Specify dns for public network. Trim spaces that may be present in splitted values.
     network_dns                     = var.dns_forwarders == "" ? [] : [for dns in split(";", var.dns_forwarders): trimspace(dns)]
     bastion_health_status           = var.bastion_health_status
+    private_network_mtu             = var.private_network_mtu
     rhel_username                   = var.rhel_username
     private_key                     = local.private_key
     public_key                      = local.public_key
@@ -101,10 +102,12 @@ module "install" {
     openshift_client_tarball        = var.openshift_client_tarball
     storage_type                    = local.storage_type
     release_image_override          = var.release_image_override
+    private_network_mtu             = var.private_network_mtu
     enable_local_registry           = var.enable_local_registry
     local_registry_image            = var.local_registry_image
     ocp_release_tag                 = var.ocp_release_tag
     ocp_release_name                = var.ocp_release_name
+    setup_snat                      = var.setup_snat
     setup_squid_proxy               = var.setup_squid_proxy
     proxy                           = var.proxy
     helpernode_repo                 = var.helpernode_repo

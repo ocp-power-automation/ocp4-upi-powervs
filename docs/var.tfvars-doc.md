@@ -189,6 +189,7 @@ Set the `cluster_domain` to `nip.io`, `xip.io` or `sslip.io` if you prefer using
 Default is `ibm.com`.
 The `cluster_id_prefix` should not be more than 8 characters. Nodes are pre-fixed with this value.
 Default value is `test-ocp`
+If `cluster_id_prefix` is not set, the `cluster_id` will be used only without prefix.
 
 A random value will be used for `cluster_id` if not set.
 The total length of `cluster_id_prefix`.`cluster_id` should not exceed 14 characters.
@@ -222,6 +223,11 @@ install_playbook_tag       = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
 This variable specify if bastion should poll for the Health Status to be OK or WARNING. Default is OK.
 ```
 bastion_health_status       = "OK"
+```
+
+This variable specify the MTU value for the private network interface on RHEL and RHCOS nodes. The CNI network will have <private_network_mtu> - 50 for OpenshiftSDN and <private_network_mtu> - 100 for OVNKubernetes network provider.
+```
+private_network_mtu         = 1450
 ```
 
 These variables can be used when debugging ansible playbooks.

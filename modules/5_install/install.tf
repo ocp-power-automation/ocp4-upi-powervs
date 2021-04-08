@@ -46,7 +46,7 @@ locals {
         bastion_master_ip   = var.bastion_ip[0]
         bastion_backup_ip   = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
         forwarders      = var.dns_forwarders
-        gateway_ip      = var.gateway_ip
+        gateway_ip      = var.setup_snat ? (var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]) : var.gateway_ip
         netmask         = cidrnetmask(var.cidr)
         broadcast       = cidrhost(var.cidr,-1)
         ipid            = cidrhost(var.cidr, 0)
@@ -118,6 +118,9 @@ locals {
         proxy_url               = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
         no_proxy                = var.cidr
         cni_network_provider    = var.cni_network_provider
+        # Set CNI network MTU to MTU - 100 for OVNKubernetes and MTU - 50 for OpenShiftSDN(default).
+        # Add new conditions here when we have more network providers
+        cni_network_mtu         = var.cni_network_provider == "OVNKubernetes" ? var.private_network_mtu - 100 : var.private_network_mtu - 50
     }
 
     powervs_config_vars = {
@@ -211,8 +214,45 @@ resource "null_resource" "configure_public_vip" {
     }
 }
 
+
+resource "null_resource" "setup_snat" {
+    count       = var.setup_snat ? var.bastion_count : 0
+    depends_on  = [null_resource.config]
+
+    connection {
+        type        = "ssh"
+        user        = var.rhel_username
+        host        = var.bastion_public_ip[count.index]
+        private_key = var.private_key
+        agent       = var.ssh_agent
+        timeout     = "15m"
+    }
+
+    provisioner "remote-exec" {
+        inline = [<<EOF
+
+echo "Configuring SNAT (experimental)..."
+
+PRIVATE_INTERFACE=$(ip r | grep "${var.cidr} dev" | awk '{print $3}')
+PUBLIC_INTERFACE=$(ip r | grep "${var.public_cidr} dev" | awk '{print $3}')
+
+firewall-cmd --zone=public --add-masquerade --permanent
+# Masquerade will enable ip forwarding automatically
+firewall-cmd --reload
+
+ethtool -K $PUBLIC_INTERFACE tso off
+ethtool -K $PUBLIC_INTERFACE gso off
+ethtool -K $PRIVATE_INTERFACE tso off
+ethtool -K $PRIVATE_INTERFACE gso off
+
+EOF
+  ]
+    }
+}
+
+
 resource "null_resource" "install" {
-    depends_on = [null_resource.config, null_resource.configure_public_vip]
+    depends_on = [null_resource.config, null_resource.configure_public_vip, null_resource.setup_snat]
 
     triggers = {
        worker_count = length(var.worker_ips)
@@ -243,6 +283,15 @@ resource "null_resource" "install" {
         content     = templatefile("${path.module}/templates/install_vars.yaml", local.install_vars)
         destination = "~/ocp4-playbooks/install_vars.yaml"
     }
+
+    # DHCP config for setting MTU; Since helpernode DHCP template does not support MTU setting
+    provisioner "remote-exec" {
+        inline = [
+            "sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf",
+            "sudo systemctl restart dhcpd.service"
+        ]
+    }
+
     provisioner "remote-exec" {
         inline = [
             "echo 'Running ocp install playbook...'",
