@@ -234,16 +234,13 @@ resource "null_resource" "setup_snat" {
 echo "Configuring SNAT (experimental)..."
 
 PRIVATE_INTERFACE=$(ip r | grep "${var.cidr} dev" | awk '{print $3}')
-PUBLIC_INTERFACE=$(ip r | grep "${var.public_cidr} dev" | awk '{print $3}')
 
 firewall-cmd --zone=public --add-masquerade --permanent
 # Masquerade will enable ip forwarding automatically
 firewall-cmd --reload
 
-ethtool -K $PUBLIC_INTERFACE tso off
-ethtool -K $PUBLIC_INTERFACE gso off
-ethtool -K $PRIVATE_INTERFACE tso off
-ethtool -K $PRIVATE_INTERFACE gso off
+#Checksum needs to be turned off to avoid a bug with ibmveth
+ethtool -K $PRIVATE_INTERFACE rx off
 
 EOF
   ]
