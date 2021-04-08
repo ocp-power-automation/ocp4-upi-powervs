@@ -60,6 +60,8 @@ variable "public_key" {}
 variable "pull_secret" {}
 variable "release_image_override" {}
 
+variable "private_network_mtu" {}
+
 variable "enable_local_registry" {}
 variable "local_registry_image" {}
 variable "ocp_release_tag" {}
@@ -82,8 +84,12 @@ variable "upgrade_version" {}
 variable "upgrade_pause_time" {}
 variable "upgrade_delay_time" {}
 
+variable "setup_snat" {}
+
 variable "setup_squid_proxy" {}
 variable "proxy" {}
 
 variable "ibm_cloud_dl_endpoint_net_cidr" {}
 variable "ibm_cloud_http_proxy" {}
+
+variable "cni_network_provider" {}
