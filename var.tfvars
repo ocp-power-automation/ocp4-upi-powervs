@@ -87,3 +87,5 @@ cluster_id                  = ""         # It will use random generated id with 
 #ibm_cloud_http_proxy = ""            #Set this to IBM Cloud http/squid proxy eg. http://10.166.13.64:3128
 
 #cni_network_provider       = "OpenshiftSDN"
+
+#setup_snat                 = "false"
