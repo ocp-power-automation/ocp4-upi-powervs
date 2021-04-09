@@ -17,12 +17,6 @@ bootstrap                   = {memory      = "32",   processors  = "0.5",  "coun
 master                      = {memory      = "32",   processors  = "0.5",  "count"   = 3}
 worker                      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
 
-### This is a sample config for trying out Cloud Pak for Data 
-#bastion                     = {memory      = "16",   processors  = "1",    "count"   = 1}
-#bootstrap                   = {memory      = "32",   processors  = "0.5",  "count"   = 1}
-#master                      = {memory      = "32",   processors  = "0.5",  "count"   = 3}
-#worker                      = {memory      = "64",   processors  = "1.5",  "count"   = 4}
-
 rhel_image_name             = "rhel-8.3"
 rhcos_image_name            = "rhcos-4.6"
 processor_type              = "shared"

@@ -433,12 +433,6 @@ variable "volume_size" {
     default = "300"
 }
 
-variable "volume_type" {
-    type        = string
-    description = "The volume type (ssd, standard, tier1, tier3)"    
-    default     = "tier3"
-}
-
 variable "volume_shareable" {
     type        = bool
     description = "If the volumes can be shared or not (true/false)"
