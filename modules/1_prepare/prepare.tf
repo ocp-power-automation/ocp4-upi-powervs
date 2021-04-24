@@ -344,7 +344,7 @@ resource "null_resource" "setup_nfs_disk" {
     }
     provisioner "remote-exec" {
         inline = [
-            "rm -rf mkdir ${local.storage_path}; mkdir -p ${local.storage_path}; chmod -R 755 ${local.storage_path}",
+            "rm -rf mkdir ${local.storage_path}; mkdir -p ${local.storage_path}; chmod -R 777 ${local.storage_path}",
             "sudo chmod +x /tmp/create_disk_link.sh",
             # Fix for copying file from Windows OS having CR
             "sed -i 's/\r//g' /tmp/create_disk_link.sh",
