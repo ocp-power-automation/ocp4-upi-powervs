@@ -1,9 +1,9 @@
 ### IBM Cloud details
 
-ibmcloud_api_key            = "<key>"
-ibmcloud_region             = "<region>"
-ibmcloud_zone               = "<zone>"
-service_instance_id         = "<cloud_instance_ID>"
+ibmcloud_api_key    = "<key>"
+ibmcloud_region     = "<region>"
+ibmcloud_zone       = "<zone>"
+service_instance_id = "<cloud_instance_ID>"
 
 ### OpenShift Cluster Details
 
@@ -12,35 +12,35 @@ service_instance_id         = "<cloud_instance_ID>"
 ### Example 0.5 processors == 0.5 physical core entitlements == ceil[0.5] = 1 vCPU == 8 logical OS CPUs (SMT=8)
 ### Example 1.5 processors == 1.5 physical core entitlements == ceil[1.5] = 2 vCPU == 16 logical OS CPUs (SMT=8)
 ### Example 2 processors == 2 physical core entitlements == ceil[2] = 2 vCPU == 16 logical OS CPUs (SMT=8)
-bastion                     = {memory      = "16",   processors  = "1",    "count"   = 1}
-bootstrap                   = {memory      = "32",   processors  = "0.5",  "count"   = 1}
-master                      = {memory      = "32",   processors  = "0.5",  "count"   = 3}
-worker                      = {memory      = "32",   processors  = "0.5",  "count"   = 2}
+bastion   = { memory = "16", processors = "1", "count" = 1 }
+bootstrap = { memory = "32", processors = "0.5", "count" = 1 }
+master    = { memory = "32", processors = "0.5", "count" = 3 }
+worker    = { memory = "32", processors = "0.5", "count" = 2 }
 
-rhel_image_name             = "rhel-8.3"
-rhcos_image_name            = "rhcos-4.6"
-processor_type              = "shared"
-system_type                 = "s922"
-network_name                = "ocp-net"
+rhel_image_name  = "rhel-8.3"
+rhcos_image_name = "rhcos-4.6"
+processor_type   = "shared"
+system_type      = "s922"
+network_name     = "ocp-net"
 
-rhel_username               = "root"
-public_key_file             = "data/id_rsa.pub"
-private_key_file            = "data/id_rsa"
-rhel_subscription_username  = "<subscription-id>"          #Leave this as-is if using CentOS as bastion image
-rhel_subscription_password  = "<subscription-password>"    #Leave this as-is if using CentOS as bastion image
-rhel_subscription_org           = ""                       # Define it only when using activationkey for RHEL subscription
-rhel_subscription_activationkey = ""                       # Define it only when using activationkey for RHEL subscription
-rhel_smt                    = 4
+rhel_username                   = "root"
+public_key_file                 = "data/id_rsa.pub"
+private_key_file                = "data/id_rsa"
+rhel_subscription_username      = "<subscription-id>"       #Leave this as-is if using CentOS as bastion image
+rhel_subscription_password      = "<subscription-password>" #Leave this as-is if using CentOS as bastion image
+rhel_subscription_org           = ""                        # Define it only when using activationkey for RHEL subscription
+rhel_subscription_activationkey = ""                        # Define it only when using activationkey for RHEL subscription
+rhel_smt                        = 4
 
 ### OpenShift Installation Details
 
-openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
-openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
-pull_secret_file            = "data/pull-secret.txt"
+openshift_install_tarball = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
+openshift_client_tarball  = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
+pull_secret_file          = "data/pull-secret.txt"
 
-cluster_domain              = "ibm.com"  #Set domain to nip.io or xip.io if you prefer using online wildcard domain and avoid modifying /etc/hosts
-cluster_id_prefix           = "test-ocp" # Set it to empty if just want to use cluster_id without prefix
-cluster_id                  = ""         # It will use random generated id with cluster_id_prefix if this is not set
+cluster_domain    = "ibm.com"  #Set domain to nip.io or xip.io if you prefer using online wildcard domain and avoid modifying /etc/hosts
+cluster_id_prefix = "test-ocp" # Set it to empty if just want to use cluster_id without prefix
+cluster_id        = ""         # It will use random generated id with cluster_id_prefix if this is not set
 
 
 ### Misc Customizations

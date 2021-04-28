@@ -19,25 +19,25 @@
 ################################################################
 
 output "bootstrap_ip" {
-    value = join("",data.ibm_pi_instance_ip.bootstrap_ip.*.ip)
+  value = join("", data.ibm_pi_instance_ip.bootstrap_ip.*.ip)
 }
 
 output "bootstrap_mac" {
-    value = join("",data.ibm_pi_instance_ip.bootstrap_ip.*.macaddress)
+  value = join("", data.ibm_pi_instance_ip.bootstrap_ip.*.macaddress)
 }
 
 output "master_ips" {
-    value = data.ibm_pi_instance_ip.master_ip.*.ip
+  value = data.ibm_pi_instance_ip.master_ip.*.ip
 }
 
 output "master_macs" {
-    value = data.ibm_pi_instance_ip.master_ip.*.macaddress
+  value = data.ibm_pi_instance_ip.master_ip.*.macaddress
 }
 
 output "worker_ips" {
-    value = data.ibm_pi_instance_ip.worker_ip.*.ip
+  value = data.ibm_pi_instance_ip.worker_ip.*.ip
 }
 
 output "worker_macs" {
-    value = data.ibm_pi_instance_ip.worker_ip.*.macaddress
+  value = data.ibm_pi_instance_ip.worker_ip.*.macaddress
 }
