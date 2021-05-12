@@ -43,6 +43,14 @@ cluster_id_prefix = "test-ocp" # Set it to empty if just want to use cluster_id 
 cluster_id        = ""         # It will use random generated id with cluster_id_prefix if this is not set
 
 
+### Using IBM Cloud Services
+#use_ibm_cloud_services    = true
+#ibm_cloud_vpc_name        = "ocp-vpc"
+#ibm_cloud_vpc_subnet_name = "ocp-subnet"
+#iaas_classic_username     = "1363308_user@email"   # Can be passed via environment variable IAAS_CLASSIC_USERNAME
+#iaas_classic_api_key      = "xxxxxxyyyyyyzzzzzz"   # Can be passed via environment variable IAAS_CLASSIC_API_KEY
+
+
 ### Misc Customizations
 
 #enable_local_registry      = false  #Set to true to enable usage of local registry for restricted network install.
