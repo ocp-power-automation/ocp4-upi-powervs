@@ -194,6 +194,28 @@ If `cluster_id_prefix` is not set, the `cluster_id` will be used only without pr
 A random value will be used for `cluster_id` if not set.
 The total length of `cluster_id_prefix`.`cluster_id` should not exceed 14 characters.
 
+
+### Using IBM Cloud Services
+
+You can use IBM Cloud classic DNS and VPC Load Balancer services for running the OCP cluster. When this feature is enabled the services called named (DNS) and haproxy (Load Balancer) will not be running on the bastion/helpernode.
+
+Ensure you have setup [DirectLink](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-ordering-direct-link-connect) with IBM Cloud VPC over the private network in cloud instance. Also, ensure you have registered a [DNS](https://cloud.ibm.com/docs/dns?topic=dns-register-a-new-domain) domain and use it as given in `cluster_domain` variable.
+
+**IMPORTANT**: This is an **experimental** feature at present. Please manually set variables `setup_snat = true` and `setup_squid_proxy = false` for using IBM Cloud services. This will allow the cluster nodes have public internet access without a proxy server.
+
+Below variables needs to be set in order to use the IBM Cloud services.
+
+```
+use_ibm_cloud_services    = true
+ibm_cloud_vpc_name        = "ocp-vpc"
+ibm_cloud_vpc_subnet_name = "ocp-subnet"
+iaas_classic_username     = "1363308_user@email"
+iaas_classic_api_key      = "xxxxyyyyyyzzzzzzz"
+```
+
+Note: If you do not want to provide `iaas_classic_username` and `iaas_classic_api_key` via variables then be passed via environment variables `IAAS_CLASSIC_USERNAME` and `IAAS_CLASSIC_API_KEY` respectively.
+
+
 ### Misc Customizations
 
 These variables provides miscellaneous customizations. For common usage scenarios these are not required and should be left unchanged.
