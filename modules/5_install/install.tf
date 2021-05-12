@@ -84,7 +84,7 @@ locals {
   }
 
   install_inventory = {
-    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.cluster_id}-bastion-${ix}"]
+    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.cluster_id}-bastion-${ix}.${local.cluster_domain}"]
     bootstrap_host = var.bootstrap_ip == "" ? "" : "bootstrap"
     master_hosts   = [for ix in range(length(var.master_ips)) : "master-${ix}"]
     worker_hosts   = [for ix in range(length(var.worker_ips)) : "worker-${ix}"]
@@ -246,9 +246,41 @@ EOF
   }
 }
 
+resource "null_resource" "external_services" {
+  count      = var.use_ibm_cloud_services ? var.bastion_count : 0
+  depends_on = [null_resource.config, null_resource.setup_snat]
+
+  triggers = {
+    worker_count = length(var.worker_ips)
+  }
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = var.bastion_public_ip[count.index]
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "15m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Stopping HAPROXY and DNS'",
+      "sudo systemctl stop haproxy.service && sudo systemctl stop named.service",
+      "sudo systemctl mask haproxy.service && sudo systemctl mask named.service",
+      "echo 'Changing DNS to external on bastion and dhcpd'",
+      # TODO: This is hardcoded to 9.9.9.9 to use external nameserver. Need to read from dns_forwarders.
+      "sudo sed -i 's/nameserver 127.0.0.1/nameserver 9.9.9.9/g' /etc/resolv.conf",
+      "sudo sed -i 's/option domain-name-servers.*/option domain-name-servers 9.9.9.9;/g' /etc/dhcp/dhcpd.conf",
+      "echo 'Adding static route for VPC subnet in dhcpd'",
+      "sudo sed -i '/option routers/i option static-routes ${cidrhost(var.vpc_cidr, 0)} ${var.gateway_ip};' /etc/dhcp/dhcpd.conf",
+      "sudo systemctl restart dhcpd.service"
+    ]
+  }
+}
 
 resource "null_resource" "install" {
-  depends_on = [null_resource.config, null_resource.configure_public_vip, null_resource.setup_snat]
+  depends_on = [null_resource.config, null_resource.configure_public_vip, null_resource.setup_snat, null_resource.external_services]
 
   triggers = {
     worker_count = length(var.worker_ips)
@@ -287,7 +319,6 @@ resource "null_resource" "install" {
       "sudo systemctl restart dhcpd.service"
     ]
   }
-
   provisioner "remote-exec" {
     inline = [
       "echo 'Running ocp install playbook...'",
