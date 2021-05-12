@@ -358,13 +358,13 @@ variable "chrony_config_servers" {
 variable "setup_snat" {
   type        = bool
   description = "IMPORTANT: This is an experimental feature. Flag to configure bastion as SNAT and use the router on all cluster nodes"
-  default     = false
+  default     = true
 }
 
 variable "setup_squid_proxy" {
   type        = bool
   description = "Flag to install and configure squid proxy server on bastion node"
-  default     = true
+  default     = false
 }
 
 # Applicable only when `setup_squid_proxy = false`

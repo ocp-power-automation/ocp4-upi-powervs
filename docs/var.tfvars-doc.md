@@ -332,5 +332,5 @@ cni_network_provider       = "OpenshiftSDN"
 This variable is used to enable SNAT for OCP nodes. When using SNAT, the OCP nodes will be able to access public internet without using a proxy
 
 ```
-setup_snat                 = "false"
+setup_snat                 = true
 ```

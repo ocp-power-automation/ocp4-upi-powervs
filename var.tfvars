@@ -74,7 +74,7 @@ cluster_id        = ""         # It will use random generated id with cluster_id
 #chrony_config              = true
 #chrony_config_servers      = [ {server = "0.centos.pool.ntp.org", options = "iburst"}, {server = "1.centos.pool.ntp.org", options = "iburst"} ]
 
-#setup_squid_proxy          = true
+#setup_squid_proxy          = false
 
 ## N/A when `setup_squid_proxy = true`, set `setup_squid_proxy = false` when using external proxy.
 #proxy                      = {server = "hostname_or_ip", port = "3128", user = "pxuser", password = "pxpassword"}
@@ -96,4 +96,4 @@ cluster_id        = ""         # It will use random generated id with cluster_id
 
 #cni_network_provider       = "OpenshiftSDN"
 
-#setup_snat                 = "false"
+#setup_snat                 = true
