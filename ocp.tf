@@ -1,7 +1,9 @@
 provider "ibm" {
-  ibmcloud_api_key = var.ibmcloud_api_key
-  region           = var.ibmcloud_region
-  zone             = var.ibmcloud_zone
+  ibmcloud_api_key      = var.ibmcloud_api_key
+  region                = var.ibmcloud_region
+  zone                  = var.ibmcloud_zone
+  iaas_classic_username = var.iaas_classic_username
+  iaas_classic_api_key  = var.iaas_classic_api_key
 }
 
 resource "random_id" "label" {
@@ -14,6 +16,11 @@ locals {
   # Generates cluster_id as combination of cluster_id_prefix + (random_id or user-defined cluster_id)
   cluster_id   = var.cluster_id == "" ? random_id.label[0].hex : (var.cluster_id_prefix == "" ? var.cluster_id : "${var.cluster_id_prefix}-${var.cluster_id}")
   storage_type = lookup(var.bastion, "count", 1) > 1 ? "none" : var.storage_type
+}
+
+data "ibm_is_subnet" "vpc_subnet" {
+  count = var.use_ibm_cloud_services ? 1 : 0
+  name  = var.ibm_cloud_vpc_subnet_name
 }
 
 module "prepare" {
@@ -124,4 +131,26 @@ module "install" {
   ibm_cloud_dl_endpoint_net_cidr = var.ibm_cloud_dl_endpoint_net_cidr
   ibm_cloud_http_proxy           = var.ibm_cloud_http_proxy
   cni_network_provider           = var.cni_network_provider
+  use_ibm_cloud_services         = var.use_ibm_cloud_services
+  vpc_cidr                       = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].ipv4_cidr_block : ""
+
+}
+
+module "ibmcloud" {
+  count  = var.use_ibm_cloud_services ? 1 : 0
+  source = "./modules/7_ibmcloud"
+
+  cluster_domain  = var.cluster_domain
+  cluster_id      = local.cluster_id
+  bastion_count   = lookup(var.bastion, "count", 1)
+  bootstrap_count = var.bootstrap["count"]
+  master_count    = var.master["count"]
+  worker_count    = var.worker["count"]
+  bastion_vip     = module.prepare.bastion_vip
+  bastion_ip      = module.prepare.bastion_ip
+  bootstrap_ip    = module.nodes.bootstrap_ip
+  master_ips      = module.nodes.master_ips
+  worker_ips      = module.nodes.worker_ips
+  vpc_name        = var.ibm_cloud_vpc_name
+  vpc_subnet_id   = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].id : ""
 }
