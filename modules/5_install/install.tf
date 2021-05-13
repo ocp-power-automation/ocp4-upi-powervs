@@ -279,8 +279,34 @@ resource "null_resource" "external_services" {
   }
 }
 
-resource "null_resource" "install" {
+resource "null_resource" "pre_install" {
+  count      = var.bastion_count
   depends_on = [null_resource.config, null_resource.configure_public_vip, null_resource.setup_snat, null_resource.external_services]
+
+  triggers = {
+    worker_count = length(var.worker_ips)
+  }
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = var.bastion_public_ip[count.index]
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "15m"
+  }
+
+  # DHCP config for setting MTU; Since helpernode DHCP template does not support MTU setting
+  provisioner "remote-exec" {
+    inline = [
+      "sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf",
+      "sudo systemctl restart dhcpd.service"
+    ]
+  }
+}
+
+resource "null_resource" "install" {
+  depends_on = [null_resource.pre_install]
 
   triggers = {
     worker_count = length(var.worker_ips)
@@ -310,14 +336,6 @@ resource "null_resource" "install" {
   provisioner "file" {
     content     = templatefile("${path.module}/templates/install_vars.yaml", local.install_vars)
     destination = "~/ocp4-playbooks/install_vars.yaml"
-  }
-
-  # DHCP config for setting MTU; Since helpernode DHCP template does not support MTU setting
-  provisioner "remote-exec" {
-    inline = [
-      "sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf",
-      "sudo systemctl restart dhcpd.service"
-    ]
   }
   provisioner "remote-exec" {
     inline = [
