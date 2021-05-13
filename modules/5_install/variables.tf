@@ -93,3 +93,6 @@ variable "ibm_cloud_dl_endpoint_net_cidr" {}
 variable "ibm_cloud_http_proxy" {}
 
 variable "cni_network_provider" {}
+
+variable "use_ibm_cloud_services" {}
+variable "vpc_cidr" {}

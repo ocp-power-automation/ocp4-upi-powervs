@@ -211,6 +211,35 @@ variable "rhel_smt" {
 }
 
 ################################################################
+### IBM Cloud details
+################################################################
+variable "use_ibm_cloud_services" {
+  type        = bool
+  description = "Experimental: Flag to use IBM Cloud DNS and VPC Loadbalancer instead of bastion services. Please set variables setup_snat=true and setup_squid_proxy=false"
+  default     = false
+}
+variable "ibm_cloud_vpc_name" {
+  type        = string
+  description = "Name of the IBM Cloud Virtual Private Clouds (VPC) to setup the load balancer. Required if use_ibm_cloud_services = true."
+  default     = "ocp-vpc"
+}
+variable "ibm_cloud_vpc_subnet_name" {
+  type        = string
+  description = "Name of the VPC subnet having DirectLink access to the private network. Required if use_ibm_cloud_services = true."
+  default     = "ocp-subnet"
+}
+variable "iaas_classic_username" {
+  type        = string
+  description = "IBM Cloud Classic Infrastructure user name (Hint: <account_id>_<email>). User should have access to update the DNS forward zones. Uses IAAS_CLASSIC_USERNAME envrionment variable if not provided. Required if use_ibm_cloud_services = true."
+  default     = null
+}
+variable "iaas_classic_api_key" {
+  type        = string
+  description = "IBM Cloud Classic Infrastructure API key. Uses IAAS_CLASSIC_API_KEY envrionment variable if not provided. Required if use_ibm_cloud_services = true."
+  default     = null
+}
+
+################################################################
 ### Instrumentation
 ################################################################
 variable "ssh_agent" {
@@ -378,8 +407,9 @@ variable "release_image_override" {
 
 # Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
 variable "cluster_domain" {
-  type    = string
-  default = "ibm.com"
+  type        = string
+  default     = "ibm.com"
+  description = "Domain name to use to setup the cluster. A DNS Forward Zone should be a registered in IBM Cloud if use_ibm_cloud_services = true"
 
   validation {
     condition     = can(regex("^[a-z0-9]+[a-zA-Z0-9_\\-.]*[a-z0-9]+$", var.cluster_domain))

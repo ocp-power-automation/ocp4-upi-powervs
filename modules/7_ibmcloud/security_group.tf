@@ -8,7 +8,7 @@
 #
 # Licensed Materials - Property of IBM
 #
-# ©Copyright IBM Corp. 2020
+# ©Copyright IBM Corp. 2021
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,16 +18,29 @@
 #
 ################################################################
 
-terraform {
-  required_providers {
-    ibm = {
-      source  = "IBM-Cloud/ibm"
-      version = "1.24.0"
-    }
-    ignition = {
-      source  = "community-terraform-providers/ignition"
-      version = "~> 2.1.0"
-    }
+locals {
+  tcp_ports = [22623, 6443, 443, 80]
+}
+data "ibm_is_vpc" "vpc" {
+  name = var.vpc_name
+}
+
+resource "ibm_is_security_group" "ocp_security_group" {
+  name = "${var.cluster_id}-ocp-sec-group"
+  vpc  = data.ibm_is_vpc.vpc.id
+}
+
+resource "ibm_is_security_group_rule" "inbound_ports" {
+  count     = length(local.tcp_ports)
+  group     = ibm_is_security_group.ocp_security_group.id
+  direction = "inbound"
+  tcp {
+    port_min = local.tcp_ports[count.index]
+    port_max = local.tcp_ports[count.index]
   }
-  required_version = "~> 0.13.0"
+}
+
+resource "ibm_is_security_group_rule" "outbound_any" {
+  group     = ibm_is_security_group.ocp_security_group.id
+  direction = "outbound"
 }

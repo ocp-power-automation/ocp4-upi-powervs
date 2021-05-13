@@ -8,7 +8,7 @@
 #
 # Licensed Materials - Property of IBM
 #
-# ©Copyright IBM Corp. 2020
+# ©Copyright IBM Corp. 2021
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,12 +21,8 @@
 terraform {
   required_providers {
     ibm = {
-      source  = "IBM-Cloud/ibm"
+      source  = "ibm-cloud/ibm"
       version = "1.24.0"
-    }
-    ignition = {
-      source  = "community-terraform-providers/ignition"
-      version = "~> 2.1.0"
     }
   }
   required_version = "~> 0.13.0"
