@@ -30,7 +30,7 @@ resource "ibm_dns_record" "bastion" {
   count              = var.bastion_count
   data               = var.bastion_ip[count.index]
   domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.cluster_id}-bastion-${count.index}"
+  host               = "${var.cluster_id}-bastion-${count.index}.${var.cluster_id}"
   responsible_person = "root.${var.cluster_domain}."
   ttl                = 900
   type               = "a"
