@@ -29,6 +29,7 @@ variable "rhcos_image_name" {}
 variable "bastion_ip" {}
 variable "cluster_domain" {}
 variable "cluster_id" {}
+variable "name_prefix" {}
 
 variable "bootstrap" {}
 variable "master" {}

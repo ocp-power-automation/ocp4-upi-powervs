@@ -52,7 +52,7 @@ data "ibm_pi_network" "network" {
 }
 
 resource "ibm_pi_network" "public_network" {
-  pi_network_name      = "${var.cluster_id}-pub-net"
+  pi_network_name      = var.name_prefix
   pi_cloud_instance_id = var.service_instance_id
   pi_network_type      = "pub-vlan"
   pi_dns               = var.network_dns
@@ -60,7 +60,7 @@ resource "ibm_pi_network" "public_network" {
 
 resource "ibm_pi_key" "key" {
   pi_cloud_instance_id = var.service_instance_id
-  pi_key_name          = "${var.cluster_id}-keypair"
+  pi_key_name          = "${var.name_prefix}-keypair"
   pi_ssh_key           = var.public_key
 }
 
@@ -68,7 +68,7 @@ resource "ibm_pi_volume" "volume" {
   count = var.storage_type == "nfs" ? 1 : 0
 
   pi_volume_size       = var.volume_size
-  pi_volume_name       = "${var.cluster_id}-${var.storage_type}-volume"
+  pi_volume_name       = "${var.name_prefix}-${var.storage_type}-volume"
   pi_volume_type       = local.bastion_storage_type
   pi_volume_shareable  = var.volume_shareable
   pi_cloud_instance_id = var.service_instance_id
@@ -79,7 +79,7 @@ resource "ibm_pi_instance" "bastion" {
 
   pi_memory            = var.bastion["memory"]
   pi_processors        = var.bastion["processors"]
-  pi_instance_name     = "${var.cluster_id}-bastion-${count.index}"
+  pi_instance_name     = "${var.name_prefix}-bastion-${count.index}"
   pi_proc_type         = var.processor_type
   pi_image_id          = local.bastion_image_id
   pi_network_ids       = [ibm_pi_network.public_network.network_id, data.ibm_pi_network.network.id]
@@ -136,8 +136,8 @@ resource "null_resource" "bastion_init" {
     inline = [
       "sudo chmod 600 ~/.ssh/id_rsa*",
       "sudo sed -i.bak -e 's/^ - set_hostname/# - set_hostname/' -e 's/^ - update_hostname/# - update_hostname/' /etc/cloud/cloud.cfg",
-      "sudo hostnamectl set-hostname --static ${lower(var.cluster_id)}-bastion-${count.index}.${var.cluster_domain}",
-      "echo 'HOSTNAME=${lower(var.cluster_id)}-bastion-${count.index}.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null",
+      "sudo hostnamectl set-hostname --static ${lower(var.name_prefix)}-bastion-${count.index}.${var.cluster_domain}",
+      "echo 'HOSTNAME=${lower(var.name_prefix)}-bastion-${count.index}.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null",
       "sudo hostname -F /etc/hostname",
       "echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null",
       # Set SMT to user specified value; Should not fail for invalid values.

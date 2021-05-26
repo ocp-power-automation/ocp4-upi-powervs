@@ -368,7 +368,7 @@ variable "setup_squid_proxy" {
 }
 
 # Applicable only when `setup_squid_proxy = false`
-variable proxy {
+variable "proxy" {
   type        = object({})
   description = "External Proxy server details in a map"
   default     = {}
@@ -447,6 +447,12 @@ variable "cluster_id" {
     condition     = length(var.cluster_id) <= 14
     error_message = "The cluster_id value shouldn't be greater than 14 characters."
   }
+}
+
+variable "use_zone_info_for_names" {
+  type        = bool
+  default     = true
+  description = "Add zone info to instance name or not"
 }
 
 variable "storage_type" {
