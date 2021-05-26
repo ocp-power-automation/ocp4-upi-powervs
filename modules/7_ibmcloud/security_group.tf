@@ -26,7 +26,7 @@ data "ibm_is_vpc" "vpc" {
 }
 
 resource "ibm_is_security_group" "ocp_security_group" {
-  name = "${var.cluster_id}-ocp-sec-group"
+  name = "${var.name_prefix}-ocp-sec-group"
   vpc  = data.ibm_is_vpc.vpc.id
 }
 
