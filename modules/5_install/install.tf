@@ -84,7 +84,7 @@ locals {
   }
 
   install_inventory = {
-    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.cluster_id}-bastion-${ix}.${local.cluster_domain}"]
+    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.cluster_id}-bastion-${ix}"]
     bootstrap_host = var.bootstrap_ip == "" ? "" : "bootstrap"
     master_hosts   = [for ix in range(length(var.master_ips)) : "master-${ix}"]
     worker_hosts   = [for ix in range(length(var.worker_ips)) : "worker-${ix}"]
