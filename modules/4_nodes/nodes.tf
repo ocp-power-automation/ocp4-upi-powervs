@@ -53,7 +53,7 @@ resource "ibm_pi_instance" "bootstrap" {
 
   pi_memory            = var.bootstrap["memory"]
   pi_processors        = var.bootstrap["processors"]
-  pi_instance_name     = "${var.cluster_id}-bootstrap"
+  pi_instance_name     = "${var.name_prefix}-bootstrap"
   pi_proc_type         = var.processor_type
   pi_image_id          = data.ibm_pi_image.rhcos.id
   pi_sys_type          = var.system_type
@@ -64,7 +64,7 @@ resource "ibm_pi_instance" "bootstrap" {
   pi_user_data = base64encode(replace(data.ignition_config.bootstrap.rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
 
   # Not needed by RHCOS but required by resource
-  pi_key_pair_name = "${var.cluster_id}-keypair"
+  pi_key_pair_name = "${var.name_prefix}-keypair"
   pi_health_status = "WARNING"
 }
 
@@ -94,7 +94,7 @@ resource "ibm_pi_instance" "master" {
 
   pi_memory            = var.master["memory"]
   pi_processors        = var.master["processors"]
-  pi_instance_name     = "${var.cluster_id}-master-${count.index}"
+  pi_instance_name     = "${var.name_prefix}-master-${count.index}"
   pi_proc_type         = var.processor_type
   pi_image_id          = data.ibm_pi_image.rhcos.id
   pi_sys_type          = var.system_type
@@ -106,7 +106,7 @@ resource "ibm_pi_instance" "master" {
   pi_user_data = base64encode(replace(data.ignition_config.master[count.index].rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
 
   # Not needed by RHCOS but required by resource
-  pi_key_pair_name = "${var.cluster_id}-keypair"
+  pi_key_pair_name = "${var.name_prefix}-keypair"
   pi_health_status = "WARNING"
 }
 
@@ -114,7 +114,7 @@ resource "ibm_pi_volume" "master" {
   count = var.master_volume_size == "" ? 0 : var.master["count"]
 
   pi_volume_size       = var.master_volume_size
-  pi_volume_name       = "${var.cluster_id}-master-${count.index}-volume"
+  pi_volume_name       = "${var.name_prefix}-master-${count.index}-volume"
   pi_volume_type       = data.ibm_pi_image.rhcos.storage_type
   pi_volume_shareable  = var.volume_shareable
   pi_cloud_instance_id = var.service_instance_id
@@ -148,7 +148,7 @@ resource "ibm_pi_instance" "worker" {
 
   pi_memory            = var.worker["memory"]
   pi_processors        = var.worker["processors"]
-  pi_instance_name     = "${var.cluster_id}-worker-${count.index}"
+  pi_instance_name     = "${var.name_prefix}-worker-${count.index}"
   pi_proc_type         = var.processor_type
   pi_image_id          = data.ibm_pi_image.rhcos.id
   pi_sys_type          = var.system_type
@@ -160,7 +160,7 @@ resource "ibm_pi_instance" "worker" {
   pi_user_data = base64encode(replace(data.ignition_config.worker[count.index].rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
 
   # Not needed by RHCOS but required by resource
-  pi_key_pair_name = "${var.cluster_id}-keypair"
+  pi_key_pair_name = "${var.name_prefix}-keypair"
   pi_health_status = "WARNING"
 }
 
@@ -198,7 +198,7 @@ resource "ibm_pi_volume" "worker" {
   count = var.worker_volume_size == "" ? 0 : var.worker["count"]
 
   pi_volume_size       = var.worker_volume_size
-  pi_volume_name       = "${var.cluster_id}-worker-${count.index}-volume"
+  pi_volume_name       = "${var.name_prefix}-worker-${count.index}-volume"
   pi_volume_type       = data.ibm_pi_image.rhcos.storage_type
   pi_volume_shareable  = var.volume_shareable
   pi_cloud_instance_id = var.service_instance_id
