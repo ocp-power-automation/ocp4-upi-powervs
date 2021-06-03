@@ -71,7 +71,7 @@ resource "ibm_dns_record" "worker" {
   type               = "a"
 }
 resource "ibm_dns_record" "api" {
-  data               = "${ibm_is_lb.load_balancer.hostname}."
+  data               = "${ibm_is_lb.load_balancer_external.hostname}."
   domain_id          = data.ibm_dns_domain.domain.id
   host               = "api.${var.cluster_id}"
   responsible_person = "root.${var.cluster_domain}."
@@ -79,7 +79,7 @@ resource "ibm_dns_record" "api" {
   type               = "cname"
 }
 resource "ibm_dns_record" "api-int" {
-  data               = "${ibm_is_lb.load_balancer.hostname}."
+  data               = "${ibm_is_lb.load_balancer_internal.hostname}."
   domain_id          = data.ibm_dns_domain.domain.id
   host               = "api-int.${var.cluster_id}"
   responsible_person = "root.${var.cluster_domain}."
@@ -87,7 +87,7 @@ resource "ibm_dns_record" "api-int" {
   type               = "cname"
 }
 resource "ibm_dns_record" "apps" {
-  data               = "${ibm_is_lb.load_balancer.hostname}."
+  data               = "${ibm_is_lb.load_balancer_external.hostname}."
   domain_id          = data.ibm_dns_domain.domain.id
   host               = "*.apps.${var.cluster_id}"
   responsible_person = "root.${var.cluster_domain}."
