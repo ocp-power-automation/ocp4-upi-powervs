@@ -30,6 +30,7 @@ variable "dns_forwarders" {
 }
 
 variable service_instance_id {}
+variable "name_prefix" {}
 
 variable "gateway_ip" {}
 variable "cidr" {}
