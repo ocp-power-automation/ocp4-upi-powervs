@@ -23,11 +23,20 @@ variable "cluster_id" {
   type = string
 
   validation {
-    condition     = length(var.cluster_id) <= 14
-    error_message = "Length cannot exceed 14 characters when combined with cluster_id_prefix."
+    condition     = length(var.cluster_id) <= 32
+    error_message = "Length cannot exceed 32 characters when combined with cluster_id_prefix."
   }
 }
 variable "bastion" {}
+
+variable "name_prefix" {
+  type = string
+
+  validation {
+    condition     = length(var.name_prefix) <= 32
+    error_message = "Length cannot exceed 32 characters for name_prefix."
+  }
+}
 
 variable "service_instance_id" {}
 variable "rhel_image_name" {}

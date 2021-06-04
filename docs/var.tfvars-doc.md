@@ -183,6 +183,8 @@ Edit it as per your requirements.
 cluster_domain              = "ibm.com"
 cluster_id_prefix           = "test-ocp"
 cluster_id                  = ""
+
+use_zone_info_for_names  = true
 ```
 Set the `cluster_domain` to `nip.io`, `xip.io` or `sslip.io` if you prefer using online wildcard domains.
 Default is `ibm.com`.
@@ -191,8 +193,9 @@ Default value is `test-ocp`
 If `cluster_id_prefix` is not set, the `cluster_id` will be used only without prefix.
 
 A random value will be used for `cluster_id` if not set.
-The total length of `cluster_id_prefix`.`cluster_id` should not exceed 14 characters.
+The total length of `cluster_id_prefix`.`cluster_id` should not exceed 32 characters.
 
+The `use_zone_info_for_names` is a flag to indicate whether to use `cluster_id`-`ibmcloud_zone` or only `cluster_id` as name prefix for resource naming on PowerVS. The default value is set to `true` to use zone info in names, and the total length of `cluster_id_prefix`-`cluster_id`-`ibmcloud_zone` should not exceed 32 characters.
 
 ### Using IBM Cloud Services
 

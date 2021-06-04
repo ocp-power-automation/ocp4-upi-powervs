@@ -42,6 +42,7 @@ cluster_domain    = "ibm.com"  #Set domain to nip.io or xip.io if you prefer usi
 cluster_id_prefix = "test-ocp" # Set it to empty if just want to use cluster_id without prefix
 cluster_id        = ""         # It will use random generated id with cluster_id_prefix if this is not set
 
+use_zone_info_for_names = true # If set it to false, the zone info would not be used in resource names on PowerVS.
 
 ### Using IBM Cloud Services
 #use_ibm_cloud_services    = true

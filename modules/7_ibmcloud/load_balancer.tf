@@ -26,7 +26,7 @@ locals {
 }
 
 resource "ibm_is_lb" "load_balancer" {
-  name            = "${var.cluster_id}-loadbalancer"
+  name            = "${var.name_prefix}-loadbalancer"
   subnets         = [var.vpc_subnet_id]
   security_groups = [ibm_is_security_group.ocp_security_group.id]
 }

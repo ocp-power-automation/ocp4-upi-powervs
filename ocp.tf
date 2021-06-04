@@ -8,13 +8,14 @@ provider "ibm" {
 
 resource "random_id" "label" {
   count       = var.cluster_id == "" ? 1 : 0
-  byte_length = "2" # Since we use the hex, the word lenght would double
+  byte_length = "2" # Since we use the hex, the word length would double
   prefix      = "${var.cluster_id_prefix}-"
 }
 
 locals {
   # Generates cluster_id as combination of cluster_id_prefix + (random_id or user-defined cluster_id)
   cluster_id   = var.cluster_id == "" ? random_id.label[0].hex : (var.cluster_id_prefix == "" ? var.cluster_id : "${var.cluster_id_prefix}-${var.cluster_id}")
+  name_prefix  = var.use_zone_info_for_names ? "${local.cluster_id}-${var.ibmcloud_zone}" : local.cluster_id
   storage_type = lookup(var.bastion, "count", 1) > 1 ? "none" : var.storage_type
 }
 
@@ -29,6 +30,7 @@ module "prepare" {
   bastion                         = var.bastion
   service_instance_id             = var.service_instance_id
   cluster_id                      = local.cluster_id
+  name_prefix                     = local.name_prefix
   cluster_domain                  = var.cluster_domain
   rhel_image_name                 = var.rhel_image_name
   processor_type                  = var.processor_type
@@ -65,6 +67,7 @@ module "nodes" {
   bastion_ip          = lookup(var.bastion, "count", 1) > 1 ? module.prepare.bastion_vip : module.prepare.bastion_ip[0]
   cluster_domain      = var.cluster_domain
   cluster_id          = local.cluster_id
+  name_prefix         = local.name_prefix
   bootstrap           = var.bootstrap
   master              = var.master
   worker              = var.worker
@@ -83,6 +86,7 @@ module "install" {
   service_instance_id            = var.service_instance_id
   cluster_domain                 = var.cluster_domain
   cluster_id                     = local.cluster_id
+  name_prefix                    = local.name_prefix
   dns_forwarders                 = var.dns_forwarders
   gateway_ip                     = module.prepare.gateway_ip
   cidr                           = module.prepare.cidr
@@ -142,6 +146,7 @@ module "ibmcloud" {
 
   cluster_domain  = var.cluster_domain
   cluster_id      = local.cluster_id
+  name_prefix     = local.name_prefix
   bastion_count   = lookup(var.bastion, "count", 1)
   bootstrap_count = var.bootstrap["count"]
   master_count    = var.master["count"]
