@@ -19,5 +19,5 @@
 ################################################################
 
 output "load_balancer_hostname" {
-  value = ibm_is_lb.load_balancer.hostname
+  value = ibm_is_lb.load_balancer_external.hostname
 }
