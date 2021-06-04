@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ -f /etc/multipath.conf ]]; then
+    sed -i 's/user_friendly_names no/user_friendly_names yes/' /etc/multipath.conf
+    sudo systemctl restart multipathd
+fi
+
 #Scan devices
 sudo rescan-scsi-bus.sh -a -m -r
 
