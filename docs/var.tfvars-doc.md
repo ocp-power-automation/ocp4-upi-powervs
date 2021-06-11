@@ -211,11 +211,16 @@ Below variables needs to be set in order to use the IBM Cloud services.
 use_ibm_cloud_services    = true
 ibm_cloud_vpc_name        = "ocp-vpc"
 ibm_cloud_vpc_subnet_name = "ocp-subnet"
-iaas_classic_username     = "1363308_user@email"
-iaas_classic_api_key      = "xxxxyyyyyyzzzzzzz"
 ```
 
-Note: If you do not want to provide `iaas_classic_username` and `iaas_classic_api_key` via variables then be passed via environment variables `IAAS_CLASSIC_USERNAME` and `IAAS_CLASSIC_API_KEY` respectively.
+These set of variables specify the username and API key for accessing IBM Cloud services. The default combination should suffice for most of the common use-cases.
+
+```
+iaas_classic_username     = "apikey"
+iaas_classic_api_key      = "" # if empty, will default to ibmcloud_api_key.
+```
+
+Note: `iaas_classic_username` and `iaas_classic_api_key` variables are optional, These variables need to be set only when using a different classic username and key. By default `apikey` will be used as the `iaas_class_username` and `ibmcloud_api_key` will be used as the `iaas_classic_api_key`. Note that non-default values for these variables can also be passed via environment variables `IAAS_CLASSIC_USERNAME` and `IAAS_CLASSIC_API_KEY` respectively.
 
 
 ### Misc Customizations
