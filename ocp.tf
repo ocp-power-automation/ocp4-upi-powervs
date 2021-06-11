@@ -3,7 +3,7 @@ provider "ibm" {
   region                = var.ibmcloud_region
   zone                  = var.ibmcloud_zone
   iaas_classic_username = var.iaas_classic_username
-  iaas_classic_api_key  = var.iaas_classic_api_key
+  iaas_classic_api_key  = local.iaas_classic_api_key
 }
 
 resource "random_id" "label" {
