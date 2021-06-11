@@ -231,12 +231,13 @@ variable "ibm_cloud_vpc_subnet_name" {
 variable "iaas_classic_username" {
   type        = string
   description = "IBM Cloud Classic Infrastructure user name (Hint: <account_id>_<email>). User should have access to update the DNS forward zones. Uses IAAS_CLASSIC_USERNAME envrionment variable if not provided. Required if use_ibm_cloud_services = true."
-  default     = null
+  default     = "apikey"
 }
 variable "iaas_classic_api_key" {
   type        = string
   description = "IBM Cloud Classic Infrastructure API key. Uses IAAS_CLASSIC_API_KEY envrionment variable if not provided. Required if use_ibm_cloud_services = true."
-  default     = null
+  default     = ""
+  # if empty, will default to ibmcloud_api_key
 }
 
 ################################################################
@@ -381,10 +382,11 @@ variable "proxy" {
 }
 
 locals {
-  private_key_file = var.private_key_file == "" ? "${path.cwd}/data/id_rsa" : var.private_key_file
-  public_key_file  = var.public_key_file == "" ? "${path.cwd}/data/id_rsa.pub" : var.public_key_file
-  private_key      = var.private_key == "" ? file(coalesce(local.private_key_file, "/dev/null")) : var.private_key
-  public_key       = var.public_key == "" ? file(coalesce(local.public_key_file, "/dev/null")) : var.public_key
+  private_key_file     = var.private_key_file == "" ? "${path.cwd}/data/id_rsa" : var.private_key_file
+  public_key_file      = var.public_key_file == "" ? "${path.cwd}/data/id_rsa.pub" : var.public_key_file
+  private_key          = var.private_key == "" ? file(coalesce(local.private_key_file, "/dev/null")) : var.private_key
+  public_key           = var.public_key == "" ? file(coalesce(local.public_key_file, "/dev/null")) : var.public_key
+  iaas_classic_api_key = var.iaas_classic_api_key == "" ? var.ibmcloud_api_key : var.iaas_classic_api_key
 }
 
 ################################################################
