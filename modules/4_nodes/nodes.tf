@@ -195,7 +195,7 @@ EOF
 }
 
 resource "ibm_pi_volume" "worker" {
-  count = var.worker_volume_size == "" ? 0 : var.worker["count"]
+  count = var.worker_volume_size == "" ? 0 : var.worker["count"] * var.worker_volume_count
 
   pi_volume_size       = var.worker_volume_size
   pi_volume_name       = "${var.name_prefix}-worker-${count.index}-volume"
