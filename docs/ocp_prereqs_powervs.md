@@ -55,10 +55,97 @@ On successful network creation, the following output will be displayed in the da
 &nbsp;
 ![Create subnet](./media/image8.png)
 
+### Enable communication over the private network
 
-### Raise a Service Request to enable IP communication between PowerVS instances on private network
+Two options are available to enable communication over the private network.
 
-In order for your instances to communicate within the subnet, you'll need to create a service request.
+*Option 1*
+
+You can use the IBM Cloud CLI with the latest power-iaas plug-in (version 0.3.4 or later) to enable a private network communication.
+Refer: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-managing-cloud-connections
+
+This requires attaching the private network to an IBM Cloud Direct Link Connect 2.0 connection.
+Perform the following steps to enable private network communication by attaching to the Direct Link Connect 2.0 connection.
+
+- Select a specific service instance
+You’ll need the CRN of the service instance created earlier (for example, ocp-powervs-test-1).
+
+```
+ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:tok04:a/65b64c1f1c29460e8c2e4bbfbd893c2c:e4bb3d9d-a37c-4b1f-a923-4537c0c8beb3::
+```
+
+- Get the ID of the private network
+```
+ibmcloud pi nets | grep -w ocp-net
+
+
+ID           93cc386a-53c5-4aef-9882-4294025c5e1f
+Name         ocp-net
+Type         vlan
+VLAN         413
+CIDR Block   192.168.201.0/24
+IP Range     [192.168.201.2  192.168.201.254]
+Gateway      192.168.201.1
+DNS          127.0.0.1
+
+```
+
+You’ll need the ID in subsequent steps.
+
+- Get the Direct Link Connect connection ID
+```
+ibmcloud pi cons
+
+ID                                     Name             Link Status   Speed
+89fcfd7c-ec74-473b-ba09-4cd95fa47e2e   ocp-powervs-dl   idle          10000
+
+```
+
+Get the ID of the connection.
+
+If you don’t have an existing Direct Link Connect 2.0 connection provisioned under your account, 
+then you can create a new connection using the IBM Cloud CLI. 
+A highly available Direct Link Connect 2.0 connection between the Power Virtual Server and IBM Cloud comes free of cost. 
+Refer: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-ordering-direct-link-connect
+
+```
+ibmcloud pi conc ocp-powervs-dl --speed 10000
+```
+
+- Attach the private network to Direct Link Connect 2.0 (connection)
+```
+ibmcloud pi conan 89fcfd7c-ec74-473b-ba09-4cd95fa47e2e --network e1b90247-a504-4468-8662-8f785533067d
+```
+
+This can take 3 to 5 minutes to become active.
+
+- Verify the status of the attachment
+```
+ibmcloud pi con 89fcfd7c-ec74-473b-ba09-4cd95fa47e2e
+
+ID               89fcfd7c-ec74-473b-ba09-4cd95fa47e2e
+Name             ocp-powervs-dl
+Link Status      idle
+Speed            10000
+Creation Date    2021-05-13T13:17:08.093Z
+Global Routing   false
+IBM IPAddress    169.254.0.1/30
+User IPAddress   169.254.0.2/30
+Metered          false
+Classic          false
+Networks         ID: e1b90247-a504-4468-8662-8f785533067d       Name: ocp-net  VlanID: 392
+
+```
+
+The output shows that the `ocp-net` private network is attached to Direct Link Connect 2.0. 
+This enables inter VM communication on the private network as well as communication with IBM Cloud over Direct Link.
+
+*Option 2*
+
+
+If you don’t want to use Direct Link, then you’ll need to raise a service request to enable private network communication.
+
+Perform the following steps to raise the service request.
 
 Click on **Support** in the top bar of the dashboard and scroll down to **Contact Support**, then select "**Create a case**"
 &nbsp;
