@@ -57,20 +57,20 @@ locals {
     bootstrap_info = {
       ip   = var.bootstrap_ip
       mac  = var.bootstrap_mac
-      name = "bootstrap"
+      name = "${var.name_prefix}-bootstrap"
     }
     master_info = [for ix in range(length(var.master_ips)) :
       {
         ip   = var.master_ips[ix],
         mac  = var.master_macs[ix],
-        name = "master-${ix}"
+        name = "${var.name_prefix}-master-${ix}"
       }
     ]
     worker_info = [for ix in range(length(var.worker_ips)) :
       {
         ip   = var.worker_ips[ix],
         mac  = var.worker_macs[ix],
-        name = "worker-${ix}"
+        name = "${var.name_prefix}-worker-${ix}"
       }
     ]
 
@@ -85,9 +85,9 @@ locals {
 
   install_inventory = {
     bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.name_prefix}-bastion-${ix}"]
-    bootstrap_host = var.bootstrap_ip == "" ? "" : "bootstrap"
-    master_hosts   = [for ix in range(length(var.master_ips)) : "master-${ix}"]
-    worker_hosts   = [for ix in range(length(var.worker_ips)) : "worker-${ix}"]
+    bootstrap_host = var.bootstrap_ip == "" ? "" : "${var.name_prefix}-bootstrap"
+    master_hosts   = [for ix in range(length(var.master_ips)) : "${var.name_prefix}-master-${ix}"]
+    worker_hosts   = [for ix in range(length(var.worker_ips)) : "${var.name_prefix}-worker-${ix}"]
   }
 
   proxy = {
