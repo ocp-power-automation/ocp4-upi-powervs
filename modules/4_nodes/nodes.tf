@@ -42,7 +42,7 @@ data "ignition_file" "b_hostname" {
   path      = "/etc/hostname"
   content {
     content = <<EOF
-bootstrap
+${var.name_prefix}-bootstrap
 EOF
   }
 }
@@ -84,7 +84,7 @@ data "ignition_file" "m_hostname" {
   path      = "/etc/hostname"
   content {
     content = <<EOF
-master-${count.index}
+${var.name_prefix}-master-${count.index}
 EOF
   }
 }
@@ -130,7 +130,7 @@ data "ignition_file" "w_hostname" {
 
   content {
     content = <<EOF
-worker-${count.index}
+${var.name_prefix}-worker-${count.index}
 EOF
   }
 }
