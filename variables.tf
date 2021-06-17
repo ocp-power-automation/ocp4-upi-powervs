@@ -488,6 +488,12 @@ variable "worker_volume_size" {
   default     = "" # Value in GB
 }
 
+variable "worker_volume_count" {
+  type        = string
+  description = "Number of volumes attached to the worker nodes."
+  default     = "1"
+}
+
 variable "upgrade_version" {
   type        = string
   description = "OCP upgrade version"

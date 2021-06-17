@@ -73,6 +73,7 @@ module "nodes" {
   worker              = var.worker
   master_volume_size  = var.master_volume_size
   worker_volume_size  = var.worker_volume_size
+  worker_volume_count = var.worker_volume_count
   volume_shareable    = var.volume_shareable
   bastion_public_ip   = module.prepare.bastion_public_ip
   rhel_username       = var.rhel_username
