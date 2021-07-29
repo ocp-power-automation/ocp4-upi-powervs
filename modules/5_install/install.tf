@@ -239,7 +239,9 @@ firewall-cmd --zone=public --add-masquerade --permanent
 firewall-cmd --reload
 
 #Checksum needs to be turned off to avoid a bug with ibmveth
-ethtool -K $PRIVATE_INTERFACE rx off
+PRIVATE_CONNECTION_NAME=$(nmcli -t -f NAME connection show | grep $PRIVATE_INTERFACE)
+nmcli connection modify "$PRIVATE_CONNECTION_NAME" ethtool.feature-rx off
+nmcli connection up "$PRIVATE_CONNECTION_NAME"
 
 EOF
     ]
