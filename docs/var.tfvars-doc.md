@@ -165,10 +165,10 @@ rhel_smt                    = 4
 
 These variables specify the URL for the OpenShift installer and client binaries.
 Change the URL to the specific pre-release version that you want to install on PowerVS.
-Reference link - `https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview`
+Reference link - `https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp`
 ```
-openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
-openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
+openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.8/openshift-install-linux.tar.gz"
+openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.8/openshift-client-linux.tar.gz"
 ```
 
 This variable specifies the OpenShift pull secret. This is available from the following link -  https://cloud.redhat.com/openshift/install/power/user-provisioned
