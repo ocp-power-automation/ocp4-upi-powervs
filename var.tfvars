@@ -18,7 +18,7 @@ master    = { memory = "32", processors = "0.5", "count" = 3 }
 worker    = { memory = "32", processors = "0.5", "count" = 2 }
 
 rhel_image_name  = "rhel-8.3"
-rhcos_image_name = "rhcos-4.6"
+rhcos_image_name = "rhcos-4.8"
 processor_type   = "shared"
 system_type      = "s922"
 network_name     = "ocp-net"
