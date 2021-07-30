@@ -108,7 +108,7 @@ Here are some examples to help you understand the relationship.
   ```
 
 These set of variables specify the RHEL and RHCOS boot image names. These images should have been already imported in your PowerVS service instance.
-Change the image names according to your environment. Ensure that you use the correct RHCOS image specific to the pre-release version
+Change the image names according to your environment. Ensure that you use the correct RHCOS 4.8.X image only with this automation code.
 ```
 rhel_image_name     = "<rhel_or_centos_image-name>"
 rhcos_image_name    = "<rhcos-image-name>"
@@ -164,7 +164,7 @@ rhel_smt                    = 4
 ### OpenShift Installation Details
 
 These variables specify the URL for the OpenShift installer and client binaries.
-Change the URL to the specific pre-release version that you want to install on PowerVS.
+Change the URL to the specific 4.8.X version that you want to install on PowerVS.
 Reference link - `https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp`
 ```
 openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.8/openshift-install-linux.tar.gz"
@@ -275,7 +275,7 @@ This variable specifies the external DNS servers to forward DNS queries that can
 dns_forwarders              = "1.1.1.1; 9.9.9.9"
 ```
 
-List of [kernel arguments](https://docs.openshift.com/container-platform/4.4/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes.
+List of [kernel arguments](https://docs.openshift.com/container-platform/4.8/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes.
 Note that this will be applied after the cluster is installed and all the nodes are in `Ready` status.
 ```
 rhcos_kernel_options        = []

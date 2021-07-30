@@ -126,7 +126,7 @@ variable "rhel_image_name" {
 variable "rhcos_image_name" {
   type        = string
   description = "Name of the RHCOS image that you want to use for OCP nodes"
-  default     = "rhcos-4.6"
+  default     = "rhcos-4.8"
 }
 
 variable "processor_type" {
