@@ -47,7 +47,7 @@ resource "ibm_dns_record" "bootstrap" {
   count              = var.bootstrap_count
   data               = var.bootstrap_ip
   domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.name_prefix}-bootstrap.${var.cluster_id}"
+  host               = "${var.node_prefix}bootstrap.${var.cluster_id}"
   responsible_person = "root.${var.cluster_domain}."
   ttl                = 900
   type               = "a"
@@ -56,7 +56,7 @@ resource "ibm_dns_record" "master" {
   count              = var.master_count
   data               = var.master_ips[count.index]
   domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.name_prefix}-master-${count.index}.${var.cluster_id}"
+  host               = "${var.node_prefix}master-${count.index}.${var.cluster_id}"
   responsible_person = "root.${var.cluster_domain}."
   ttl                = 900
   type               = "a"
@@ -65,7 +65,7 @@ resource "ibm_dns_record" "worker" {
   count              = var.worker_count
   data               = var.worker_ips[count.index]
   domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.name_prefix}-worker-${count.index}.${var.cluster_id}"
+  host               = "${var.node_prefix}worker-${count.index}.${var.cluster_id}"
   responsible_person = "root.${var.cluster_domain}."
   ttl                = 900
   type               = "a"

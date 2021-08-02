@@ -17,6 +17,10 @@
 # limitations under the License.
 #
 ################################################################
+locals {
+  wildcard_dns   = ["nip.io", "xip.io", "sslip.io"]
+  cluster_domain = contains(local.wildcard_dns, var.cluster_domain) ? "${var.bastion_external_vip != "" ? var.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
+}
 
 data "ibm_pi_network" "network" {
   pi_network_name      = var.network_name
@@ -42,7 +46,7 @@ data "ignition_file" "b_hostname" {
   path      = "/etc/hostname"
   content {
     content = <<EOF
-${var.name_prefix}-bootstrap
+${var.node_prefix}bootstrap.${var.cluster_id}.${local.cluster_domain}
 EOF
   }
 }
@@ -84,7 +88,7 @@ data "ignition_file" "m_hostname" {
   path      = "/etc/hostname"
   content {
     content = <<EOF
-${var.name_prefix}-master-${count.index}
+${var.node_prefix}master-${count.index}.${var.cluster_id}.${local.cluster_domain}
 EOF
   }
 }
@@ -130,7 +134,7 @@ data "ignition_file" "w_hostname" {
 
   content {
     content = <<EOF
-${var.name_prefix}-worker-${count.index}
+${var.node_prefix}worker-${count.index}.${var.cluster_id}.${local.cluster_domain}
 EOF
   }
 }
@@ -168,10 +172,13 @@ resource "null_resource" "remove_worker" {
   count      = var.worker["count"]
   depends_on = [ibm_pi_instance.worker]
   triggers = {
-    external_ip   = var.bastion_public_ip[0]
-    rhel_username = var.rhel_username
-    private_key   = var.private_key
-    ssh_agent     = var.ssh_agent
+    external_ip    = var.bastion_public_ip[0]
+    rhel_username  = var.rhel_username
+    private_key    = var.private_key
+    ssh_agent      = var.ssh_agent
+    node_prefix    = var.node_prefix
+    cluster_id     = var.cluster_id
+    cluster_domain = local.cluster_domain
   }
 
   provisioner "remote-exec" {
@@ -186,9 +193,9 @@ resource "null_resource" "remove_worker" {
     when       = destroy
     on_failure = continue
     inline = [<<EOF
-oc adm cordon worker-${count.index}
-oc adm drain worker-${count.index} --force --delete-local-data --ignore-daemonsets --timeout=180s
-oc delete node worker-${count.index}
+oc adm cordon ${self.triggers.node_prefix}-worker-${count.index}.${self.triggers.cluster_id}.${self.triggers.cluster_domain}
+oc adm drain ${self.triggers.node_prefix}-worker-${count.index}.${self.triggers.cluster_id}.${self.triggers.cluster_domain} --force --delete-local-data --ignore-daemonsets --timeout=180s
+oc delete node ${self.triggers.node_prefix}-worker-${count.index}.${self.triggers.cluster_id}.${self.triggers.cluster_domain}
 EOF
     ]
   }
