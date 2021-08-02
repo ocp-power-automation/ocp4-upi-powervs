@@ -52,7 +52,7 @@ data "ibm_pi_network" "network" {
 }
 
 resource "ibm_pi_network" "public_network" {
-  pi_network_name      = var.name_prefix
+  pi_network_name      = "${var.name_prefix}-pub-net"
   pi_cloud_instance_id = var.service_instance_id
   pi_network_type      = "pub-vlan"
   pi_dns               = var.network_dns
