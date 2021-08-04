@@ -15,7 +15,7 @@ resource "random_id" "label" {
 locals {
   # Generates cluster_id as combination of cluster_id_prefix + (random_id or user-defined cluster_id)
   cluster_id   = var.cluster_id == "" ? random_id.label[0].hex : (var.cluster_id_prefix == "" ? var.cluster_id : "${var.cluster_id_prefix}-${var.cluster_id}")
-  name_prefix  = var.use_zone_info_for_names ? "${local.cluster_id}-${var.ibmcloud_zone}" : local.cluster_id
+  name_prefix  = var.use_zone_info_for_names ? "${local.cluster_id}-${var.ibmcloud_zone}-" : "${local.cluster_id}-"
   node_prefix  = var.use_zone_info_for_names ? "${var.ibmcloud_zone}-" : ""
   storage_type = lookup(var.bastion, "count", 1) > 1 ? "none" : var.storage_type
 }
