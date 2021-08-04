@@ -25,9 +25,6 @@ locals {
     password          = uuid()
   }
 
-  # wildcard_dns   = ["nip.io", "xip.io", "sslip.io"]
-  # cluster_domain = contains(local.wildcard_dns, var.cluster_domain) ? "${var.bastion_external_vip != "" ? var.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
-
   local_registry = {
     enable_local_registry = var.enable_local_registry
     registry_image        = var.local_registry_image
@@ -40,8 +37,9 @@ locals {
     cluster_domain        = var.cluster_domain
     name_prefix           = var.name_prefix
     cluster_id            = var.cluster_id
+    name_prefix           = var.name_prefix
     bastion_ip            = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
-    bastion_name          = var.bastion_vip != "" ? "${var.name_prefix}-bastion" : "${var.name_prefix}-bastion-0"
+    bastion_name          = var.bastion_vip != "" ? "${var.name_prefix}bastion" : "${var.name_prefix}bastion-0"
     isHA                  = var.bastion_vip != ""
     bastion_master_ip     = var.bastion_ip[0]
     bastion_backup_ip     = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
@@ -84,7 +82,7 @@ locals {
   }
 
   install_inventory = {
-    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.name_prefix}-bastion-${ix}"]
+    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.name_prefix}bastion-${ix}"]
     bootstrap_host = var.bootstrap_ip == "" ? "" : "${var.node_prefix}bootstrap"
     master_hosts   = [for ix in range(length(var.master_ips)) : "${var.node_prefix}master-${ix}"]
     worker_hosts   = [for ix in range(length(var.worker_ips)) : "${var.node_prefix}worker-${ix}"]
