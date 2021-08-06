@@ -39,6 +39,7 @@ locals {
 
   helpernode_vars = {
     cluster_domain        = local.cluster_domain
+    name_prefix           = var.name_prefix
     cluster_id            = var.cluster_id
     bastion_ip            = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
     bastion_name          = var.bastion_vip != "" ? "${var.name_prefix}-bastion" : "${var.name_prefix}-bastion-0"
