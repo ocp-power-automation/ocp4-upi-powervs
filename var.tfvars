@@ -50,6 +50,7 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #ibm_cloud_vpc_subnet_name = "ocp-subnet"
 #iaas_classic_username     = "apikey"     # Can be passed via environment variable IAAS_CLASSIC_USERNAME
 #iaas_classic_api_key      = ""           # if empty, will default to ibmcloud_api_key. Can be passed via environment variable IAAS_CLASSIC_API_KEY
+#iaas_vpc_region       = ""               # if empty, will default to ibmcloud_region.
 
 
 ### Misc Customizations

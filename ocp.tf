@@ -1,7 +1,13 @@
 provider "ibm" {
+  ibmcloud_api_key = var.ibmcloud_api_key
+  region           = var.ibmcloud_region
+  zone             = var.ibmcloud_zone
+}
+
+provider "ibm" {
+  alias                 = "classic"
+  region                = local.iaas_vpc_region
   ibmcloud_api_key      = var.ibmcloud_api_key
-  region                = var.ibmcloud_region
-  zone                  = var.ibmcloud_zone
   iaas_classic_username = var.iaas_classic_username
   iaas_classic_api_key  = local.iaas_classic_api_key
 }
@@ -21,8 +27,9 @@ locals {
 }
 
 data "ibm_is_subnet" "vpc_subnet" {
-  count = var.use_ibm_cloud_services ? 1 : 0
-  name  = var.ibm_cloud_vpc_subnet_name
+  provider = ibm.classic
+  count    = var.use_ibm_cloud_services ? 1 : 0
+  name     = var.ibm_cloud_vpc_subnet_name
 }
 
 module "prepare" {
@@ -148,6 +155,9 @@ module "install" {
 module "ibmcloud" {
   count  = var.use_ibm_cloud_services ? 1 : 0
   source = "./modules/7_ibmcloud"
+  providers = {
+    ibm = ibm.classic
+  }
 
   cluster_domain  = module.nodes.cluster_domain
   cluster_id      = local.cluster_id

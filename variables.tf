@@ -239,6 +239,12 @@ variable "iaas_classic_api_key" {
   default     = ""
   # if empty, will default to ibmcloud_api_key
 }
+variable "iaas_vpc_region" {
+  type        = string
+  description = "IBM Cloud VPC Infrastructure region."
+  default     = ""
+  # if empty, will default to ibmcloud_region
+}
 
 ################################################################
 ### Instrumentation
@@ -387,6 +393,7 @@ locals {
   private_key          = var.private_key == "" ? file(coalesce(local.private_key_file, "/dev/null")) : var.private_key
   public_key           = var.public_key == "" ? file(coalesce(local.public_key_file, "/dev/null")) : var.public_key
   iaas_classic_api_key = var.iaas_classic_api_key == "" ? var.ibmcloud_api_key : var.iaas_classic_api_key
+  iaas_vpc_region      = var.iaas_vpc_region == "" ? var.ibmcloud_region : var.iaas_vpc_region
 }
 
 ################################################################
