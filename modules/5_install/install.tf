@@ -19,15 +19,11 @@
 ################################################################
 
 locals {
-
   public_vrrp = {
     virtual_router_id = var.bastion_internal_vip == "" ? "" : split(".", var.bastion_internal_vip)[3]
     virtual_ipaddress = var.bastion_internal_vip
     password          = uuid()
   }
-
-  wildcard_dns   = ["nip.io", "xip.io", "sslip.io"]
-  cluster_domain = contains(local.wildcard_dns, var.cluster_domain) ? "${var.bastion_external_vip != "" ? var.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
 
   local_registry = {
     enable_local_registry = var.enable_local_registry
@@ -38,11 +34,12 @@ locals {
   }
 
   helpernode_vars = {
-    cluster_domain        = local.cluster_domain
+    cluster_domain        = var.cluster_domain
     name_prefix           = var.name_prefix
     cluster_id            = var.cluster_id
+    name_prefix           = var.name_prefix
     bastion_ip            = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
-    bastion_name          = var.bastion_vip != "" ? "${var.name_prefix}-bastion" : "${var.name_prefix}-bastion-0"
+    bastion_name          = var.bastion_vip != "" ? "${var.name_prefix}bastion" : "${var.name_prefix}bastion-0"
     isHA                  = var.bastion_vip != ""
     bastion_master_ip     = var.bastion_ip[0]
     bastion_backup_ip     = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
@@ -58,20 +55,20 @@ locals {
     bootstrap_info = {
       ip   = var.bootstrap_ip
       mac  = var.bootstrap_mac
-      name = "${var.name_prefix}-bootstrap"
+      name = "${var.node_prefix}bootstrap"
     }
     master_info = [for ix in range(length(var.master_ips)) :
       {
         ip   = var.master_ips[ix],
         mac  = var.master_macs[ix],
-        name = "${var.name_prefix}-master-${ix}"
+        name = "${var.node_prefix}master-${ix}"
       }
     ]
     worker_info = [for ix in range(length(var.worker_ips)) :
       {
         ip   = var.worker_ips[ix],
         mac  = var.worker_macs[ix],
-        name = "${var.name_prefix}-worker-${ix}"
+        name = "${var.node_prefix}worker-${ix}"
       }
     ]
 
@@ -85,10 +82,10 @@ locals {
   }
 
   install_inventory = {
-    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.name_prefix}-bastion-${ix}"]
-    bootstrap_host = var.bootstrap_ip == "" ? "" : "${var.name_prefix}-bootstrap"
-    master_hosts   = [for ix in range(length(var.master_ips)) : "${var.name_prefix}-master-${ix}"]
-    worker_hosts   = [for ix in range(length(var.worker_ips)) : "${var.name_prefix}-worker-${ix}"]
+    bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.name_prefix}bastion-${ix}"]
+    bootstrap_host = var.bootstrap_ip == "" ? "" : "${var.node_prefix}bootstrap"
+    master_hosts   = [for ix in range(length(var.master_ips)) : "${var.node_prefix}master-${ix}"]
+    worker_hosts   = [for ix in range(length(var.worker_ips)) : "${var.node_prefix}worker-${ix}"]
   }
 
   proxy = {
@@ -97,12 +94,12 @@ locals {
     user_pass = lookup(var.proxy, "user", "") == "" ? "" : "${lookup(var.proxy, "user", "")}:${lookup(var.proxy, "password", "")}@"
   }
 
-  local_registry_ocp_image = "registry.${var.cluster_id}.${local.cluster_domain}:5000/${local.local_registry.ocp_release_repo}:${var.ocp_release_tag}"
+  local_registry_ocp_image = "registry.${var.cluster_id}.${var.cluster_domain}:5000/${local.local_registry.ocp_release_repo}:${var.ocp_release_tag}"
 
   install_vars = {
     bastion_vip            = var.bastion_vip
     cluster_id             = var.cluster_id
-    cluster_domain         = local.cluster_domain
+    cluster_domain         = var.cluster_domain
     pull_secret            = var.pull_secret
     public_ssh_key         = var.public_key
     storage_type           = var.storage_type
