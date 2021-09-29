@@ -219,9 +219,10 @@ These set of variables specify the username and API key for accessing IBM Cloud 
 ```
 iaas_classic_username     = "apikey"
 iaas_classic_api_key      = "" # if empty, will default to ibmcloud_api_key.
+iaas_vpc_region           = "" # if empty, will default to ibmcloud_region.
 ```
 
-Note: `iaas_classic_username` and `iaas_classic_api_key` variables are optional, These variables need to be set only when using a different classic username and key. By default `apikey` will be used as the `iaas_class_username` and `ibmcloud_api_key` will be used as the `iaas_classic_api_key`. Note that non-default values for these variables can also be passed via environment variables `IAAS_CLASSIC_USERNAME` and `IAAS_CLASSIC_API_KEY` respectively.
+Note: `iaas_classic_username`, `iaas_classic_api_key` and `iaas_vpc_region` variables are optional, These variables need to be set only when using a different classic username, key and vpc region. By default `apikey` will be used as the `iaas_class_username`, `ibmcloud_api_key` will be used as the `iaas_classic_api_key` and `ibmcloud_region` will be used as the `iaas_vpc_region`. Note that non-default values for these variables can also be passed via environment variables `IAAS_CLASSIC_USERNAME` and `IAAS_CLASSIC_API_KEY` respectively.
 
 
 ### Misc Customizations
