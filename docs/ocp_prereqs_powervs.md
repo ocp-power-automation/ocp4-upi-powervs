@@ -203,9 +203,9 @@ Further, the image disk should be minimum of 120 GB in size.
 - Qcow2 Image Links
   - RHEL 8.3 Qcow2 image is available from the following [link](https://access.redhat.com/downloads/content/279/ver=/rhel---8/8.3/ppc64le/product-software)
   - CentOS 8.3 Wcow2 image is available from the following [link](https://cloud.centos.org/centos/8/ppc64le/images/CentOS-8-GenericCloud-8.3.2011-20201204.2.ppc64le.qcow2)
-  - RHCOS Qcow2 image is available from the following [link](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/4.6/latest/rhcos-4.6.1-ppc64le-openstack.ppc64le.qcow2.gz)
+  - RHCOS Qcow2 image is available from the following [link](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/4.9/latest/rhcos-openstack.ppc64le.qcow2.gz)
 
-Note: RHCOS image version is tied to the specific OCP release. For example RHCOS-4.6 image needs to be used for OCP 4.6 release.
+Note: RHCOS image version is tied to the specific OCP release. For example RHCOS-4.9 image needs to be used for OCP 4.9 release.
 ### Uploading to IBM Cloud Object Storage
 
 - **Create IBM Cloud Object Storage service and bucket**

@@ -16,12 +16,14 @@ This project leverages the helpernode [ansible playbook](https://github.com/RedH
 
 ## Before You Start
 	
+This branch must be used with OCP 4.9.x versions only.
+
 The [main](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/master) branch must be used with latest OCP pre-release versions only. 
 Ensure you checkout the correct `release-VERSION` branch depending on the version (4.5, 4.6 ...) of RedHat OpenShift you want to install:
 	
-For example to use OCP 4.8 perform the following
+For example to use OCP 4.9 perform the following
 ```
-export VERSION=4.8
+export VERSION=4.9
 git clone --single-branch --branch release-$VERSION https://github.com/ocp-power-automation/ocp4-upi-powervs.git
 ```
 
