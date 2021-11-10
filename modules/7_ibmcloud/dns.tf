@@ -53,7 +53,7 @@ resource "ibm_dns_record" "bootstrap" {
   type               = "a"
 }
 resource "ibm_dns_record" "master" {
-  count              = length(var.master_ips)
+  count              = var.master_count
   data               = var.master_ips[count.index]
   domain_id          = data.ibm_dns_domain.domain.id
   host               = "${var.name_prefix}-master-${count.index}.${var.cluster_id}"
@@ -62,7 +62,7 @@ resource "ibm_dns_record" "master" {
   type               = "a"
 }
 resource "ibm_dns_record" "worker" {
-  count              = length(var.worker_ips)
+  count              = var.worker_count
   data               = var.worker_ips[count.index]
   domain_id          = data.ibm_dns_domain.domain.id
   host               = "${var.name_prefix}-worker-${count.index}.${var.cluster_id}"
