@@ -37,7 +37,7 @@ data "ibm_pi_catalog_images" "catalog_images" {
 locals {
   catalog_bastion_image = [for x in data.ibm_pi_catalog_images.catalog_images.images : x if x.name == var.rhel_image_name]
   bastion_image_id      = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].id : local.catalog_bastion_image[0].image_id
-  bastion_storage_type  = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].storage_type : local.catalog_bastion_image[0].storage_type
+  bastion_storage_pool  = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].storage_pool : local.catalog_bastion_image[0].storage_pool
 }
 
 data "ibm_pi_image" "bastion" {
@@ -69,7 +69,7 @@ resource "ibm_pi_volume" "volume" {
 
   pi_volume_size       = var.volume_size
   pi_volume_name       = "${var.name_prefix}${var.storage_type}-volume"
-  pi_volume_type       = local.bastion_storage_type
+  pi_volume_pool       = local.bastion_storage_pool
   pi_volume_shareable  = var.volume_shareable
   pi_cloud_instance_id = var.service_instance_id
 }
@@ -88,6 +88,7 @@ resource "ibm_pi_instance" "bastion" {
   pi_cloud_instance_id = var.service_instance_id
   pi_health_status     = var.bastion_health_status
   pi_volume_ids        = var.storage_type == "nfs" ? ibm_pi_volume.volume.*.volume_id : null
+  pi_storage_pool      = local.bastion_storage_pool
 }
 
 data "ibm_pi_instance_ip" "bastion_ip" {
