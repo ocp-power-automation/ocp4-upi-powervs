@@ -70,6 +70,7 @@ resource "ibm_pi_instance" "bootstrap" {
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
+  pi_storage_pool = data.ibm_pi_image.rhcos.storage_pool
 }
 
 #master
@@ -112,6 +113,7 @@ resource "ibm_pi_instance" "master" {
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
+  pi_storage_pool = data.ibm_pi_image.rhcos.storage_pool
 }
 
 resource "ibm_pi_volume" "master" {
@@ -119,7 +121,7 @@ resource "ibm_pi_volume" "master" {
 
   pi_volume_size       = var.master_volume_size
   pi_volume_name       = "${var.name_prefix}master-${count.index}-volume"
-  pi_volume_type       = data.ibm_pi_image.rhcos.storage_type
+  pi_volume_pool       = data.ibm_pi_image.rhcos.storage_pool
   pi_volume_shareable  = var.volume_shareable
   pi_cloud_instance_id = var.service_instance_id
 }
@@ -166,6 +168,7 @@ resource "ibm_pi_instance" "worker" {
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
+  pi_storage_pool = data.ibm_pi_image.rhcos.storage_pool
 }
 
 resource "null_resource" "remove_worker" {
@@ -206,7 +209,7 @@ resource "ibm_pi_volume" "worker" {
 
   pi_volume_size       = var.worker_volume_size
   pi_volume_name       = "${var.name_prefix}worker-${count.index}-volume"
-  pi_volume_type       = data.ibm_pi_image.rhcos.storage_type
+  pi_volume_pool       = data.ibm_pi_image.rhcos.storage_pool
   pi_volume_shareable  = var.volume_shareable
   pi_cloud_instance_id = var.service_instance_id
 }
