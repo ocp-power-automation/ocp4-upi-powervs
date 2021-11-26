@@ -62,7 +62,6 @@ resource "ibm_pi_instance" "bootstrap" {
   pi_image_id          = data.ibm_pi_image.rhcos.id
   pi_sys_type          = var.system_type
   pi_cloud_instance_id = var.service_instance_id
-  pi_network_ids       = [data.ibm_pi_network.network.id]
 
   # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
   pi_user_data = base64encode(replace(data.ignition_config.bootstrap.rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
@@ -70,7 +69,11 @@ resource "ibm_pi_instance" "bootstrap" {
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
-  pi_storage_pool = data.ibm_pi_image.rhcos.storage_pool
+  pi_storage_pool  = data.ibm_pi_image.rhcos.storage_pool
+
+  pi_network {
+    network_id = data.ibm_pi_network.network.id
+  }
 }
 
 #master
@@ -104,7 +107,6 @@ resource "ibm_pi_instance" "master" {
   pi_image_id          = data.ibm_pi_image.rhcos.id
   pi_sys_type          = var.system_type
   pi_cloud_instance_id = var.service_instance_id
-  pi_network_ids       = [data.ibm_pi_network.network.id]
   pi_volume_ids        = var.master_volume_size == "" ? null : ibm_pi_volume.master[count.index].*.volume_id
 
   # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
@@ -113,7 +115,11 @@ resource "ibm_pi_instance" "master" {
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
-  pi_storage_pool = data.ibm_pi_image.rhcos.storage_pool
+  pi_storage_pool  = data.ibm_pi_image.rhcos.storage_pool
+
+  pi_network {
+    network_id = data.ibm_pi_network.network.id
+  }
 }
 
 resource "ibm_pi_volume" "master" {
@@ -159,7 +165,6 @@ resource "ibm_pi_instance" "worker" {
   pi_image_id          = data.ibm_pi_image.rhcos.id
   pi_sys_type          = var.system_type
   pi_cloud_instance_id = var.service_instance_id
-  pi_network_ids       = [data.ibm_pi_network.network.id]
   pi_volume_ids        = var.worker_volume_size == "" ? null : ibm_pi_volume.worker[count.index].*.volume_id
 
   # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
@@ -168,7 +173,11 @@ resource "ibm_pi_instance" "worker" {
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
-  pi_storage_pool = data.ibm_pi_image.rhcos.storage_pool
+  pi_storage_pool  = data.ibm_pi_image.rhcos.storage_pool
+
+  pi_network {
+    network_id = data.ibm_pi_network.network.id
+  }
 }
 
 resource "null_resource" "remove_worker" {
