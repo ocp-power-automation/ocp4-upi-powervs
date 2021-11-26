@@ -82,13 +82,19 @@ resource "ibm_pi_instance" "bastion" {
   pi_instance_name     = "${var.name_prefix}bastion-${count.index}"
   pi_proc_type         = var.processor_type
   pi_image_id          = local.bastion_image_id
-  pi_network_ids       = [ibm_pi_network.public_network.network_id, data.ibm_pi_network.network.id]
   pi_key_pair_name     = ibm_pi_key.key.key_id
   pi_sys_type          = var.system_type
   pi_cloud_instance_id = var.service_instance_id
   pi_health_status     = var.bastion_health_status
   pi_volume_ids        = var.storage_type == "nfs" ? ibm_pi_volume.volume.*.volume_id : null
   pi_storage_pool      = local.bastion_storage_pool
+
+  pi_network {
+    network_id = ibm_pi_network.public_network.network_id
+  }
+  pi_network {
+    network_id = data.ibm_pi_network.network.id
+  }
 }
 
 data "ibm_pi_instance_ip" "bastion_ip" {
