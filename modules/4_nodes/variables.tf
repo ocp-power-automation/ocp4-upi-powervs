@@ -30,7 +30,7 @@ variable "bastion_ip" {}
 variable "cluster_domain" {}
 variable "cluster_id" {}
 variable "name_prefix" {}
-
+variable "node_prefix" {}
 variable "bootstrap" {}
 variable "master" {}
 variable "worker" {}
@@ -40,6 +40,7 @@ variable "worker_volume_size" {}
 variable "volume_shareable" {}
 
 variable "bastion_public_ip" {}
+variable "bastion_external_vip" {}
 variable "rhel_username" {}
 variable "private_key" {}
 variable "ssh_agent" {}
