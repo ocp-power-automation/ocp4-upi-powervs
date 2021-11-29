@@ -301,7 +301,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "10fec74c9e987b39f7af1127abe304a9e41f8e65"
+  default     = "86e8f06fa3e008fbdd6188659cb45a3cbe716e26"
   # Checkout level for var.install_playbook_repo which is used for running ocp4 installations steps
 }
 
@@ -338,6 +338,12 @@ variable "pull_secret_file" {
 variable "dns_forwarders" {
   type    = string
   default = "8.8.8.8; 8.8.4.4"
+}
+
+variable "rhcos_pre_kernel_options" {
+  type        = list(string)
+  description = "List of kernel arguments for the cluster nodes that for pre-installation"
+  default     = []
 }
 
 variable "rhcos_kernel_options" {
