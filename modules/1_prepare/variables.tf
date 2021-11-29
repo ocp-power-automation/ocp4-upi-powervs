@@ -38,6 +38,15 @@ variable "name_prefix" {
   }
 }
 
+variable "node_prefix" {
+  type = string
+
+  validation {
+    condition     = length(var.node_prefix) <= 32
+    error_message = "Length cannot exceed 32 characters for node_prefix."
+  }
+}
+
 variable "service_instance_id" {}
 variable "rhel_image_name" {}
 

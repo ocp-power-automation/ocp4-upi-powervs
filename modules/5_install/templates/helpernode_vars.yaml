@@ -6,12 +6,12 @@ helper:
 %{ if isHA }
 high_availability:
   helpernodes:
-    - name: "${name_prefix}-bastion-0"
+    - name: "${name_prefix}bastion-0"
       ipaddr: "${bastion_master_ip}"
       state: MASTER
       priority: 100
 %{ for idx,b in bastion_backup_ip ~}
-    - name: "${name_prefix}-bastion-${idx + 1}"
+    - name: "${name_prefix}bastion-${idx + 1}"
       ipaddr: "${b}"
       state: BACKUP
       priority: 90

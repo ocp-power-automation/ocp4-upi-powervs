@@ -25,12 +25,12 @@ output "install_status" {
 
 output "oc_server_url" {
   depends_on = [null_resource.install]
-  value      = "https://api.${var.cluster_id}.${local.cluster_domain}:6443"
+  value      = "https://api.${var.cluster_id}.${var.cluster_domain}:6443"
 }
 
 output "web_console_url" {
   depends_on = [null_resource.install]
-  value      = "https://console-openshift-console.apps.${var.cluster_id}.${local.cluster_domain}"
+  value      = "https://console-openshift-console.apps.${var.cluster_id}.${var.cluster_domain}"
 }
 
 output "bastion_external_vip" {

@@ -31,14 +31,14 @@ locals {
 }
 
 resource "ibm_is_lb" "load_balancer_internal" {
-  name            = "${var.name_prefix}-internal-loadbalancer"
+  name            = "${var.name_prefix}internal-loadbalancer"
   subnets         = [var.vpc_subnet_id]
   security_groups = [ibm_is_security_group.ocp_security_group.id]
   type            = "private"
 }
 
 resource "ibm_is_lb" "load_balancer_external" {
-  name            = "${var.name_prefix}-external-loadbalancer"
+  name            = "${var.name_prefix}external-loadbalancer"
   subnets         = [var.vpc_subnet_id]
   security_groups = [ibm_is_security_group.ocp_security_group.id]
   type            = "public"
