@@ -12,6 +12,8 @@ log_level: ${log_level}
 release_image_override: '${release_image_override}'
 enable_local_registry: ${enable_local_registry}
 
+rhcos_pre_kernel_options: [%{ for opt in rhcos_pre_kernel_options ~}"${opt}",%{ endfor ~}]
+
 rhcos_kernel_options: [%{ for opt in rhcos_kernel_options ~}"${opt}",%{ endfor ~}]
 
 setup_squid_proxy : ${setup_squid_proxy}
