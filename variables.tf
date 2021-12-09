@@ -301,7 +301,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "86b12e097f430dca95a151cb1073c1b1f07be024"
+  default     = "fac991e23cfe835a41969713b7d3efdcf2ce73e9"
   # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
 }
 
@@ -338,6 +338,12 @@ variable "pull_secret_file" {
 variable "dns_forwarders" {
   type    = string
   default = "8.8.8.8; 8.8.4.4"
+}
+
+variable "rhcos_pre_kernel_options" {
+  type        = list(string)
+  description = "List of kernel arguments for the cluster nodes that for pre-installation"
+  default     = []
 }
 
 variable "rhcos_kernel_options" {
