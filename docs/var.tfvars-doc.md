@@ -91,6 +91,12 @@ Note that in case of HA, the automation will not setup NFS storage. `count` of 1
 You can optionally set the worker `count` value to 0 in which case all the cluster pods will be running on the master/supervisor nodes.
 Ensure you use proper sizing for master/supervisor nodes to avoid resource starvation for containers.
 
+To attach additional volumes to master or worker nodes, set the optional `data_volume_count` key to the number of volumes that is to be attached and the `data_volume_size` to the size (in GB) for each volume.
+```
+master      = {memory      = "32",   processors  = "0.5",  "count"   = 3, data_volume_count  = 0, data_volume_size  = 100}
+worker      = {memory      = "32",   processors  = "0.5",  "count"   = 2, data_volume_count  = 0, data_volume_size  = 100}
+```
+
 For PowerVS processors are equal to entitled physical count. So **N** processors == **N** physical core entitlements == **ceil[N]** vCPUs.
 Here are some examples to help you understand the relationship.
 
@@ -321,12 +327,6 @@ These variables specify details about NFS storage that is setup by default on th
 storage_type                = "nfs"
 volume_size                 = "300" # Value in GB
 volume_shareable            = false
-```
-
-If you need to attach additional data volumes to the OpenShift cluster nodes use the following variables.
-```
-master_volume_size          = "500"
-worker_volume_size          = "500"
 ```
 
 The following variables are specific to upgrading an existing installation.
