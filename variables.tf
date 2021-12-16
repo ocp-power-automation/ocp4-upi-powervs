@@ -96,11 +96,13 @@ variable "bootstrap" {
 }
 
 variable "master" {
-  type = object({ count = number, memory = string, processors = string })
   default = {
     count      = 3
     memory     = "32"
     processors = "0.5"
+    #optional data volumes to master nodes
+    #data_volume_size  = 100 #Default volume size (in GB) to be attached to the master nodes.
+    #data_volume_count = 0 #Number of volumes to be attached to each master node.
   }
   validation {
     condition     = var.master["count"] == 3
@@ -109,11 +111,13 @@ variable "master" {
 }
 
 variable "worker" {
-  type = object({ count = number, memory = string, processors = string })
   default = {
     count      = 2
     memory     = "32"
     processors = "0.5"
+    #optional data volumes to worker nodes
+    #data_volume_size  = 100 #Default volume size (in GB) to be attached to the worker nodes.
+    #data_volume_count = 0 #Number of volumes to be attached to each worker node.
   }
 }
 
@@ -487,18 +491,6 @@ variable "volume_shareable" {
   type        = bool
   description = "If the volumes can be shared or not (true/false)"
   default     = false
-}
-
-variable "master_volume_size" {
-  type        = string
-  description = "Volume size to attach to the master nodes. If you don't need extra volume to be attached then keep the value empty"
-  default     = "" # Value in GB
-}
-
-variable "worker_volume_size" {
-  type        = string
-  description = "Volume size to attach to the worker nodes. If you don't need extra volume to be attached then keep the value empty"
-  default     = "" # Value in GB
 }
 
 variable "upgrade_version" {

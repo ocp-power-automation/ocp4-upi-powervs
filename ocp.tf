@@ -81,8 +81,6 @@ module "nodes" {
   bootstrap            = var.bootstrap
   master               = var.master
   worker               = var.worker
-  master_volume_size   = var.master_volume_size
-  worker_volume_size   = var.worker_volume_size
   volume_shareable     = var.volume_shareable
   bastion_external_vip = module.prepare.bastion_external_vip
   bastion_public_ip    = module.prepare.bastion_public_ip
