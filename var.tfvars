@@ -16,6 +16,9 @@ bastion   = { memory = "16", processors = "1", "count" = 1 }
 bootstrap = { memory = "32", processors = "0.5", "count" = 1 }
 master    = { memory = "32", processors = "0.5", "count" = 3 }
 worker    = { memory = "32", processors = "0.5", "count" = 2 }
+#With additional attributes
+#master    = { memory = "32", processors = "0.5", "count" = 3, data_volume_count  = 0, data_volume_size  = 100 }
+#worker    = { memory = "32", processors = "0.5", "count" = 2, data_volume_count  = 0, data_volume_size  = 100 }
 
 rhel_image_name  = "rhel-8.3"
 rhcos_image_name = "rhcos-4.9"
@@ -86,9 +89,6 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #storage_type               = "nfs"
 #volume_size                = "300"    #Value in GB
 #volume_shareable           = false
-
-#master_volume_size         = "500"   #Value in GB
-#worker_volume_size         = "500"   #Value in GB
 
 #upgrade_version            = ""
 #upgrade_pause_time         = "70"
