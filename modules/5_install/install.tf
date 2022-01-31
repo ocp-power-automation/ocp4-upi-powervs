@@ -81,10 +81,12 @@ locals {
   }
 
   helpernode_inventory = {
-    bastion_ip = var.bastion_ip
+    rhel_username = var.rhel_username
+    bastion_ip    = var.bastion_ip
   }
 
   install_inventory = {
+    rhel_username  = var.rhel_username
     bastion_hosts  = [for ix in range(length(var.bastion_ip)) : "${var.name_prefix}bastion-${ix}"]
     bootstrap_host = var.bootstrap_ip == "" ? "" : "${var.node_prefix}bootstrap"
     master_hosts   = [for ix in range(length(var.master_ips)) : "${var.node_prefix}master-${ix}"]
@@ -196,7 +198,7 @@ resource "null_resource" "config" {
     inline = [
       "sed -i \"/^helper:.*/a \\ \\ networkifacename: $(ip r | grep \"${var.cidr} dev\" | awk '{print $3}')\" ocp4-helpernode/helpernode_vars.yaml",
       "echo 'Running ocp4-helpernode playbook...'",
-      "cd ocp4-helpernode && ansible-playbook -e @helpernode_vars.yaml tasks/main.yml ${var.ansible_extra_options}"
+      "cd ocp4-helpernode && ansible-playbook -e @helpernode_vars.yaml tasks/main.yml ${var.ansible_extra_options} --become"
     ]
   }
 }
@@ -225,10 +227,10 @@ resource "null_resource" "configure_public_vip" {
   provisioner "remote-exec" {
     inline = [
       # Set state=MASTER,priority=100 for first bastion and state=BACKUP,priority=90 for others.
-      "sed -i \"s/state <STATE>/state ${count.index == 0 ? "MASTER" : "BACKUP"}/\" /tmp/keepalived_vrrp_instance",
-      "sed -i \"s/priority <PRIORITY>/priority ${count.index == 0 ? "100" : "90"}/\" /tmp/keepalived_vrrp_instance",
-      "sed -i \"s/interface <INTERFACE>/interface $(ip r | grep ${var.public_cidr} | awk '{print $3}')/\" /tmp/keepalived_vrrp_instance",
-      "cat /tmp/keepalived_vrrp_instance >> /etc/keepalived/keepalived.conf",
+      "sudo sed -i \"s/state <STATE>/state ${count.index == 0 ? "MASTER" : "BACKUP"}/\" /tmp/keepalived_vrrp_instance",
+      "sudo sed -i \"s/priority <PRIORITY>/priority ${count.index == 0 ? "100" : "90"}/\" /tmp/keepalived_vrrp_instance",
+      "sudo sed -i \"s/interface <INTERFACE>/interface $(ip r | grep ${var.public_cidr} | awk '{print $3}')/\" /tmp/keepalived_vrrp_instance",
+      "sudo cat /tmp/keepalived_vrrp_instance >> /etc/keepalived/keepalived.conf",
       "sudo systemctl restart keepalived"
     ]
   }
@@ -255,14 +257,14 @@ echo "Configuring SNAT (experimental)..."
 
 PRIVATE_INTERFACE=$(ip r | grep "${var.cidr} dev" | awk '{print $3}')
 
-firewall-cmd --zone=public --add-masquerade --permanent
+sudo firewall-cmd --zone=public --add-masquerade --permanent
 # Masquerade will enable ip forwarding automatically
-firewall-cmd --reload
+sudo firewall-cmd --reload
 
 #Checksum needs to be turned off to avoid a bug with ibmveth
-PRIVATE_CONNECTION_NAME=$(nmcli -t -f NAME connection show | grep $PRIVATE_INTERFACE)
-nmcli connection modify "$PRIVATE_CONNECTION_NAME" ethtool.feature-rx off
-nmcli connection up "$PRIVATE_CONNECTION_NAME"
+PRIVATE_CONNECTION_NAME=$(sudo nmcli -t -f NAME connection show | grep $PRIVATE_INTERFACE)
+sudo nmcli connection modify "$PRIVATE_CONNECTION_NAME" ethtool.feature-rx off
+sudo nmcli connection up "$PRIVATE_CONNECTION_NAME"
 
 EOF
     ]
@@ -322,7 +324,7 @@ resource "null_resource" "pre_install" {
   # DHCP config for setting MTU; Since helpernode DHCP template does not support MTU setting
   provisioner "remote-exec" {
     inline = [
-      "sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf",
+      "sudo sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf",
       "sudo systemctl restart dhcpd.service"
     ]
   }
