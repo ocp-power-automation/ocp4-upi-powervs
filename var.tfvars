@@ -26,8 +26,8 @@ processor_type   = "shared"
 system_type      = "s922"
 network_name     = "ocp-net"
 
-rhel_username                   = "root"
-connection_timeout              = 30 # minutes
+rhel_username                   = "root" #Set it to an appropriate username for non-root user access
+connection_timeout              = 30     # minutes
 public_key_file                 = "data/id_rsa.pub"
 private_key_file                = "data/id_rsa"
 rhel_subscription_username      = "<subscription-id>"       #Leave this as-is if using CentOS as bastion image
