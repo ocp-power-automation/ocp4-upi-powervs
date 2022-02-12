@@ -259,6 +259,11 @@ variable "ssh_agent" {
   default     = false
 }
 
+variable "connection_timeout" {
+  description = "Timeout in minutes for SSH connections"
+  default     = 30
+}
+
 variable "bastion_health_status" {
   type        = string
   description = "Specify if bastion should poll for the Health Status to be OK or WARNING. Default is OK."
