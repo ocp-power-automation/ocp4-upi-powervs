@@ -27,6 +27,7 @@ system_type      = "s922"
 network_name     = "ocp-net"
 
 rhel_username                   = "root"
+connection_timeout              = 30 # minutes
 public_key_file                 = "data/id_rsa.pub"
 private_key_file                = "data/id_rsa"
 rhel_subscription_username      = "<subscription-id>"       #Leave this as-is if using CentOS as bastion image
