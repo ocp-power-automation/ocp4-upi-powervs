@@ -46,6 +46,7 @@ variable "bastion_public_ip" {}
 variable "rhel_username" {}
 variable "private_key" {}
 variable "ssh_agent" {}
+variable "connection_timeout" {}
 
 variable "bootstrap_ip" {}
 variable "master_ips" {}

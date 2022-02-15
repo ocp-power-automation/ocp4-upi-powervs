@@ -124,7 +124,7 @@ resource "null_resource" "bastion_init" {
     host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
   provisioner "remote-exec" {
     inline = [
@@ -169,7 +169,7 @@ resource "null_resource" "setup_proxy_info" {
     host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
   # Setup proxy
   provisioner "remote-exec" {
@@ -209,10 +209,11 @@ resource "null_resource" "bastion_register" {
   count      = (var.rhel_subscription_username == "" || var.rhel_subscription_username == "<subscription-id>") && var.rhel_subscription_org == "" ? 0 : local.bastion_count
   depends_on = [null_resource.bastion_init, null_resource.setup_proxy_info]
   triggers = {
-    external_ip   = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
-    rhel_username = var.rhel_username
-    private_key   = var.private_key
-    ssh_agent     = var.ssh_agent
+    external_ip        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
+    rhel_username      = var.rhel_username
+    private_key        = var.private_key
+    ssh_agent          = var.ssh_agent
+    connection_timeout = var.connection_timeout
   }
 
   connection {
@@ -221,7 +222,7 @@ resource "null_resource" "bastion_register" {
     host        = self.triggers.external_ip
     private_key = self.triggers.private_key
     agent       = self.triggers.ssh_agent
-    timeout     = "15m"
+    timeout     = "${self.triggers.connection_timeout}m"
   }
 
   provisioner "remote-exec" {
@@ -274,7 +275,7 @@ resource "null_resource" "enable_repos" {
     host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "remote-exec" {
@@ -300,7 +301,7 @@ resource "null_resource" "bastion_packages" {
     host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "remote-exec" {
@@ -343,7 +344,7 @@ resource "null_resource" "setup_nfs_disk" {
     host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
   provisioner "file" {
     content     = templatefile("${path.module}/templates/create_disk_link.sh", local.disk_config)
@@ -374,7 +375,7 @@ resource "null_resource" "rhel83_fix" {
     host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
   provisioner "remote-exec" {
     inline = [
