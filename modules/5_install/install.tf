@@ -146,7 +146,7 @@ resource "null_resource" "config" {
     host        = var.bastion_public_ip[0]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "remote-exec" {
@@ -193,7 +193,7 @@ resource "null_resource" "configure_public_vip" {
     host        = var.bastion_public_ip[count.index]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "file" {
@@ -223,7 +223,7 @@ resource "null_resource" "setup_snat" {
     host        = var.bastion_public_ip[count.index]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "remote-exec" {
@@ -261,7 +261,7 @@ resource "null_resource" "external_services" {
     host        = var.bastion_public_ip[count.index]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "remote-exec" {
@@ -294,7 +294,7 @@ resource "null_resource" "pre_install" {
     host        = var.bastion_public_ip[count.index]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   # DHCP config for setting MTU; Since helpernode DHCP template does not support MTU setting
@@ -319,7 +319,7 @@ resource "null_resource" "install" {
     host        = var.bastion_public_ip[0]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "remote-exec" {
@@ -356,7 +356,7 @@ resource "null_resource" "powervs_config" {
     host        = var.bastion_public_ip[0]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "file" {
@@ -385,7 +385,7 @@ resource "null_resource" "upgrade" {
     host        = var.bastion_public_ip[0]
     private_key = var.private_key
     agent       = var.ssh_agent
-    timeout     = "15m"
+    timeout     = "${var.connection_timeout}m"
   }
 
   provisioner "file" {

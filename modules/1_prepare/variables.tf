@@ -63,6 +63,7 @@ variable "private_network_mtu" {}
 
 variable "rhel_username" {}
 variable "ssh_agent" {}
+variable "connection_timeout" {}
 
 variable "rhel_subscription_username" {}
 variable "rhel_subscription_password" {}
