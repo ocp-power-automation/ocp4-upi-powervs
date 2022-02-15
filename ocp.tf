@@ -52,6 +52,7 @@ module "prepare" {
   private_key                     = local.private_key
   public_key                      = local.public_key
   ssh_agent                       = var.ssh_agent
+  connection_timeout              = var.connection_timeout
   rhel_subscription_username      = var.rhel_subscription_username
   rhel_subscription_password      = var.rhel_subscription_password
   rhel_subscription_org           = var.rhel_subscription_org
@@ -107,6 +108,7 @@ module "install" {
   rhel_username                  = var.rhel_username
   private_key                    = local.private_key
   ssh_agent                      = var.ssh_agent
+  connection_timeout             = var.connection_timeout
   bastion_internal_vip           = module.prepare.bastion_internal_vip
   bastion_external_vip           = module.prepare.bastion_external_vip
   bastion_public_ip              = module.prepare.bastion_public_ip
@@ -148,7 +150,6 @@ module "install" {
   cni_network_provider           = var.cni_network_provider
   use_ibm_cloud_services         = var.use_ibm_cloud_services
   vpc_cidr                       = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].ipv4_cidr_block : ""
-
 }
 
 module "ibmcloud" {
