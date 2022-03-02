@@ -19,6 +19,9 @@
 ################################################################
 
 locals {
+  wildcard_dns   = ["nip.io", "xip.io", "sslip.io"]
+  cluster_domain = contains(local.wildcard_dns, var.cluster_domain) ? "${var.bastion_external_vip != "" ? var.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
+
   public_vrrp = {
     virtual_router_id = var.bastion_internal_vip == "" ? "" : split(".", var.bastion_internal_vip)[3]
     virtual_ipaddress = var.bastion_internal_vip
@@ -125,6 +128,24 @@ locals {
     ibm_cloud_dl_endpoint_net_cidr = var.ibm_cloud_dl_endpoint_net_cidr
     ibm_cloud_http_proxy           = var.ibm_cloud_http_proxy
     ocp_node_net_gw                = var.gateway_ip
+  }
+
+  csi_driver_config_vars = {
+    service_instance_id = var.service_instance_id
+    region              = var.region
+    zone                = var.zone
+    master_info = [for ix in range(length(var.master_ids)) :
+      {
+        id   = var.master_ids[ix],
+        name = "${var.node_prefix}master-${ix}.${var.cluster_id}.${local.cluster_domain}"
+      }
+    ]
+    worker_info = [for ix in range(length(var.worker_ids)) :
+      {
+        id   = var.worker_ids[ix],
+        name = "${var.node_prefix}worker-${ix}.${var.cluster_id}.${local.cluster_domain}"
+      }
+    ]
   }
 
   upgrade_vars = {
@@ -400,3 +421,27 @@ resource "null_resource" "upgrade" {
   }
 }
 
+resource "null_resource" "csi_driver_config" {
+  depends_on = [null_resource.install]
+  count      = var.csi_driver_config ? 1 : 0
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = var.bastion_public_ip[0]
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "${var.connection_timeout}m"
+  }
+
+  provisioner "file" {
+    content     = templatefile("${path.module}/templates/csi_driver_config_vars.yaml", local.csi_driver_config_vars)
+    destination = "~/ocp4-playbooks/csi_driver_config_vars.yaml"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Running csi-driver config playbook...'",
+      "cd ocp4-playbooks && ansible-playbook -i inventory -e @csi_driver_config_vars.yaml playbooks/csi_driver_config.yaml ${var.ansible_extra_options}"
+    ]
+  }
+}

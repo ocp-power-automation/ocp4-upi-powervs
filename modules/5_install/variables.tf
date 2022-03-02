@@ -30,6 +30,8 @@ variable "dns_forwarders" {
 }
 
 variable service_instance_id {}
+variable "region" {}
+variable "zone" {}
 variable "name_prefix" {}
 variable "node_prefix" {}
 
@@ -55,6 +57,9 @@ variable "worker_ips" {}
 variable bootstrap_mac {}
 variable master_macs {}
 variable worker_macs {}
+
+variable master_ids {}
+variable worker_ids {}
 
 variable "openshift_client_tarball" {}
 variable "openshift_install_tarball" {}
@@ -100,3 +105,5 @@ variable "cni_network_provider" {}
 
 variable "use_ibm_cloud_services" {}
 variable "vpc_cidr" {}
+
+variable "csi_driver_config" {}

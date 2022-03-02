@@ -42,6 +42,14 @@ output "worker_macs" {
   value = data.ibm_pi_instance_ip.worker_ip.*.macaddress
 }
 
+output "master_ids" {
+  value = ibm_pi_instance.master.*.instance_id
+}
+
+output "worker_ids" {
+  value = ibm_pi_instance.worker.*.instance_id
+}
+
 output "cluster_domain" {
   value = local.cluster_domain
 }

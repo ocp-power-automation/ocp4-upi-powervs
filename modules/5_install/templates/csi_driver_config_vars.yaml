@@ -1,0 +1,18 @@
+---
+service_instance_id: "${service_instance_id}"
+region: "${region}"
+zone: "${zone}"
+
+masters:
+%{ for m in master_info ~}
+  - name: "${m.name}"
+    id: "${m.id}"
+%{ endfor ~}
+%{ if length(worker_info) > 0 }
+
+workers:
+%{ for w in worker_info ~}
+  - name: "${w.name}"
+    id: "${w.id}"
+%{ endfor ~}
+%{ endif }
