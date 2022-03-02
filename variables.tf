@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "d9f70069d13925c7adbbcc7f5ec152367231f1cb"
+  default     = "5ebf01a03495bda14432dfd9718ad30d70089a61"
   # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
 }
 
@@ -561,4 +561,14 @@ variable "ibm_cloud_http_proxy" {
   type        = string
   description = "IBM Cloud http/squid proxy eg. http://10.166.13.64:3128"
   default     = ""
+}
+
+################################################################
+# CSI Driver configuration variables
+################################################################
+
+variable "csi_driver_config" {
+  type        = bool
+  description = "Enable csi-driver configurations (true/false)"
+  default     = true
 }
