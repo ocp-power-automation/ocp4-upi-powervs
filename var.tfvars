@@ -101,3 +101,5 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #cni_network_provider       = "OpenshiftSDN"
 
 #setup_snat                 = true
+
+#csi_driver_config          = true
