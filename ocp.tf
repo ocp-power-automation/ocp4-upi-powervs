@@ -94,6 +94,8 @@ module "install" {
   source = "./modules/5_install"
 
   service_instance_id            = var.service_instance_id
+  region                         = var.ibmcloud_region
+  zone                           = var.ibmcloud_zone
   cluster_domain                 = module.nodes.cluster_domain
   cluster_id                     = local.cluster_id
   name_prefix                    = local.name_prefix
@@ -118,6 +120,8 @@ module "install" {
   bootstrap_mac                  = module.nodes.bootstrap_mac
   master_macs                    = module.nodes.master_macs
   worker_macs                    = module.nodes.worker_macs
+  master_ids                     = module.nodes.master_ids
+  worker_ids                     = module.nodes.worker_ids
   public_key                     = local.public_key
   pull_secret                    = file(coalesce(var.pull_secret_file, "/dev/null"))
   openshift_install_tarball      = var.openshift_install_tarball
@@ -149,6 +153,7 @@ module "install" {
   ibm_cloud_http_proxy           = var.ibm_cloud_http_proxy
   cni_network_provider           = var.cni_network_provider
   use_ibm_cloud_services         = var.use_ibm_cloud_services
+  csi_driver_config              = var.csi_driver_config
   vpc_cidr                       = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].ipv4_cidr_block : ""
 }
 
