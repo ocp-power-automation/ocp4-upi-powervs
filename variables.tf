@@ -521,6 +521,13 @@ variable "cni_network_provider" {
   default     = "OpenshiftSDN"
 }
 
+variable "fips_compliant" {
+  type        = bool
+  description = "Set to true to enable usage of FIPS enable in OCP deployment."
+  default     = false
+}
+
+
 ################################################################
 # Local registry variables ( used only for restricted network install )
 ################################################################
