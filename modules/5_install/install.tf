@@ -106,6 +106,7 @@ locals {
     log_level                = var.log_level
     release_image_override   = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
     enable_local_registry    = var.enable_local_registry
+    fips_compliant           = var.fips_compliant
     rhcos_pre_kernel_options = var.rhcos_pre_kernel_options
     rhcos_kernel_options     = var.rhcos_kernel_options
     chrony_config            = var.chrony_config
