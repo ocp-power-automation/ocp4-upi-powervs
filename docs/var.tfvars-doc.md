@@ -203,6 +203,14 @@ The total length of `cluster_id_prefix`.`cluster_id` should not exceed 32 charac
 
 The `use_zone_info_for_names` is a flag to indicate whether to use `cluster_id`-`ibmcloud_zone` or only `cluster_id` as name prefix for resource naming on PowerVS. The default value is set to `true` to use zone info in names, and the total length of `cluster_id_prefix`-`cluster_id`-`ibmcloud_zone` should not exceed 32 characters.
 
+### FIPS Variable for OpenShift deployment
+
+These variables will be used for deploying OCP in FIPS mode.
+Change the values as per your requirement.
+```
+fips_compliant      = false
+```
+
 ### Using IBM Cloud Services
 
 You can use IBM Cloud classic DNS and VPC Load Balancer services for running the OCP cluster. When this feature is enabled the services called named (DNS) and haproxy (Load Balancer) will not be running on the bastion/helpernode.
