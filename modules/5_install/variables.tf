@@ -35,6 +35,7 @@ variable "zone" {}
 variable "name_prefix" {}
 variable "node_prefix" {}
 
+variable "fips_compliant" {}
 variable "gateway_ip" {}
 variable "cidr" {}
 variable "public_cidr" {}
