@@ -364,8 +364,10 @@ This variable is used to enable SNAT for OCP nodes. When using SNAT, the OCP nod
 setup_snat                 = true
 ```
 
-This variable is used to enable CSI Driver configurations for OCP nodes.
+These set of variables are specific for CSI Driver configuration and installation.
 
 ```
-csi_driver_config          = true
+csi_driver_install         = false
+csi_driver_type            = "stable"
+csi_driver_version         = "v0.1.0"
 ```

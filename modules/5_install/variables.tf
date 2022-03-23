@@ -107,4 +107,7 @@ variable "cni_network_provider" {}
 variable "use_ibm_cloud_services" {}
 variable "vpc_cidr" {}
 
-variable "csi_driver_config" {}
+variable "ibmcloud_api_key" {}
+variable "csi_driver_install" {}
+variable "csi_driver_type" {}
+variable "csi_driver_version" {}
