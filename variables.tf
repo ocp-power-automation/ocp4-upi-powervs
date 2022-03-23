@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "d9f70069d13925c7adbbcc7f5ec152367231f1cb"
+  default     = "8ad6913c0fb26fcf176fe817804d2b7654adf15d"
   # Checkout level for https://github.com/ocp-power-automation/ocp4-playbooks which is used for running ocp4 installations steps
 }
 
@@ -519,6 +519,12 @@ variable "upgrade_delay_time" {
 variable "cni_network_provider" {
   description = "Set the default Container Network Interface (CNI) network provider"
   default     = "OpenshiftSDN"
+}
+
+variable "fips_compliant" {
+  type        = bool
+  description = "Set to true to enable usage of FIPS for OCP deployment."
+  default     = false
 }
 
 ################################################################
