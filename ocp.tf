@@ -98,6 +98,7 @@ module "install" {
   cluster_id                     = local.cluster_id
   name_prefix                    = local.name_prefix
   node_prefix                    = local.node_prefix
+  fips_compliant                 = var.fips_compliant
   dns_forwarders                 = var.dns_forwarders
   gateway_ip                     = module.prepare.gateway_ip
   cidr                           = module.prepare.cidr
