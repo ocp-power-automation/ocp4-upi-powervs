@@ -161,15 +161,15 @@ resource "null_resource" "config" {
   }
   provisioner "file" {
     content     = templatefile("${path.module}/templates/helpernode_inventory", local.helpernode_inventory)
-    destination = "~/ocp4-helpernode/inventory"
+    destination = "ocp4-helpernode/inventory"
   }
   provisioner "file" {
     content     = var.pull_secret
-    destination = "~/.openshift/pull-secret"
+    destination = ".openshift/pull-secret"
   }
   provisioner "file" {
     content     = templatefile("${path.module}/templates/helpernode_vars.yaml", local.helpernode_vars)
-    destination = "~/ocp4-helpernode/helpernode_vars.yaml"
+    destination = "ocp4-helpernode/helpernode_vars.yaml"
   }
   provisioner "remote-exec" {
     inline = [
@@ -333,11 +333,11 @@ resource "null_resource" "install" {
   }
   provisioner "file" {
     content     = templatefile("${path.module}/templates/install_inventory", local.install_inventory)
-    destination = "~/ocp4-playbooks/inventory"
+    destination = "ocp4-playbooks/inventory"
   }
   provisioner "file" {
     content     = templatefile("${path.module}/templates/install_vars.yaml", local.install_vars)
-    destination = "~/ocp4-playbooks/install_vars.yaml"
+    destination = "ocp4-playbooks/install_vars.yaml"
   }
   provisioner "remote-exec" {
     inline = [
@@ -362,7 +362,7 @@ resource "null_resource" "powervs_config" {
 
   provisioner "file" {
     content     = templatefile("${path.module}/templates/powervs_config_vars.yaml", local.powervs_config_vars)
-    destination = "~/ocp4-playbooks/powervs_config_vars.yaml"
+    destination = "ocp4-playbooks/powervs_config_vars.yaml"
   }
   provisioner "remote-exec" {
     inline = [
@@ -391,7 +391,7 @@ resource "null_resource" "upgrade" {
 
   provisioner "file" {
     content     = templatefile("${path.module}/templates/upgrade_vars.yaml", local.upgrade_vars)
-    destination = "~/ocp4-playbooks/upgrade_vars.yaml"
+    destination = "ocp4-playbooks/upgrade_vars.yaml"
   }
   provisioner "remote-exec" {
     inline = [
