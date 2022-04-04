@@ -211,6 +211,7 @@ Change the values as per your requirement.
 ```
 fips_compliant      = false
 ```
+Note: Once fips_compliant set to true it will enable FIPS on the OCP cluster and also on bastion nodes. At the end of install the bastion nodes will be rebooted.
 
 ### Using IBM Cloud Services
 

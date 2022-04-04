@@ -154,7 +154,12 @@ resource "null_resource" "bastion_init" {
       "echo MTU=1450 | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${ibm_pi_network.public_network.pi_cidr} | awk '{print $3}')",
       # Set specified mtu for private interface.
       "sudo ip link set dev $(ip r | grep \"${data.ibm_pi_network.network.cidr} dev\" | awk '{print $3}') mtu ${var.private_network_mtu}",
-      "echo MTU=${var.private_network_mtu} | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${data.ibm_pi_network.network.cidr} | awk '{print $3}')"
+      "echo MTU=${var.private_network_mtu} | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${data.ibm_pi_network.network.cidr} | awk '{print $3}')",
+      <<EOF
+      if [[ ${var.fips_compliant} = true ]]; then
+      fips-mode-setup --enable
+      fi
+EOF
     ]
   }
 }
