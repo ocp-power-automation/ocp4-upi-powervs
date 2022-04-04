@@ -448,3 +448,13 @@ resource "null_resource" "csi_driver_config" {
     ]
   }
 }
+
+resource "ibm_pi_operations" "fips_bastion_reboot" {
+  depends_on = [null_resource.config, null_resource.setup_snat, null_resource.configure_public_vip, null_resource.external_services, null_resource.pre_install, null_resource.install, null_resource.powervs_config, null_resource.upgrade, null_resource.csi_driver_config]
+  count      = var.fips_compliant ? var.bastion_count : 0
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_name     = "${var.name_prefix}bastion-${count.index}"
+  pi_operation         = "soft-reboot"
+}
+

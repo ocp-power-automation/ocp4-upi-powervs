@@ -64,6 +64,7 @@ module "prepare" {
   volume_shareable                = var.volume_shareable
   setup_squid_proxy               = var.setup_squid_proxy
   proxy                           = var.proxy
+  fips_compliant                  = var.fips_compliant
 }
 
 module "nodes" {
