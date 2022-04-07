@@ -352,13 +352,13 @@ resource "null_resource" "setup_nfs_disk" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo rm -rf mkdir ${local.storage_path}; sudo mkdir -p ${local.storage_path}; sudo chmod -R 755 ${local.storage_path}",
+      "sudo rm -rf mkdir ${local.storage_path}; sudo mkdir -p ${local.storage_path}; sudo chmod -R 777 ${local.storage_path}",
       "sudo chmod +x /tmp/create_disk_link.sh",
       # Fix for copying file from Windows OS having CR
       "sudo sed -i 's/\r//g' /tmp/create_disk_link.sh",
       "sudo /tmp/create_disk_link.sh",
-      "sudo mkfs.ext4 -F /dev/${local.disk_config.disk_name}",
-      "echo '/dev/${local.disk_config.disk_name} ${local.storage_path} ext4 defaults 0 0' | sudo tee -a /etc/fstab > /dev/null",
+      "sudo mkfs.xfs /dev/${local.disk_config.disk_name}",
+      "echo '/dev/${local.disk_config.disk_name} ${local.storage_path} xfs defaults 0 0' | sudo tee -a /etc/fstab > /dev/null",
       "sudo mount ${local.storage_path}",
     ]
   }
