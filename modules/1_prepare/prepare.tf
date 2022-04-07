@@ -160,7 +160,7 @@ resource "null_resource" "bastion_init" {
 }
 
 resource "null_resource" "setup_proxy_info" {
-  count      = ! var.setup_squid_proxy && local.proxy.server != "" ? local.bastion_count : 0
+  count      = !var.setup_squid_proxy && local.proxy.server != "" ? local.bastion_count : 0
   depends_on = [null_resource.bastion_init]
 
   connection {
