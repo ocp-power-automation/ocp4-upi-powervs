@@ -155,7 +155,10 @@ module "install" {
   ibm_cloud_http_proxy           = var.ibm_cloud_http_proxy
   cni_network_provider           = var.cni_network_provider
   use_ibm_cloud_services         = var.use_ibm_cloud_services
-  csi_driver_config              = var.csi_driver_config
+  ibmcloud_api_key               = var.ibmcloud_api_key
+  csi_driver_install             = var.csi_driver_install
+  csi_driver_type                = var.csi_driver_type
+  csi_driver_version             = var.csi_driver_version
   vpc_cidr                       = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].ipv4_cidr_block : ""
 }
 

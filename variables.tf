@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "284b597b3e88c635e3069b82926aa16812238492"
+  default     = "2ca4346f740429fdcd31cc346a6ae91e79746843"
   # Checkout level for var.install_playbook_repo which is used for running ocp4 installations steps
 }
 
@@ -570,11 +570,23 @@ variable "ibm_cloud_http_proxy" {
 }
 
 ################################################################
-# CSI Driver configuration variables
+# CSI Driver installation variables
 ################################################################
 
-variable "csi_driver_config" {
+variable "csi_driver_install" {
   type        = bool
-  description = "Enable csi-driver configurations (true/false)"
-  default     = true
+  description = "Enable csi-driver installation (true/false)"
+  default     = false
+}
+
+variable "csi_driver_type" {
+  type        = string
+  description = "Set to csi-driver type."
+  default     = "stable"
+}
+
+variable "csi_driver_version" {
+  type        = string
+  description = "Set to csi-driver version."
+  default     = "v0.1.0"
 }

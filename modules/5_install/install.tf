@@ -133,10 +133,12 @@ locals {
     ocp_node_net_gw                = var.gateway_ip
   }
 
-  csi_driver_config_vars = {
+  csi_driver_install_vars = {
     service_instance_id = var.service_instance_id
     region              = var.region
     zone                = var.zone
+    csi_driver_type     = var.csi_driver_type
+    csi_driver_version  = var.csi_driver_version
     master_info = [for ix in range(length(var.master_ids)) :
       {
         id   = var.master_ids[ix],
@@ -424,9 +426,9 @@ resource "null_resource" "upgrade" {
   }
 }
 
-resource "null_resource" "csi_driver_config" {
+resource "null_resource" "csi_driver_install" {
   depends_on = [null_resource.install]
-  count      = var.csi_driver_config ? 1 : 0
+  count      = var.csi_driver_install ? 1 : 0
 
   connection {
     type        = "ssh"
@@ -438,19 +440,20 @@ resource "null_resource" "csi_driver_config" {
   }
 
   provisioner "file" {
-    content     = templatefile("${path.module}/templates/csi_driver_config_vars.yaml", local.csi_driver_config_vars)
-    destination = "ocp4-playbooks/csi_driver_config_vars.yaml"
+    content     = templatefile("${path.module}/templates/csi_driver_install_vars.yaml", local.csi_driver_install_vars)
+    destination = "ocp4-playbooks/csi_driver_install_vars.yaml"
   }
   provisioner "remote-exec" {
     inline = [
-      "echo 'Running csi-driver config playbook...'",
-      "cd ocp4-playbooks && ansible-playbook -i inventory -e @csi_driver_config_vars.yaml playbooks/csi_driver_config.yaml ${var.ansible_extra_options}"
+      "echo 'Running csi-driver install playbook...'",
+      "export IBMCLOUD_API_KEY=${var.ibmcloud_api_key}",
+      "cd ocp4-playbooks && ansible-playbook -i inventory -e @csi_driver_install_vars.yaml playbooks/csi_driver_install.yaml ${var.ansible_extra_options}"
     ]
   }
 }
 
 resource "ibm_pi_operations" "fips_bastion_reboot" {
-  depends_on = [null_resource.config, null_resource.setup_snat, null_resource.configure_public_vip, null_resource.external_services, null_resource.pre_install, null_resource.install, null_resource.powervs_config, null_resource.upgrade, null_resource.csi_driver_config]
+  depends_on = [null_resource.config, null_resource.setup_snat, null_resource.configure_public_vip, null_resource.external_services, null_resource.pre_install, null_resource.install, null_resource.powervs_config, null_resource.upgrade, null_resource.csi_driver_install]
   count      = var.fips_compliant ? var.bastion_count : 0
 
   pi_cloud_instance_id = var.service_instance_id

@@ -3,6 +3,9 @@ service_instance_id: "${service_instance_id}"
 region: "${region}"
 zone: "${zone}"
 
+csi_driver_type: "${csi_driver_type}"
+csi_driver_version: "${csi_driver_version}"
+
 masters:
 %{ for m in master_info ~}
   - name: "${m.name}"
