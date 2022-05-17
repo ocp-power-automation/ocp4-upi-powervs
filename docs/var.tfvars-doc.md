@@ -371,3 +371,4 @@ csi_driver_install         = false
 csi_driver_type            = "stable"
 csi_driver_version         = "v0.1.0"
 ```
+**IMPORTANT**: This is an **experimental** feature and not yet ready for production.
