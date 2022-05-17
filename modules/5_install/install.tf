@@ -446,6 +446,7 @@ resource "null_resource" "csi_driver_install" {
   provisioner "remote-exec" {
     inline = [
       "echo 'Running csi-driver install playbook...'",
+      "echo 'This is an experimental feature and not yet ready for production'",
       "export IBMCLOUD_API_KEY=${var.ibmcloud_api_key}",
       "cd ocp4-playbooks && ansible-playbook -i inventory -e @csi_driver_install_vars.yaml playbooks/csi_driver_install.yaml ${var.ansible_extra_options}"
     ]
