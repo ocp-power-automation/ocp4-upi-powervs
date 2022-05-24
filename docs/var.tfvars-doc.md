@@ -348,10 +348,13 @@ volume_shareable            = false
 
 The following variables are specific to upgrading an existing installation.
 ```
+upgrade_image      = ""  #(e.g. `"quay.io/openshift-release-dev/ocp-release-nightly@sha256:xxxxx"`)
 upgrade_version    = ""
 upgrade_pause_time = "70"
 upgrade_delay_time = "600"
 ```
+One of the two varaibles `upgrade_image` or `upgrade_version` is required for upgrading the cluster.
+`upgrade_image` having higher precedence than `upgrade_version`.
 
 The following variables are specific to enable the connectivity between OCP nodes in PowerVS and IBM Cloud infrastructure over DirectLink.
 ```
