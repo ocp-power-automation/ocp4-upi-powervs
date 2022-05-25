@@ -588,5 +588,5 @@ variable "csi_driver_type" {
 variable "csi_driver_version" {
   type        = string
   description = "Set to csi-driver version."
-  default     = "v0.1.0"
+  default     = "v0.1.1"
 }
