@@ -369,6 +369,6 @@ These set of variables are specific for CSI Driver configuration and installatio
 ```
 csi_driver_install         = false
 csi_driver_type            = "stable"
-csi_driver_version         = "v0.1.0"
+csi_driver_version         = "v0.1.1"
 ```
 **IMPORTANT**: This is an **experimental** feature and not yet ready for production.
