@@ -8,7 +8,7 @@
 #
 # Licensed Materials - Property of IBM
 #
-# ©Copyright IBM Corp. 2020
+# ©Copyright IBM Corp. 2020, 2022
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -180,7 +180,7 @@ resource "null_resource" "config" {
       "mkdir -p .openshift",
       "rm -rf ocp4-helpernode",
       "echo 'Cloning into ocp4-helpernode...'",
-      "git clone ${var.helpernode_repo} --quiet",
+      "git clone ${var.helpernode_repo} --quiet --depth 1",
       "cd ocp4-helpernode && git checkout ${var.helpernode_tag}"
     ]
   }
@@ -352,7 +352,7 @@ resource "null_resource" "install" {
     inline = [
       "rm -rf ocp4-playbooks",
       "echo 'Cloning into ocp4-playbooks...'",
-      "git clone ${var.install_playbook_repo} --quiet",
+      "git clone ${var.install_playbook_repo} --quiet --depth 1",
       "cd ocp4-playbooks && git checkout ${var.install_playbook_tag}"
     ]
   }
