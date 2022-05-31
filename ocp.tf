@@ -112,6 +112,7 @@ module "install" {
   service_instance_id            = var.service_instance_id
   region                         = var.ibmcloud_region
   zone                           = var.ibmcloud_zone
+  system_type                    = var.system_type
   cluster_domain                 = module.nodes.cluster_domain
   cluster_id                     = local.cluster_id
   name_prefix                    = local.name_prefix
@@ -161,6 +162,7 @@ module "install" {
   ansible_extra_options          = var.ansible_extra_options
   rhcos_pre_kernel_options       = var.rhcos_pre_kernel_options
   rhcos_kernel_options           = var.rhcos_kernel_options
+  node_labels                    = var.node_labels
   chrony_config                  = var.chrony_config
   chrony_config_servers          = var.chrony_config_servers
   upgrade_image                  = var.upgrade_image

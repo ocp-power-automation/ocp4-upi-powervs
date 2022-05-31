@@ -86,6 +86,7 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #dns_forwarders             = "1.1.1.1; 9.9.9.9"
 #rhcos_pre_kernel_options   = []
 #rhcos_kernel_options       = []
+#node_labels                = {}
 #chrony_config              = true
 #chrony_config_servers      = [ {server = "0.centos.pool.ntp.org", options = "iburst"}, {server = "1.centos.pool.ntp.org", options = "iburst"} ]
 

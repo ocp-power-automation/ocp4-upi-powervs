@@ -319,6 +319,16 @@ rhcos_kernel_options        = []
   rhcos_kernel_options      = ["slub_max_order=0","loglevel=7"]
   ```
 
+This is a Map of [Node labels](https://kubernetes.io/docs/reference/labels-annotations-taints) and its values. Some of the well known labels such as `topology.kubernetes.io/region, topology.kubernetes.io/zone and node.kubernetes.io/instance-type` are automated. More custom labels can be added using the `node_labels` map variable.
+Note that this will be applied after the cluster is installed and all the nodes are in `Ready` status.
+```
+node_labels            = {}
+```
+- Example 1
+  ```
+  node_labels = {"failure-domain.beta.kubernetes.io/region": "mon","failure-domain.beta.kubernetes.io/zone": "mon01"}
+  ```
+
 These are NTP specific variables that are used for time-synchronization in the OpenShift cluster.
 ```
 chrony_config               = true

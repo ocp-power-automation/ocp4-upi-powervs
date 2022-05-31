@@ -28,6 +28,12 @@ locals {
     password          = uuid()
   }
 
+  node_labels = {
+    "topology.kubernetes.io/region"    = var.region
+    "topology.kubernetes.io/zone"      = var.zone
+    "node.kubernetes.io/instance-type" = var.system_type
+  }
+
   local_registry = {
     enable_local_registry = var.enable_local_registry
     registry_image        = var.local_registry_image
@@ -114,6 +120,7 @@ locals {
     fips_compliant           = var.fips_compliant
     rhcos_pre_kernel_options = var.rhcos_pre_kernel_options
     rhcos_kernel_options     = var.rhcos_kernel_options
+    node_labels              = merge(local.node_labels, var.node_labels)
     chrony_config            = var.chrony_config
     chrony_config_servers    = var.chrony_config_servers
     chrony_allow_range       = var.cidr
