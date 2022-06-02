@@ -498,6 +498,12 @@ variable "volume_shareable" {
   default     = false
 }
 
+variable "upgrade_image" {
+  type        = string
+  description = "OCP upgrade image e.g. quay.io/openshift-release-dev/ocp-release-nightly@sha256:xxxxx"
+  default     = ""
+}
+
 variable "upgrade_version" {
   type        = string
   description = "OCP upgrade version"
