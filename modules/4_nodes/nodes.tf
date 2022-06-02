@@ -35,10 +35,25 @@ data "ibm_pi_network" "network" {
   pi_cloud_instance_id = var.service_instance_id
 }
 
+# RHCOS Image Import
+resource "ibm_pi_image" "rhcos_image_import" {
+  count = var.rhcos_import_image ? 1 : 0
+
+  pi_image_name             = "${var.name_prefix}rhcos-${var.rhcos_import_image_storage_type}-image"
+  pi_cloud_instance_id      = var.service_instance_id
+  pi_image_bucket_name      = "rhcos-powervs-images-${var.rhcos_import_bucket_region}"
+  pi_image_bucket_region    = var.rhcos_import_bucket_region
+  pi_image_bucket_file_name = var.rhcos_import_image_filename
+  pi_image_storage_type     = var.rhcos_import_image_storage_type
+}
+
 data "ibm_pi_image" "rhcos" {
-  pi_image_name        = var.rhcos_image_name
+  depends_on = [ibm_pi_image.rhcos_image_import]
+
+  pi_image_name        = var.rhcos_import_image ? ibm_pi_image.rhcos_image_import[0].pi_image_name : var.rhcos_image_name
   pi_cloud_instance_id = var.service_instance_id
 }
+
 
 #bootstrap
 data "ignition_config" "bootstrap" {
