@@ -425,6 +425,10 @@ resource "null_resource" "csi_driver_install" {
   depends_on = [null_resource.install]
   count      = var.csi_driver_install ? 1 : 0
 
+  triggers = {
+    worker_count = length(var.worker_ips)
+  }
+
   connection {
     type        = "ssh"
     user        = var.rhel_username
