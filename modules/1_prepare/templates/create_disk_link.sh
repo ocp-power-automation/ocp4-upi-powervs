@@ -27,7 +27,7 @@ for device in $(ls -1 $disk_path|egrep -v "[0-9]$"); do
             storage_device=$device
             echo "Storage disk is $device"
             # This symbolic link is used in openshift config
-            echo "ENV{DEVTYPE}==\"disk\", ENV{SUBSYSTEM}==\"block\", ENV{DEVPATH}==\"$(sudo udevadm info --root --name="$storage_device" | sudo grep DEVPATH | sudo cut -f2 -d'=')\" SYMLINK+=\"$storage_disk_name\"" | sudo tee /lib/udev/rules.d/10-custom-ocp.rules;
+            echo "ENV{DM_UUID}==\"$(sudo udevadm info --root --name="$storage_device" | sudo grep DM_UUID | sudo cut -f2 -d'=')\" SYMLINK+=\"$storage_disk_name\"" | sudo tee /etc/udev/rules.d/99-custom-ocp.rules;
             sudo udevadm control --reload-rules;
             sudo udevadm trigger --type=devices --action=change
             break
