@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "2ca4346f740429fdcd31cc346a6ae91e79746843"
+  default     = "777878939449c3cfa140a773ad8e71a708858e0c"
   # Checkout level for var.install_playbook_repo which is used for running ocp4 installations steps
 }
 
@@ -359,6 +359,12 @@ variable "rhcos_kernel_options" {
   type        = list(string)
   description = "List of kernel arguments for the cluster nodes"
   default     = []
+}
+
+variable "node_labels" {
+  type        = map(string)
+  description = "Map of node labels for the cluster nodes"
+  default     = {}
 }
 
 variable "chrony_config" {

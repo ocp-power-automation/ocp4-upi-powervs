@@ -17,6 +17,11 @@ rhcos_pre_kernel_options: [%{ for opt in rhcos_pre_kernel_options ~}"${opt}",%{ 
 
 rhcos_kernel_options: [%{ for opt in rhcos_kernel_options ~}"${opt}",%{ endfor ~}]
 
+node_labels:
+%{ for key,value in node_labels ~}
+  ${key}: "${value}"
+%{ endfor ~}
+
 setup_squid_proxy : ${setup_squid_proxy}
 squid_acl_localnet:
   - acl localnet src ${squid_source_range}
