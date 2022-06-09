@@ -121,13 +121,6 @@ rhcos_image_name    = "<rhcos-image-name>"
 ```
 Note that the boot images should have a minimum disk size of 120GB
 
-These set of variables should be provided when RHCOS image should be imported from public bucket of cloud object storage to your PowerVS service instance
-```
-rhcos_import_image              = true                                                   # true/false (default=false)
-rhcos_import_image_filename     = "rhcos-411-85-202203181612-0-ppc64le-powervs.ova.gz"   # RHCOS boot image file name available in cloud object storage
-rhcos_import_image_storage_type = "tier1"                                                # tier1/tier3 (default=tier1) Storage type in PowerVS where image needs to be uploaded
-```
-
 This variable specifies the name of the private network that is configured in your PowerVS service instance.
 ```
 network_name        = "ocp-net"
