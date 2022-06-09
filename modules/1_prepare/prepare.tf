@@ -140,27 +140,37 @@ resource "null_resource" "bastion_init" {
     destination = ".ssh/id_rsa.pub"
   }
   provisioner "remote-exec" {
-    inline = [
-      "sudo chmod 600 .ssh/id_rsa*",
-      "sudo sed -i.bak -e 's/^ - set_hostname/# - set_hostname/' -e 's/^ - update_hostname/# - update_hostname/' /etc/cloud/cloud.cfg",
-      "sudo hostnamectl set-hostname --static ${lower(var.name_prefix)}bastion-${count.index}.${var.cluster_domain}",
-      "echo 'HOSTNAME=${lower(var.name_prefix)}bastion-${count.index}.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null",
-      "sudo hostname -F /etc/hostname",
-      "echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null",
-      # Set SMT to user specified value; Should not fail for invalid values.
-      "sudo ppc64_cpu --smt=${var.rhel_smt} | true",
-      # Set mtu to 1450 for public interface.
-      "sudo ip link set dev $(ip r | grep \"${ibm_pi_network.public_network.pi_cidr} dev\" | awk '{print $3}') mtu 1450",
-      "echo MTU=1450 | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${ibm_pi_network.public_network.pi_cidr} | awk '{print $3}')",
-      # Set specified mtu for private interface.
-      "sudo ip link set dev $(ip r | grep \"${data.ibm_pi_network.network.cidr} dev\" | awk '{print $3}') mtu ${var.private_network_mtu}",
-      "echo MTU=${var.private_network_mtu} | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$(ip r | grep ${data.ibm_pi_network.network.cidr} | awk '{print $3}')"
+    inline = [<<EOF
+
+sudo chmod 600 .ssh/id_rsa*
+sudo sed -i.bak -e 's/^ - set_hostname/# - set_hostname/' -e 's/^ - update_hostname/# - update_hostname/' /etc/cloud/cloud.cfg
+sudo hostnamectl set-hostname --static ${lower(var.name_prefix)}bastion-${count.index}.${var.cluster_domain}
+echo 'HOSTNAME=${lower(var.name_prefix)}bastion-${count.index}.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null
+sudo hostname -F /etc/hostname
+echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null
+
+# Set SMT to user specified value; Should not fail for invalid values.
+sudo ppc64_cpu --smt=${var.rhel_smt} | true
+
+# turn off rx and set mtu to var.private_network_mtu for all ineterfaces to improve network performance
+cidrs=("${ibm_pi_network.public_network.pi_cidr}" "${data.ibm_pi_network.network.cidr}")
+for cidr in "$${cidrs[@]}"; do
+  envs=($(ip r | grep "$cidr dev" | awk '{print $3}'))
+  for env in "$${envs[@]}"; do
+    con_name=$(sudo nmcli -t -f NAME connection show | grep $env)
+    sudo nmcli connection modify "$con_name" ethtool.feature-rx off
+    sudo nmcli connection modify "$con_name" ethernet.mtu ${var.private_network_mtu}
+    sudo nmcli connection up "$con_name"
+  done
+done
+
+EOF
     ]
   }
 }
 
 resource "null_resource" "setup_proxy_info" {
-  count      = ! var.setup_squid_proxy && local.proxy.server != "" ? local.bastion_count : 0
+  count      = !var.setup_squid_proxy && local.proxy.server != "" ? local.bastion_count : 0
   depends_on = [null_resource.bastion_init]
 
   connection {
@@ -321,7 +331,10 @@ resource "null_resource" "bastion_packages" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo yum install -y ansible-2.9.*"
+      "sudo yum install -y ansible",
+      "ansible-galaxy collection install community.crypto",
+      "ansible-galaxy collection install ansible.posix",
+      "ansible-galaxy collection install kubernetes.core"
     ]
   }
 }

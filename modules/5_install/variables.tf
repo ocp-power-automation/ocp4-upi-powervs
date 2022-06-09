@@ -29,7 +29,7 @@ variable "dns_forwarders" {
   default = "8.8.8.8; 9.9.9.9"
 }
 
-variable service_instance_id {}
+variable "service_instance_id" {}
 variable "name_prefix" {}
 variable "node_prefix" {}
 
@@ -53,9 +53,9 @@ variable "bootstrap_ip" {}
 variable "master_ips" {}
 variable "worker_ips" {}
 
-variable bootstrap_mac {}
-variable master_macs {}
-variable worker_macs {}
+variable "bootstrap_mac" {}
+variable "master_macs" {}
+variable "worker_macs" {}
 
 variable "openshift_client_tarball" {}
 variable "openshift_install_tarball" {}
@@ -71,10 +71,10 @@ variable "local_registry_image" {}
 variable "ocp_release_tag" {}
 variable "ocp_release_name" {}
 
-variable helpernode_repo { default = "https://github.com/RedHatOfficial/ocp4-helpernode" }
-variable helpernode_tag { default = "master" }
-variable install_playbook_repo { default = "https://github.com/ocp-power-automation/ocp4-playbooks" }
-variable install_playbook_tag { default = "master" }
+variable "helpernode_repo" { default = "https://github.com/RedHatOfficial/ocp4-helpernode" }
+variable "helpernode_tag" { default = "master" }
+variable "install_playbook_repo" { default = "https://github.com/ocp-power-automation/ocp4-playbooks" }
+variable "install_playbook_tag" { default = "master" }
 
 variable "storage_type" {}
 variable "log_level" {}
