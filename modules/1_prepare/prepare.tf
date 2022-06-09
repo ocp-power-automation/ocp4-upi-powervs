@@ -336,7 +336,10 @@ resource "null_resource" "bastion_packages" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo yum install -y ansible-2.9.*"
+      "sudo yum install -y ansible",
+      "ansible-galaxy collection install community.crypto",
+      "ansible-galaxy collection install ansible.posix",
+      "ansible-galaxy collection install kubernetes.core"
     ]
   }
 }
