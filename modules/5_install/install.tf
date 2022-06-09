@@ -255,16 +255,9 @@ resource "null_resource" "setup_snat" {
 
 echo "Configuring SNAT (experimental)..."
 
-PRIVATE_INTERFACE=$(ip r | grep "${var.cidr} dev" | awk '{print $3}')
-
 sudo firewall-cmd --zone=public --add-masquerade --permanent
 # Masquerade will enable ip forwarding automatically
 sudo firewall-cmd --reload
-
-#Checksum needs to be turned off to avoid a bug with ibmveth
-PRIVATE_CONNECTION_NAME=$(sudo nmcli -t -f NAME connection show | grep $PRIVATE_INTERFACE)
-sudo nmcli connection modify "$PRIVATE_CONNECTION_NAME" ethtool.feature-rx off
-sudo nmcli connection up "$PRIVATE_CONNECTION_NAME"
 
 EOF
     ]
