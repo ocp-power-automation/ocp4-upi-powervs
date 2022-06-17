@@ -1,0 +1,365 @@
+################################################################
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Licensed Materials - Property of IBM
+#
+# ©Copyright IBM Corp. 2022
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+################################################################
+#!/usr/bin/env bash
+
+#set -x
+
+##############################################
+# Required ENV variables need to be set before run
+##############################################
+# Base name for PowerVS sevice instance and other objects
+NAME_PREFIX=${NAME_PREFIX:-""}
+# Name of resource group if not defined default resource group will be used
+RESOURCE_GROUP_NAME=${RESOURCE_GROUP_NAME:-""}
+# Name PowerVS service instance name if not defined in ENV, the $NAME_PREFIX will be used
+PVS_SERVICE_NAME=${PVS_SERVICE_NAME:-${NAME_PREFIX}}
+
+#############################################
+# globle variables
+#############################################
+IBMCLOUD=${IBMCLOUD:-ibmcloud}
+
+# envs for VPC
+VPC_REGION_LIST="au-syd br-sao ca-tor eu-de eu-gb in-che jp-osa jp-tok kr-seo us-east us-south"
+VPC_REGION=${VPC_REGION:-""}
+
+# envs for PowerVS
+PVS_ZONE_LIST="osa21 syd04 syd05 tok04 eu-de-1 eu-de-2 lon04 lon06 us-south dal12 mon01 tor01 us-east wdc06 sao01"
+PVS_REGION=${PVS_REGION:-""}
+PVS_ZONE=${PVS_ZONE:-""}
+
+# to debug set it to false
+DONT_PRINT_PARAMS=true
+
+##########################################
+function check_env_vars() {
+  if [[ -z "${IBMCLOUD_API_KEY}" ]]; then
+    echo "Required ENV variable IBMCLOUD_API_KEY is not set"
+    exit 1
+  fi
+
+  if [[ -z "${NAME_PREFIX}" ]]; then
+    echo "Required ENV variable NAME_PREFIX is not set"
+    exit 1
+  fi
+}
+
+function check_ibmcloud_cli() {
+  echo "Checking IBMCLOUD CLI ..."
+  if ! command -v "${IBMCLOUD}" &> /dev/null; then
+    echo "${IBMCLOUD} could not be found, now install it ..."
+    PLATFORM=$(uname)
+    case "$PLATFORM" in
+      "Darwin")
+          curl -fsSL https://clis.cloud.ibm.com/install/osx | sh
+          ;;
+      "Linux")
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+          ;;
+      "MINGW64"*|"CYGWIN"*|"MSYS"*)
+          CLI_LATEST=$(curl -s https://api.github.com/repos/IBM-Cloud/ibm-cloud-cli-release/releases/latest | grep tag_name | cut -d'"' -f4 | sed 's/v//')
+          wget -O ibmcloud_cli.zip https://download.clis.cloud.ibm.com/ibm-cloud-cli/${CLI_LATEST}/binaries/IBM_Cloud_CLI_${CLI_LATEST}_windows_amd64.zip
+          unzip ic_cli.zip 
+          rm -f ic_cli.zip
+          cp IBM_Cloud_CLI/ibmcloud.exe /usr/local/bin/.
+          mv IBM_Cloud_CLI /usr/local
+          ;;
+      *)
+          echo "Only MacOS, Linux and Windows(Cygwin, Git Bash) are supported"
+          echo "Unsupported platform: ${PLATFORM}" 
+          exit 1
+          ;;
+    esac
+  fi
+
+  for plugin in cloud-object-storage power-iaas vpc-infrastructure; do
+    echo "Checking plugin: ${plugin}..."
+
+    ${IBMCLOUD} plugin show ${plugin} -q > /dev/null 2>&1
+    if [[ "$?" != "0" ]]; then
+      echo "Install plugin now ..."
+      ${IBMCLOUD} plugin install power-iaas -f -q > /dev/null 2>&1
+    fi
+  done
+}
+
+function  GET_INPUT() {
+  value=""
+  # question to ask
+  message=$1
+  # array of options eg: "a b c".
+  options=($2)
+
+  # Input question without any default value.
+  echo -e "$message"
+  set -o posix
+  select value in ${options[@]}
+  do
+  if [ "$value" == "" ]; then
+    echo 'Invalid value... please re-select'
+  else
+    break
+  fi
+  done
+  set +o posix
+}
+
+function RUN_IBMCLOUD() {
+  if [[ "${DONT_PRINT_PARAMS}" != "true" ]]; then
+    echo "params: $*"
+  fi
+  CMD_OUT=$($IBMCLOUD $*)
+  if [[ "$?" != "0" ]]; then
+    echo "Call to IBM cloud failed: $*"
+    exit 1
+  fi
+}
+
+function IBMCLOUD_login() {
+  if [[ -z "${VPC_REGION}" ]]; then 
+    GET_INPUT "Select the region to login: " "${VPC_REGION_LIST}"
+    VPC_REGION=${value}
+  fi
+  echo "Login into IBM Cloud with region: $VPC_REGION"
+  DONT_PRINT_PARAMS=true RUN_IBMCLOUD login -a cloud.ibm.com --apikey "${IBMCLOUD_API_KEY}" -r "${VPC_REGION}"
+  BEARER_TOKEN=$(${IBMCLOUD} iam oauth-tokens | cut -f2 -d':')
+}
+
+function IBMCLOUD_logout() {
+  DONT_PRINT_PARAMS=true RUN_IBMCLOUD logout
+}
+
+
+function check_resource_group() {
+    if [[ ! -z ${RESOURCE_GROUP_NAME} ]]; then
+      resource_group=$(${IBMCLOUD} resource groups | grep ${RESOURCE_GROUP_NAME})
+      if [[ -z "${resource_group}" ]]; then
+        echo "The resource group ${RESOURCE_GROUP_NAME} does not exist."
+        exit 1
+      fi
+      RG_OPTION_SHORT="-g ${RESOURCE_GROUP_NAME}"
+      RG_OPTION_LONG="--resource-group-name ${RESOURCE_GROUP_NAME}"
+    else
+      echo "ENV RESOURCE_GROUP_NAME is not defined, the default resource group will be used."
+      RG_OPTION_SHORT=""
+      RG_OPTION_LONG=""
+    fi
+}
+
+function create_powervs_service() {
+    pvs_service=$(${IBMCLOUD} resource service-instances | grep "${PVS_SERVICE_NAME}")
+    if [[ -z "${pvs_service}" ]]; then
+      GET_INPUT "Do you want to create service instance ${PVS_SERVICE_NAME}?" "yes no"
+      if [[ "${value}" == "yes" ]]; then
+        echo "Create PowerVS service instance: ${PVS_SERVICE_NAME}"
+        if [[ -z "${PVS_ZONE}" ]]; then
+          GET_INPUT "Select the zone for service instance: " "${PVS_ZONE_LIST}"
+          PVS_ZONE=${value}
+        fi
+        RUN_IBMCLOUD resource service-instance-create "${PVS_SERVICE_NAME}" power-iaas power-virtual-server-group ${PVS_ZONE} ${RG_OPTION_SHORT}
+      else
+        echo "Service instance ${PVS_SERVICE_NAME} does not exist."
+        exit 1
+      fi
+    fi
+    set_powervs_service
+}
+
+function set_powervs_service() {
+    echo "Set PowerVS service target: ${PVS_SERVICE_NAME}"
+    SERVICE_CRN=$(${IBMCLOUD} pi service-list | grep "${PVS_SERVICE_NAME}" | awk '{print $1}')
+    if [[ -z "${SERVICE_CRN}" ]]; then
+      echo "The PowerVS service instance ${PVS_SERVICE_NAME} does not exist."
+      exit 1
+    fi
+    CLOUD_INSTANCE_ID=$(echo "${SERVICE_CRN}" | cut -f8 -d":")
+    PVS_ZONE=$(echo "${SERVICE_CRN}" | cut -f6 -d":")
+    PVS_REGION=$(echo "${PVS_ZONE}" | sed 's/-*[0-9].*//')
+    RUN_IBMCLOUD pi service-target "${SERVICE_CRN}"
+}
+
+function get_vpc_zone() {
+    zone_list=$(${IBMCLOUD} is zones | grep "available" | awk '{print $1}')
+    GET_INPUT "Select the zone for VPC/subnet: " "${zone_list}"
+    VPC_ZONE=${value}
+}
+
+function create_vpc_subnet() {
+ 
+    ID=$(${IBMCLOUD} is vpcs | grep "${NAME_PREFIX}-vpc" | awk '{print $1}')
+    if [[ -z ${ID} ]]; then
+      echo "Create VPC: ${NAME_PREFIX}-vpc"
+      [ -z ${VPC_ZONE} ] && get_vpc_zone
+      RUN_IBMCLOUD is vpc-create "${NAME_PREFIX}-vpc" ${RG_OPTION_LONG}
+    else
+      echo "VPC ${NAME_PREFIX}-vpc already exist"
+    fi
+    
+    ID=$(${IBMCLOUD} is subnets | grep "${NAME_PREFIX}-subnet" | awk '{print $1}')
+    if [[ -z ${ID} ]]; then
+      echo "Create subnet: ${NAME_PREFIX}-subnet"
+      [ -z ${VPC_ZONE} ] && get_vpc_zone
+      RUN_IBMCLOUD is subnet-create "${NAME_PREFIX}-subnet" "${NAME_PREFIX}-vpc" --ipv4-address-count 256 --zone ${VPC_ZONE} ${RG_OPTION_LONG} 
+    else
+      echo "Subnet ${NAME_PREFIX}-subnet already exist"
+    fi
+}
+
+function create_network() {
+    ID=$(${IBMCLOUD} pi nets | grep "${NAME_PREFIX}-ocp-net" | awk '{print $1}')
+    if [[ -z ${ID} ]]; then
+      echo "Create private network for OCP: ${NAME_PREFIX}-ocp-net"
+      RUN_IBMCLOUD pi network-create-private "${NAME_PREFIX}-ocp-net" --cidr-block "192.168.100.0/24"  --ip-range 192.168.100.2-192.168.100.254
+    else
+      echo "private network ${NAME_PREFIX}-ocp-net already exist"
+    fi
+    ID=$(${IBMCLOUD} pi connections | grep "${NAME_PREFIX}-cc" | awk '{print $1}')
+    if [[ -z ${ID} ]]; then
+      GET_INPUT "Do you want to create the cloud connection? " "yes no"
+      if [[ "${value}" == "yes" ]]; then
+        create_vpc_subnet
+        # get VPC's CRN
+        VPC_ID=$(${IBMCLOUD} is vpc "${NAME_PREFIX}-vpc" | grep "CRN" | awk '{print $2}')
+        #get NET ID
+        NET_ID=$(${IBMCLOUD} pi nets | grep "${NAME_PREFIX}-ocp-net" | awk '{print $1}')
+        echo "Create the cloud connection: ${NAME_PREFIX}-cc"
+        RUN_IBMCLOUD pi connection-create "${NAME_PREFIX}-cc" --speed 5000 --global-routing --vpc --vpcID ${VPC_ID} --networks "${NET_ID}"
+        job_id=$(echo $CMD_OUT | grep "Job ID" | awk '{print $26}')
+        echo "Cloud Connection Job ID: $job_id"
+        # loop to check the progress of the cloud connection
+        state=""
+        while [[ $state != "completed" && $state != "failed" ]]; do
+          sleep 30
+          state=$(${IBMCLOUD} pi job $job_id --json | grep "state" | cut -f4 -d'"')
+          echo "State: $state"
+        done
+        if [[ $state == "completed" ]]; then
+          echo "Creating ${NAME_PREFIX}-cc has completed."
+        else
+          echo "Creating ${NAME_PREFIX}-cc has failed."
+        fi
+      else
+        echo "Need to open a support ticket to make the private network to work."
+      fi
+    else
+      echo "Cloud connection ${NAME_PREFIX}-cc already exist"
+    fi
+}
+
+function import_image() {
+  rhcos_file_list=""
+  for ver in 49 410 411; do
+    rhcos_list=($(${IBMCLOUD} cos objects --bucket rhcos-powervs-images-${VPC_REGION} --region ${VPC_REGION} --json | grep Key | grep -iE 'rhcos' | cut -f4 -d'"' | grep "\-${ver}\-"))
+    rhcos_file=${rhcos_list[-1]} # name as : rhcos-49-84-202111112015-0-ppc64le-powervs.ova.gz
+    rhcos_file_list="${rhcos_file_list} ${rhcos_file}"
+  done
+  GET_INPUT "Select RHCOS image to import: " "${rhcos_file_list}"
+  image_file=$value
+  image_name=$(echo $image_file | awk -F'-ppc64le' '{print $1}')
+  
+  found_image=$(${IBMCLOUD} pi images | grep $image_name )
+  if [[ -z ${found_image} ]]; then
+    GET_INPUT "Select RHCOS image storage type: " "tier1 tier3"
+    storage_type=${value} 
+    echo "Starting import image $image_file ($storage_type)..."
+    cmd_out=$(${IBMCLOUD} pi image-import ${image_name} --bucket-access public --disk-type ${storage_type} --image-file-name ${image_file} --bucket rhcos-powervs-images-${VPC_REGION} --region ${VPC_REGION}  --job)
+    job_id=$(echo $cmd_out | grep "Job ID" | awk '{print $4}')
+    echo "Image import job ID: $job_id"
+    # loop to check the progress of the image import
+    state=""
+    while [[ $state != "completed" && $state != "failed" ]]; do
+      sleep 30
+      state=$(${IBMCLOUD} pi job $job_id --json | grep "state" | cut -f4 -d'"')
+      echo "State: $state"
+    done
+    if [[ $state == "completed" ]]; then
+      echo "Image ${image_file} import has completed."
+    else
+      echo "Image ${image_file} import failed."
+    fi
+  else
+    echo "Boot image ${image_name} already exist."
+  fi
+}
+
+function  run_funcs() {
+  for f in $EXEC_FUNCS; do
+      $f
+      if [[ $? != 0 ]]; then
+          errors="${errors} \n issues encountered, or not all items were created during ${f}"
+      fi
+  done
+}
+
+function help() {
+  cat <<-EOF
+
+Setup the IBM cloud environment for deploying OpenShift on PowerVS
+
+Usage:
+  powervs-setup [command]
+
+Available commands:
+  all           Create all required objects
+  network       Create private network with/out cloud connection
+  image         Import RHCOS image as boot image
+
+
+
+Environment Variables:
+  IBMCLOUD_API_KEY     IBM Cloud API key - required
+  NAME_PREFIX          Name prefix for creation of the required objects - required
+  PVS_SERVICE_NAME     Service name for powerVS if not specified NAME_PREFIX will be used - optional
+  RESOURCE_GROUP_NAME  IBM cloud resource group if not specified default group will be used - optional
+
+EOF
+  exit 0
+}
+
+###############################################
+EXEC_FUNCS="create_powervs_service create_network import_image"
+errors=""
+
+if [ $# -ne 1 ]; then
+  help
+fi
+
+check_env_vars
+check_ibmcloud_cli
+IBMCLOUD_login
+check_resource_group
+case "$1" in
+    "image")
+      EXEC_FUNCS="create_powervs_service import_image"
+      ;;
+    "network")
+      EXEC_FUNCS="create_powervs_service  create_network"
+      ;;
+    "all")
+      ;;
+esac
+run_funcs
+
+if [[ "$errors" != "" ]]; then
+    printf "errors during create the preq for PowerVS"
+    printf "$errors\n"
+fi
+
+#IBMCLOUD_logout
