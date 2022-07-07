@@ -148,6 +148,7 @@ sudo hostnamectl set-hostname --static ${lower(var.name_prefix)}bastion-${count.
 echo 'HOSTNAME=${lower(var.name_prefix)}bastion-${count.index}.${var.cluster_domain}' | sudo tee -a /etc/sysconfig/network > /dev/null
 sudo hostname -F /etc/hostname
 echo 'vm.max_map_count = 262144' | sudo tee --append /etc/sysctl.conf > /dev/null
+pip install oauthlib==3.2.0
 
 # Set SMT to user specified value; Should not fail for invalid values.
 sudo ppc64_cpu --smt=${var.rhel_smt} | true
