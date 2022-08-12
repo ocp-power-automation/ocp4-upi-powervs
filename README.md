@@ -15,13 +15,15 @@ The `ocp4-upi-powervs` [project](https://github.com/ocp-power-automation/ocp4-up
 This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
 
 ## Before You Start
-	
-The [main](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/master) branch must be used with latest OCP pre-release versions only. 
-Ensure you checkout the correct `release-VERSION` branch depending on the version (4.5, 4.6 ...) of RedHat OpenShift you want to install:
-	
-For example to use OCP 4.8 perform the following
+
+This branch must be used with OCP 4.11.x versions only.
+
+The [main](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/master) branch must be used with latest OCP pre-release versions only.
+Ensure you checkout the correct `release-VERSION` branch depending on the version (4.10, 4.11 ...) of RedHat OpenShift you want to install:
+
+For example to use OCP 4.11 perform the following
 ```
-export VERSION=4.8
+export VERSION=4.11
 git clone --single-branch --branch release-$VERSION https://github.com/ocp-power-automation/ocp4-upi-powervs.git
 ```
 
