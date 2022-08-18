@@ -299,7 +299,12 @@ resource "null_resource" "enable_repos" {
 if ( [[ -z "${var.rhel_subscription_username}" ]] || [[ "${var.rhel_subscription_username}" == "<subscription-id>" ]] ) && [[ -z "${var.rhel_subscription_org}" ]]; then
   sudo yum install -y epel-release
 else
-  sudo subscription-manager repos --enable ${var.ansible_repo_name}
+  os_ver=$(cat /etc/os-release | egrep "^VERSION_ID=" | awk -F'"' '{print $2}')
+  if [[ $os_ver != "9"* ]]; then
+    sudo subscription-manager repos --enable ${var.ansible_repo_name}
+  else
+    sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+  fi
 fi
 EOF
     ]

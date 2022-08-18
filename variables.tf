@@ -296,7 +296,7 @@ variable "helpernode_repo" {
 variable "helpernode_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-helpernode repo"
-  default     = "1ac7f276b537cd734240eda9ed554a254ba80629"
+  default     = "fba129fe20682a466c62a632b0d9a5a863162bcf"
   # Checkout level for var.helpernode_repo which is used for setting up services required on bastion node
 }
 
@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "777878939449c3cfa140a773ad8e71a708858e0c"
+  default     = "5c3917506842adb205a4bad7750c084e769075b0"
   # Checkout level for var.install_playbook_repo which is used for running ocp4 installations steps
 }
 
