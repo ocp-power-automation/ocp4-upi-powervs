@@ -102,7 +102,7 @@ data "ibm_pi_instance_ip" "bastion_ip" {
   depends_on = [ibm_pi_instance.bastion]
 
   pi_instance_name     = ibm_pi_instance.bastion[count.index].pi_instance_name
-  pi_network_name      = data.ibm_pi_network.network.name
+  pi_network_name      = data.ibm_pi_network.network.pi_network_name
   pi_cloud_instance_id = var.service_instance_id
 }
 
@@ -411,7 +411,7 @@ resource "ibm_pi_network_port" "bastion_vip" {
   count      = local.bastion_count > 1 ? 1 : 0
   depends_on = [ibm_pi_instance.bastion]
 
-  pi_network_name      = data.ibm_pi_network.network.name
+  pi_network_name      = data.ibm_pi_network.network.pi_network_name
   pi_cloud_instance_id = var.service_instance_id
 }
 
