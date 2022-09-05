@@ -130,3 +130,7 @@ variable "luks_label" {}
 variable "luks_options" {}
 variable "luks_wipe_volume" {}
 variable "luks_name" {}
+
+variable "bootstrap_count" {}
+variable "master_count" {}
+variable "worker_count" {}

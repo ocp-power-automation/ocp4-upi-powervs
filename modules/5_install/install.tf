@@ -346,6 +346,30 @@ resource "null_resource" "pre_install" {
     ]
   }
 }
+resource "ibm_pi_operations" "bootstrap_start" {
+  depends_on = [null_resource.config, null_resource.pre_install]
+  count      = var.bootstrap_count == 0 ? 0 : 1
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_name     = "${var.name_prefix}bootstrap"
+  pi_operation         = "start"
+}
+resource "ibm_pi_operations" "master_start" {
+  depends_on = [null_resource.config, null_resource.pre_install, ibm_pi_operations.bootstrap_start]
+  count      = var.master_count
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_name     = "${var.name_prefix}master-${count.index}"
+  pi_operation         = "start"
+}
+resource "ibm_pi_operations" "worker_start" {
+  depends_on = [null_resource.config, null_resource.pre_install, ibm_pi_operations.master_start]
+  count      = var.worker_count
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_name     = "${var.name_prefix}worker-${count.index}"
+  pi_operation         = "start"
+}
 
 resource "null_resource" "install" {
   depends_on = [null_resource.pre_install]

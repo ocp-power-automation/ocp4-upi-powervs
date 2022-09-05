@@ -98,6 +98,13 @@ resource "ibm_pi_instance" "bootstrap" {
     network_id = data.ibm_pi_network.network.id
   }
 }
+resource "ibm_pi_operations" "bootstrap_stop" {
+  count = var.bootstrap["count"] == 0 ? 0 : 1
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_name     = ibm_pi_instance.bootstrap[count.index].instance_id
+  pi_operation         = "immediate-shutdown"
+}
 
 #master
 data "ignition_config" "master" {
@@ -144,6 +151,13 @@ resource "ibm_pi_instance" "master" {
   pi_network {
     network_id = data.ibm_pi_network.network.id
   }
+}
+resource "ibm_pi_operations" "master_stop" {
+  count = var.master["count"]
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_name     = ibm_pi_instance.master[count.index].instance_id
+  pi_operation         = "immediate-shutdown"
 }
 
 resource "ibm_pi_volume" "master" {
@@ -203,6 +217,13 @@ resource "ibm_pi_instance" "worker" {
   pi_network {
     network_id = data.ibm_pi_network.network.id
   }
+}
+resource "ibm_pi_operations" "worker_stop" {
+  count = var.worker["count"]
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_name     = ibm_pi_instance.worker[count.index].instance_id
+  pi_operation         = "immediate-shutdown"
 }
 
 resource "null_resource" "remove_worker" {
