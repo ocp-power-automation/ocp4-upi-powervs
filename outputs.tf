@@ -22,6 +22,10 @@ output "cluster_id" {
   value = local.cluster_id
 }
 
+output "name_prefix" {
+  value = local.name_prefix
+}
+
 output "bastion_private_vip" {
   value = module.prepare.bastion_vip == "" ? null : module.prepare.bastion_vip
 }

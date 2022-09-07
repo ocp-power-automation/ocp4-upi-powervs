@@ -296,7 +296,7 @@ variable "helpernode_repo" {
 variable "helpernode_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-helpernode repo"
-  default     = "1ac7f276b537cd734240eda9ed554a254ba80629"
+  default     = "fba129fe20682a466c62a632b0d9a5a863162bcf"
   # Checkout level for var.helpernode_repo which is used for setting up services required on bastion node
 }
 
@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "2ca4346f740429fdcd31cc346a6ae91e79746843"
+  default     = "5c3917506842adb205a4bad7750c084e769075b0"
   # Checkout level for var.install_playbook_repo which is used for running ocp4 installations steps
 }
 
@@ -359,6 +359,12 @@ variable "rhcos_kernel_options" {
   type        = list(string)
   description = "List of kernel arguments for the cluster nodes"
   default     = []
+}
+
+variable "node_labels" {
+  type        = map(string)
+  description = "Map of node labels for the cluster nodes"
+  default     = {}
 }
 
 variable "chrony_config" {
@@ -498,6 +504,12 @@ variable "volume_shareable" {
   default     = false
 }
 
+variable "upgrade_image" {
+  type        = string
+  description = "OCP upgrade image e.g. quay.io/openshift-release-dev/ocp-release-nightly@sha256:xxxxx"
+  default     = ""
+}
+
 variable "upgrade_version" {
   type        = string
   description = "OCP upgrade version"
@@ -588,5 +600,28 @@ variable "csi_driver_type" {
 variable "csi_driver_version" {
   type        = string
   description = "Set to csi-driver version."
-  default     = "v0.1.0"
+  default     = "v0.1.1"
 }
+
+################################################################
+# Image upload variables (used only for uploading RHCOS image 
+# from cloud object storage to PowerVS catalog)
+################################################################
+variable "rhcos_import_image" {
+  type        = bool
+  description = "Set to true to upload RHCOS image to PowerVS from Cloud Object Storage."
+  default     = false
+}
+
+variable "rhcos_import_image_filename" {
+  type        = string
+  description = "Name of the RHCOS image object file. This file is expected to be in .owa.gz format"
+  default     = "rhcos-411-85-202203181612-0-ppc64le-powervs.ova.gz"
+}
+
+variable "rhcos_import_image_storage_type" {
+  type        = string
+  description = "Storage type in PowerVS where the RHCOS image needs to be uploaded"
+  default     = "tier1"
+}
+

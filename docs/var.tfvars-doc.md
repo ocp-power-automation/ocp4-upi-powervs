@@ -121,6 +121,13 @@ rhcos_image_name    = "<rhcos-image-name>"
 ```
 Note that the boot images should have a minimum disk size of 120GB
 
+These set of variables should be provided when RHCOS image should be imported from public bucket of cloud object storage to your PowerVS service instance
+```
+rhcos_import_image              = true                                                   # true/false (default=false)
+rhcos_import_image_filename     = "rhcos-411-85-202203181612-0-ppc64le-powervs.ova.gz"   # RHCOS boot image file name available in cloud object storage
+rhcos_import_image_storage_type = "tier1"                                                # tier1/tier3 (default=tier1) Storage type in PowerVS where image needs to be uploaded
+```
+
 This variable specifies the name of the private network that is configured in your PowerVS service instance.
 ```
 network_name        = "ocp-net"
@@ -312,6 +319,16 @@ rhcos_kernel_options        = []
   rhcos_kernel_options      = ["slub_max_order=0","loglevel=7"]
   ```
 
+This is a Map of [Node labels](https://kubernetes.io/docs/reference/labels-annotations-taints) and its values. Some of the well known labels such as `topology.kubernetes.io/region, topology.kubernetes.io/zone and node.kubernetes.io/instance-type` are automated. More custom labels can be added using the `node_labels` map variable.
+Note that this will be applied after the cluster is installed and all the nodes are in `Ready` status.
+```
+node_labels            = {}
+```
+- Example 1
+  ```
+  node_labels = {"failure-domain.beta.kubernetes.io/region": "mon","failure-domain.beta.kubernetes.io/zone": "mon01"}
+  ```
+
 These are NTP specific variables that are used for time-synchronization in the OpenShift cluster.
 ```
 chrony_config               = true
@@ -341,10 +358,13 @@ volume_shareable            = false
 
 The following variables are specific to upgrading an existing installation.
 ```
+upgrade_image      = ""  #(e.g. `"quay.io/openshift-release-dev/ocp-release-nightly@sha256:xxxxx"`)
 upgrade_version    = ""
 upgrade_pause_time = "70"
 upgrade_delay_time = "600"
 ```
+One of the two varaibles `upgrade_image` or `upgrade_version` is required for upgrading the cluster.
+`upgrade_image` having higher precedence than `upgrade_version`.
 
 The following variables are specific to enable the connectivity between OCP nodes in PowerVS and IBM Cloud infrastructure over DirectLink.
 ```
@@ -369,6 +389,6 @@ These set of variables are specific for CSI Driver configuration and installatio
 ```
 csi_driver_install         = false
 csi_driver_type            = "stable"
-csi_driver_version         = "v0.1.0"
+csi_driver_version         = "v0.1.1"
 ```
 **IMPORTANT**: This is an **experimental** feature and not yet ready for production.

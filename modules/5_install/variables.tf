@@ -32,6 +32,7 @@ variable "dns_forwarders" {
 variable "service_instance_id" {}
 variable "region" {}
 variable "zone" {}
+variable "system_type" {}
 variable "name_prefix" {}
 variable "node_prefix" {}
 
@@ -87,9 +88,11 @@ variable "log_level" {}
 variable "ansible_extra_options" {}
 variable "rhcos_pre_kernel_options" {}
 variable "rhcos_kernel_options" {}
+variable "node_labels" {}
 variable "chrony_config" { default = true }
 variable "chrony_config_servers" {}
 
+variable "upgrade_image" {}
 variable "upgrade_version" {}
 variable "upgrade_pause_time" {}
 variable "upgrade_delay_time" {}

@@ -28,6 +28,12 @@ locals {
     password          = uuid()
   }
 
+  node_labels = {
+    "topology.kubernetes.io/region"    = var.region
+    "topology.kubernetes.io/zone"      = var.zone
+    "node.kubernetes.io/instance-type" = var.system_type
+  }
+
   local_registry = {
     enable_local_registry = var.enable_local_registry
     registry_image        = var.local_registry_image
@@ -114,6 +120,7 @@ locals {
     fips_compliant           = var.fips_compliant
     rhcos_pre_kernel_options = var.rhcos_pre_kernel_options
     rhcos_kernel_options     = var.rhcos_kernel_options
+    node_labels              = merge(local.node_labels, var.node_labels)
     chrony_config            = var.chrony_config
     chrony_config_servers    = var.chrony_config_servers
     chrony_allow_range       = var.cidr
@@ -154,6 +161,7 @@ locals {
   }
 
   upgrade_vars = {
+    upgrade_image   = var.upgrade_image
     upgrade_version = var.upgrade_version
     pause_time      = var.upgrade_pause_time
     delay_time      = var.upgrade_delay_time
@@ -257,16 +265,9 @@ resource "null_resource" "setup_snat" {
 
 echo "Configuring SNAT (experimental)..."
 
-PRIVATE_INTERFACE=$(ip r | grep "${var.cidr} dev" | awk '{print $3}')
-
 sudo firewall-cmd --zone=public --add-masquerade --permanent
 # Masquerade will enable ip forwarding automatically
 sudo firewall-cmd --reload
-
-#Checksum needs to be turned off to avoid a bug with ibmveth
-PRIVATE_CONNECTION_NAME=$(sudo nmcli -t -f NAME connection show | grep $PRIVATE_INTERFACE)
-sudo nmcli connection modify "$PRIVATE_CONNECTION_NAME" ethtool.feature-rx off
-sudo nmcli connection up "$PRIVATE_CONNECTION_NAME"
 
 EOF
     ]
@@ -400,9 +401,10 @@ resource "null_resource" "powervs_config" {
 
 resource "null_resource" "upgrade" {
   depends_on = [null_resource.install, null_resource.powervs_config]
-  count      = var.upgrade_version != "" ? 1 : 0
+  count      = var.upgrade_version != "" || var.upgrade_image != "" ? 1 : 0
   triggers = {
     upgrade_version = var.upgrade_version
+    upgrade_image   = var.upgrade_image
   }
 
   connection {
@@ -429,6 +431,10 @@ resource "null_resource" "upgrade" {
 resource "null_resource" "csi_driver_install" {
   depends_on = [null_resource.install]
   count      = var.csi_driver_install ? 1 : 0
+
+  triggers = {
+    worker_count = length(var.worker_ips)
+  }
 
   connection {
     type        = "ssh"
