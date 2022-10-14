@@ -114,3 +114,14 @@ variable "ibmcloud_api_key" {}
 variable "csi_driver_install" {}
 variable "csi_driver_type" {}
 variable "csi_driver_version" {}
+
+variable "luks_compliant" { default = false }
+variable "luks_config" {}
+variable "luks_filesystem_device" {}
+variable "luks_format" {}
+variable "luks_wipeFileSystem" {}
+variable "luks_device" {}
+variable "luks_label" {}
+variable "luks_options" {}
+variable "luks_wipeVolume" {}
+variable "luks_name" {}
