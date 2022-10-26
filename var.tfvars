@@ -108,7 +108,7 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #ibm_cloud_dl_endpoint_net_cidr = ""  #Set this to IBM Cloud DirectLink endpoint network cidr eg. 10.0.0.0/8
 #ibm_cloud_http_proxy = ""            #Set this to IBM Cloud http/squid proxy eg. http://10.166.13.64:3128
 
-#cni_network_provider       = "OpenshiftSDN"
+#cni_network_provider       = "OVNKubernetes"
 
 #setup_snat                 = true
 

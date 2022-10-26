@@ -375,7 +375,7 @@ ibm_cloud_http_proxy = ""
 This variable is used to set the default Container Network Interface (CNI) network provider such as OpenShiftSDN or OVNKubernetes
 
 ```
-cni_network_provider       = "OpenshiftSDN"
+cni_network_provider       = "OVNKubernetes"
 ```
 
 This variable is used to enable SNAT for OCP nodes. When using SNAT, the OCP nodes will be able to access public internet without using a proxy

@@ -530,7 +530,7 @@ variable "upgrade_delay_time" {
 
 variable "cni_network_provider" {
   description = "Set the default Container Network Interface (CNI) network provider"
-  default     = "OpenshiftSDN"
+  default     = "OVNKubernetes"
 }
 
 variable "fips_compliant" {
