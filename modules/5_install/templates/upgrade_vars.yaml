@@ -3,4 +3,8 @@ upgrade_image: "${upgrade_image}"
 upgrade_version: "${upgrade_version}"
 pause_time: ${pause_time}
 delay_time: ${delay_time}
+eus_upgrade_version: "${eus_upgrade_version}"
+eus_upgrade_channel: "${eus_upgrade_channel}"
+eus_upgrade_image: "${eus_upgrade_image}"
+eus_upstream: "${eus_upstream}"
 

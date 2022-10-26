@@ -161,10 +161,14 @@ locals {
   }
 
   upgrade_vars = {
-    upgrade_image   = var.upgrade_image
-    upgrade_version = var.upgrade_version
-    pause_time      = var.upgrade_pause_time
-    delay_time      = var.upgrade_delay_time
+    upgrade_image       = var.upgrade_image
+    upgrade_version     = var.upgrade_version
+    pause_time          = var.upgrade_pause_time
+    delay_time          = var.upgrade_delay_time
+    eus_upgrade_version = var.eus_upgrade_version
+    eus_upgrade_channel = var.eus_upgrade_channel
+    eus_upgrade_image   = var.eus_upgrade_image
+    eus_upstream        = var.eus_upstream
   }
 }
 
@@ -404,10 +408,12 @@ resource "null_resource" "powervs_config" {
 
 resource "null_resource" "upgrade" {
   depends_on = [null_resource.install, null_resource.powervs_config]
-  count      = var.upgrade_version != "" || var.upgrade_image != "" ? 1 : 0
+  count      = var.upgrade_version != "" || var.upgrade_image != "" || var.eus_upgrade_channel != "" || var.eus_upgrade_image != "" ? 1 : 0
   triggers = {
-    upgrade_version = var.upgrade_version
-    upgrade_image   = var.upgrade_image
+    upgrade_version     = var.upgrade_version
+    upgrade_image       = var.upgrade_image
+    eus_upgrade_version = var.eus_upgrade_version
+    eus_upgrade_image   = var.eus_upgrade_image
   }
 
   connection {
