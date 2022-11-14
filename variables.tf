@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "df32ad3707436e086464576c6d2c7a3f6e97fa6b"
+  default     = "5c3917506842adb205a4bad7750c084e769075b0"
   # Checkout level for var.install_playbook_repo which is used for running ocp4 installations steps
 }
 
@@ -625,68 +625,3 @@ variable "rhcos_import_image_storage_type" {
   default     = "tier1"
 }
 
-################################################################
-# LUKS configuration variables
-################################################################
-variable "luks_compliant" {
-  type        = bool
-  description = "Set to true to enable usage of LUKS for OCP deployment."
-  default     = false
-}
-
-variable "luks_config" {
-  type = list(object({
-    thumbprint = string,
-    url        = string
-  }))
-  description = "List of tang servers and thumbprint to apply"
-  default     = []
-}
-
-variable "luks_filesystem_device" {
-  type        = string
-  description = "Path of device to be luks encrypted"
-  default     = "/dev/mapper/root"
-}
-
-variable "luks_format" {
-  type        = string
-  description = "Format of the FileSystem to be luks encrypted"
-  default     = "xfs"
-}
-
-variable "luks_wipeFileSystem" {
-  type        = bool
-  description = "Configures the FileSystem to be wiped"
-  default     = true
-}
-
-variable "luks_device" {
-  type        = string
-  description = "Path of luks encrypted partition"
-  default     = "/dev/disk/by-partlabel/root"
-}
-
-variable "luks_label" {
-  type        = string
-  description = "Variable for the user label of luks encrpted partition"
-  default     = "luks-root"
-}
-
-variable "luks_options" {
-  type        = list(string)
-  description = "List of luks options for the luks encryption"
-  default     = ["--cipher", "aes-cbc-essiv:sha256"]
-}
-
-variable "luks_wipeVolume" {
-  type        = bool
-  description = "Configures the luks encrypted partition to be wiped"
-  default     = true
-}
-
-variable "luks_name" {
-  type        = string
-  description = "Variable for the user label of Filesystem to be luks encrypted"
-  default     = "root"
-}
