@@ -368,7 +368,10 @@ resource "null_resource" "install" {
   provisioner "remote-exec" {
     inline = [
       "echo 'Running ocp install playbook...'",
-      "cd ocp4-playbooks && ansible-playbook -i inventory -e @install_vars.yaml playbooks/install.yaml ${var.ansible_extra_options}"
+      "cd ocp4-playbooks && ansible-playbook -i inventory -e @install_vars.yaml playbooks/install-config.yaml ${var.ansible_extra_options}",
+      "ansible-playbook -i inventory -e @install_vars.yaml playbooks/bootstrap-config.yaml ${var.ansible_extra_options}",
+      "ansible-playbook -i inventory -e @install_vars.yaml playbooks/bootstrap-complete.yaml ${var.ansible_extra_options}",
+      "ansible-playbook -i inventory -e @install_vars.yaml playbooks/install-complete.yaml ${var.ansible_extra_options}"
     ]
   }
 }
