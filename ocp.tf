@@ -182,6 +182,16 @@ module "install" {
   csi_driver_type                = var.csi_driver_type
   csi_driver_version             = var.csi_driver_version
   vpc_cidr                       = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].ipv4_cidr_block : ""
+  luks_compliant                 = var.luks_compliant
+  luks_config                    = var.luks_config
+  luks_filesystem_device         = var.luks_filesystem_device
+  luks_format                    = var.luks_format
+  luks_wipe_filesystem           = var.luks_wipe_filesystem
+  luks_device                    = var.luks_device
+  luks_label                     = var.luks_label
+  luks_options                   = var.luks_options
+  luks_wipe_volume               = var.luks_wipe_volume
+  luks_name                      = var.luks_name
 }
 
 module "ibmcloud" {
