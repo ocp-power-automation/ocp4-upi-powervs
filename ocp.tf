@@ -169,6 +169,10 @@ module "install" {
   upgrade_version                = var.upgrade_version
   upgrade_pause_time             = var.upgrade_pause_time
   upgrade_delay_time             = var.upgrade_delay_time
+  eus_upgrade_version            = var.eus_upgrade_version
+  eus_upgrade_channel            = var.eus_upgrade_channel
+  eus_upgrade_image              = var.eus_upgrade_image
+  eus_upstream                   = var.eus_upstream
   ibm_cloud_dl_endpoint_net_cidr = var.ibm_cloud_dl_endpoint_net_cidr
   ibm_cloud_http_proxy           = var.ibm_cloud_http_proxy
   cni_network_provider           = var.cni_network_provider

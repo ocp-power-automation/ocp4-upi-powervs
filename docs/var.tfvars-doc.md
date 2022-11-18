@@ -366,6 +366,16 @@ upgrade_delay_time = "600"
 One of the two varaibles `upgrade_image` or `upgrade_version` is required for upgrading the cluster.
 `upgrade_image` having higher precedence than `upgrade_version`.
 
+
+The following variables are specific to performing EUS upgrades.
+
+```
+eus_upgrade_version        = "4.11.14"
+eus_upgrade_channel        = "stable-4.11"  #(stable-4.x, fast-4.x, candidate-4.x, eus-4.x)
+eus_upgrade_image          = "quay.io/openshift-release-dev/ocp-release:4.11.14-ppc64le"
+eus_upstream               = "" (e.g. `"https://ppc64le.ocp.releases.ci.openshift.org/graph"`)
+```
+
 The following variables are specific to enable the connectivity between OCP nodes in PowerVS and IBM Cloud infrastructure over DirectLink.
 ```
 ibm_cloud_dl_endpoint_net_cidr = ""

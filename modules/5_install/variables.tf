@@ -97,6 +97,11 @@ variable "upgrade_version" {}
 variable "upgrade_pause_time" {}
 variable "upgrade_delay_time" {}
 
+variable "eus_upgrade_version" {}
+variable "eus_upgrade_channel" {}
+variable "eus_upgrade_image" {}
+variable "eus_upstream" {}
+
 variable "setup_snat" {}
 
 variable "setup_squid_proxy" {}

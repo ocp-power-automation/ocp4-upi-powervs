@@ -105,6 +105,11 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #upgrade_pause_time         = "70"
 #upgrade_delay_time         = "600"
 
+#eus_upgrade_version        = ""
+#eus_upgrade_channel        = ""  #(stable-4.x, fast-4.x, candidate-4.x, eus-4.x) eg. stable-4.11
+#eus_upgrade_image          = ""  #(quay.io/openshift-release-dev/ocp-release@sha256:xyz..)
+#eus_upstream               = ""  #https://ppc64le.ocp.releases.ci.openshift.org/graph
+
 #ibm_cloud_dl_endpoint_net_cidr = ""  #Set this to IBM Cloud DirectLink endpoint network cidr eg. 10.0.0.0/8
 #ibm_cloud_http_proxy = ""            #Set this to IBM Cloud http/squid proxy eg. http://10.166.13.64:3128
 
