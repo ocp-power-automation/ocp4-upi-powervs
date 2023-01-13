@@ -192,13 +192,14 @@ This usually takes a day to get enabled.
 ## RHCOS and RHEL/CentOS 8.X Images for OpenShift
 RHEL image is used for bastion and RHCOS is used for the OpenShift cluster nodes.
 
-You'll need to create [OVA](https://en.wikipedia.org/wiki/Open_Virtualization_Format) formatted images for RHEL and RHCOS, upload them to IBM Cloud Object storage and then import these images as boot images in your PowerVS service instance.
+You'll need [OVA](https://en.wikipedia.org/wiki/Open_Virtualization_Format) formatted images for RHEL and RHCOS, upload them to IBM Cloud Object storage and then import these images as boot images in your PowerVS service instance.
 
 Further, the image disk should be minimum of 120 GB in size.
 
-### Creating OVA images
+### OVA images
 
 - If you have PowerVC then you can follow the instructions provided in the [link](https://www.ibm.com/support/knowledgecenter/en/SSXK2N_1.4.4/com.ibm.powervc.standard.help.doc/powervc_export_image_hmc.html) to export an existing PowerVC image to OVA image.
+- For 4.11 onwards, you can use the OVA formated images that are available from the following [link](https://releases-rhcos-art.apps.ocp-virt.prod.psi.redhat.com/?stream=releases)
 - You can also use the following [tool](https://github.com/ppc64le-cloud/pvsadm) to convert Qcow2 image to OVA.
 - Qcow2 Image Links
   - RHEL 8.3 Qcow2 image is available from the following [link](https://access.redhat.com/downloads/content/279/ver=/rhel---8/8.3/ppc64le/product-software)
