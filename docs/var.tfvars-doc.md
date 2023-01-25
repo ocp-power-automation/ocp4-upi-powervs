@@ -49,9 +49,9 @@ In order to retrieve the PowerVS region, zone and instance specific details plea
    | syd             | syd04          |
    | sao             | sao01          |
    | tor             | tor01          |
-   | tok             | tok04          | 
+   | tok             | tok04          |
    | us-east         | us-east        |
-   
+
    NOTE:  us-east is Washington, DC datacenter.
 
    Tieing all these, the values to be used will be as shown below:
@@ -267,7 +267,7 @@ release_image_override     = ""
 
 These variables specify the ansible playbooks that are used for OpenShift install and post-install customizations.
 ```
-helpernode_repo            = "https://github.com/RedHatOfficial/ocp4-helpernode"
+helpernode_repo            = "https://github.com/redhat-cop/ocp4-helpernode"
 helpernode_tag             = "5eab3db53976bb16be582f2edc2de02f7510050d"
 install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playbooks"
 install_playbook_tag       = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
