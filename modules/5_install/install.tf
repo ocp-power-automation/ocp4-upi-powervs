@@ -8,7 +8,7 @@
 #
 # Licensed Materials - Property of IBM
 #
-# ©Copyright IBM Corp. 2020
+# ©Copyright IBM Corp. 2023
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -346,35 +346,8 @@ resource "null_resource" "pre_install" {
     ]
   }
 }
-resource "ibm_pi_instance_action" "bootstrap_start" {
-  depends_on = [null_resource.config, null_resource.pre_install]
-  count      = var.bootstrap_count == 0 ? 0 : 1
 
-  pi_cloud_instance_id = var.service_instance_id
-  pi_instance_id       = "${var.name_prefix}bootstrap"
-  pi_action            = "start"
-  pi_health_status     = "WARNING"
-}
-resource "ibm_pi_instance_action" "master_start" {
-  depends_on = [null_resource.config, null_resource.pre_install, ibm_pi_instance_action.bootstrap_start]
-  count      = var.master_count
-
-  pi_cloud_instance_id = var.service_instance_id
-  pi_instance_id       = "${var.name_prefix}master-${count.index}"
-  pi_action            = "start"
-  pi_health_status     = "WARNING"
-}
-resource "ibm_pi_instance_action" "worker_start" {
-  depends_on = [null_resource.config, null_resource.pre_install, ibm_pi_instance_action.master_start]
-  count      = var.worker_count
-
-  pi_cloud_instance_id = var.service_instance_id
-  pi_instance_id       = "${var.name_prefix}worker-${count.index}"
-  pi_action            = "start"
-  pi_health_status     = "WARNING"
-}
-
-resource "null_resource" "install" {
+resource "null_resource" "install_config" {
   depends_on = [null_resource.pre_install]
 
   triggers = {
@@ -408,11 +381,111 @@ resource "null_resource" "install" {
   }
   provisioner "remote-exec" {
     inline = [
-      "echo 'Running ocp install playbook...'",
-      "cd ocp4-playbooks && ansible-playbook -i inventory -e @install_vars.yaml playbooks/install-config.yaml ${var.ansible_extra_options}",
-      "ansible-playbook -i inventory -e @install_vars.yaml playbooks/bootstrap-config.yaml ${var.ansible_extra_options}",
-      "ansible-playbook -i inventory -e @install_vars.yaml playbooks/bootstrap-complete.yaml ${var.ansible_extra_options}",
-      "ansible-playbook -i inventory -e @install_vars.yaml playbooks/install-complete.yaml ${var.ansible_extra_options}"
+      "echo 'Running ocp install-config playbook...'",
+      "cd ocp4-playbooks && ansible-playbook -i inventory -e @install_vars.yaml playbooks/install-config.yaml ${var.ansible_extra_options}"
+    ]
+  }
+}
+
+
+resource "ibm_pi_instance_action" "bootstrap_start" {
+  depends_on = [null_resource.config, null_resource.pre_install, null_resource.install_config]
+  count      = var.bootstrap_count == 0 ? 0 : 1
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_id       = "${var.name_prefix}bootstrap"
+  pi_action            = "start"
+  pi_health_status     = "WARNING"
+}
+
+resource "null_resource" "bootstrap_config" {
+  depends_on = [ibm_pi_instance_action.bootstrap_start]
+
+  triggers = {
+    worker_count = length(var.worker_ips)
+  }
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = var.bastion_public_ip[0]
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "${var.connection_timeout}m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Running ocp bootstrap-config playbook...'",
+      "cd ocp4-playbooks && ansible-playbook -i inventory -e @install_vars.yaml playbooks/bootstrap-config.yaml ${var.ansible_extra_options}"
+    ]
+  }
+}
+
+resource "ibm_pi_instance_action" "master_start" {
+  depends_on = [null_resource.config, null_resource.pre_install, null_resource.bootstrap_config, ibm_pi_instance_action.bootstrap_start]
+  count      = var.master_count
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_id       = "${var.name_prefix}master-${count.index}"
+  pi_action            = "start"
+  pi_health_status     = "WARNING"
+}
+
+resource "null_resource" "bootstrap_complete" {
+  depends_on = [ibm_pi_instance_action.master_start]
+
+  triggers = {
+    worker_count = length(var.worker_ips)
+  }
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = var.bastion_public_ip[0]
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "${var.connection_timeout}m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Running ocp bootstrap-complete playbook...'",
+      "cd ocp4-playbooks && ansible-playbook -i inventory -e @install_vars.yaml playbooks/bootstrap-complete.yaml ${var.ansible_extra_options}"
+    ]
+  }
+}
+
+resource "ibm_pi_instance_action" "worker_start" {
+  depends_on = [null_resource.config, null_resource.pre_install, null_resource.bootstrap_complete, ibm_pi_instance_action.master_start]
+  count      = var.worker_count
+
+  pi_cloud_instance_id = var.service_instance_id
+  pi_instance_id       = "${var.name_prefix}worker-${count.index}"
+  pi_action            = "start"
+  pi_health_status     = "WARNING"
+}
+
+resource "null_resource" "install" {
+  depends_on = [ibm_pi_instance_action.worker_start]
+
+  triggers = {
+    worker_count = length(var.worker_ips)
+  }
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = var.bastion_public_ip[0]
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "${var.connection_timeout}m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Running ocp install-complete playbook...'",
+      "cd ocp4-playbooks && ansible-playbook -i inventory -e @install_vars.yaml playbooks/install-complete.yaml ${var.ansible_extra_options}",
     ]
   }
 }
