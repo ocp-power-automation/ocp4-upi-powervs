@@ -87,7 +87,7 @@ resource "ibm_pi_instance" "bootstrap" {
   pi_cloud_instance_id = var.service_instance_id
 
   # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
-  pi_user_data = base64encode(replace(data.ignition_config.bootstrap.rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
+  pi_user_data = base64encode(data.ignition_config.bootstrap.rendered)
 
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
@@ -141,7 +141,7 @@ resource "ibm_pi_instance" "master" {
   pi_volume_ids        = local.master.volume_count == 0 ? null : [for ix in range(local.master.volume_count) : ibm_pi_volume.master.*.volume_id[(count.index * local.master.volume_count) + ix]]
 
   # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
-  pi_user_data = base64encode(replace(data.ignition_config.master[count.index].rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
+  pi_user_data = base64encode(data.ignition_config.master[count.index].rendered)
 
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
@@ -207,7 +207,7 @@ resource "ibm_pi_instance" "worker" {
   pi_volume_ids        = local.worker.volume_count == 0 ? null : [for ix in range(local.worker.volume_count) : ibm_pi_volume.worker.*.volume_id[(count.index * local.worker.volume_count) + ix]]
 
   # Inject ignition source timeout to force ignition fail when HTTP file is not available for 500s. This will reboot the node and try ignition fetch process again.
-  pi_user_data = base64encode(replace(data.ignition_config.worker[count.index].rendered, "\"timeouts\":{}", "\"timeouts\":{\"httpTotal\":500}"))
+  pi_user_data = base64encode(data.ignition_config.worker[count.index].rendered)
 
   # Not needed by RHCOS but required by resource
   pi_key_pair_name = "${var.name_prefix}keypair"
