@@ -82,7 +82,7 @@ resource "ibm_pi_instance" "bastion" {
   pi_instance_name     = "${var.name_prefix}bastion-${count.index}"
   pi_proc_type         = var.processor_type
   pi_image_id          = local.bastion_image_id
-  pi_key_pair_name     = ibm_pi_key.key.key_id
+  pi_key_pair_name     = ibm_pi_key.key.name
   pi_sys_type          = var.system_type
   pi_cloud_instance_id = var.service_instance_id
   pi_health_status     = var.bastion_health_status
