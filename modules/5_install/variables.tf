@@ -77,10 +77,10 @@ variable "local_registry_image" {}
 variable "ocp_release_tag" {}
 variable "ocp_release_name" {}
 
-variable "helpernode_repo" { default = "https://github.com/RedHatOfficial/ocp4-helpernode" }
-variable "helpernode_tag" { default = "master" }
+variable "helpernode_repo" { default = "https://github.com/redhat-cop/ocp4-helpernode" }
+variable "helpernode_tag" { default = "main" }
 variable "install_playbook_repo" { default = "https://github.com/ocp-power-automation/ocp4-playbooks" }
-variable "install_playbook_tag" { default = "master" }
+variable "install_playbook_tag" { default = "main" }
 
 variable "storage_type" {}
 variable "log_level" {}

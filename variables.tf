@@ -289,14 +289,14 @@ variable "installer_log_level" {
 variable "helpernode_repo" {
   type        = string
   description = "Set the repo URL for using ocp4-helpernode"
-  default     = "https://github.com/RedHatOfficial/ocp4-helpernode"
+  default     = "https://github.com/redhat-cop/ocp4-helpernode"
   # Repo for running ocp4 installations steps.
 }
 
 variable "helpernode_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-helpernode repo"
-  default     = "fba129fe20682a466c62a632b0d9a5a863162bcf"
+  default     = "adb1102f64b2f25a8a1b44a96c414f293d72d3fc"
   # Checkout level for var.helpernode_repo which is used for setting up services required on bastion node
 }
 
@@ -624,7 +624,7 @@ variable "csi_driver_version" {
 }
 
 ################################################################
-# Image upload variables (used only for uploading RHCOS image 
+# Image upload variables (used only for uploading RHCOS image
 # from cloud object storage to PowerVS catalog)
 ################################################################
 variable "rhcos_import_image" {

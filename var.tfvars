@@ -23,7 +23,7 @@ worker    = { memory = "32", processors = "0.5", "count" = 2 }
 rhel_image_name  = "rhel-8.3"
 rhcos_image_name = "rhcos-4.6"
 
-### Provide these parameters if RHCOS image needs to be imported from public bucket of cloud object storage to PVS. 
+### Provide these parameters if RHCOS image needs to be imported from public bucket of cloud object storage to PVS.
 ### When this is provided, data provided through parameter "rhcos_image_name" will be ignored.
 rhcos_import_image              = false # true/false (default=false).
 rhcos_import_image_filename     = "rhcos-410-84-202201251004-0-ppc64le-powervs.ova.gz"
@@ -74,7 +74,7 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #release_image_override     = ""
 
 
-#helpernode_repo            = "https://github.com/RedHatOfficial/ocp4-helpernode"
+#helpernode_repo            = "https://github.com/redhat-cop/ocp4-helpernode"
 #helpernode_tag             = ""
 #install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playbooks"
 #install_playbook_tag       = ""

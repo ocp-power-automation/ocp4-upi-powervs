@@ -12,13 +12,13 @@
 
 The `ocp4-upi-powervs` [project](https://github.com/ocp-power-automation/ocp4-upi-powervs) provides Terraform based automation code to help with the deployment of OpenShift Container Platform (OCP) 4.x on [IBM® Power Systems™ Virtual Server on IBM Cloud](https://www.ibm.com/cloud/power-virtual-server).
 
-This project leverages the helpernode [ansible playbook](https://github.com/RedHatOfficial/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
+This project leverages the helpernode [ansible playbook](https://github.com/redhat-cop/ocp4-helpernode) internally for OCP deployment on IBM Power Systems Virtual Servers (PowerVS).
 
 ## Before You Start
-	
-The [main](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/master) branch must be used with latest OCP pre-release versions only. 
+
+The [main](https://github.com/ocp-power-automation/ocp4-upi-powervs/tree/master) branch must be used with latest OCP pre-release versions only.
 Ensure you checkout the correct `release-VERSION` branch depending on the version (4.5, 4.6 ...) of RedHat OpenShift you want to install:
-	
+
 For example to use OCP 4.8 perform the following
 ```
 export VERSION=4.8
