@@ -192,6 +192,9 @@ module "install" {
   luks_options                   = var.luks_options
   luks_wipe_volume               = var.luks_wipe_volume
   luks_name                      = var.luks_name
+  bootstrap_count                = var.bootstrap["count"]
+  master_count                   = var.master["count"]
+  worker_count                   = var.worker["count"]
 }
 
 module "ibmcloud" {

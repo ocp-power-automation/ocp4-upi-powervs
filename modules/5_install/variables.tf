@@ -8,7 +8,7 @@
 #
 # Licensed Materials - Property of IBM
 #
-# ©Copyright IBM Corp. 2020
+# ©Copyright IBM Corp. 2023
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -130,3 +130,7 @@ variable "luks_label" {}
 variable "luks_options" {}
 variable "luks_wipe_volume" {}
 variable "luks_name" {}
+
+variable "bootstrap_count" {}
+variable "master_count" {}
+variable "worker_count" {}

@@ -310,7 +310,7 @@ variable "install_playbook_repo" {
 variable "install_playbook_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-playbooks repo"
-  default     = "f28e20a1d577defc57e4601438ae2a7c53feebd5"
+  default     = "main"
   # Checkout level for var.install_playbook_repo which is used for running ocp4 installations steps
 }
 

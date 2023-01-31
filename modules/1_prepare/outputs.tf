@@ -19,12 +19,12 @@
 ################################################################
 
 output "bastion_ip" {
-  depends_on = [null_resource.bastion_init]
+  depends_on = [null_resource.bastion_init, null_resource.setup_nfs_disk]
   value      = data.ibm_pi_instance_ip.bastion_ip.*.ip
 }
 
 output "bastion_public_ip" {
-  depends_on = [null_resource.bastion_packages]
+  depends_on = [null_resource.bastion_packages, null_resource.setup_nfs_disk]
   value      = data.ibm_pi_instance_ip.bastion_public_ip.*.external_ip
 }
 

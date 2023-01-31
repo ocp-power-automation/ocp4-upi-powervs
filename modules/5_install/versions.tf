@@ -8,7 +8,7 @@
 #
 # Licensed Materials - Property of IBM
 #
-# ©Copyright IBM Corp. 2020
+# ©Copyright IBM Corp. 2023
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@ terraform {
     }
     ibm = {
       source  = "IBM-Cloud/ibm"
-      version = "1.39.0"
+      version = "~> 1.49.0"
     }
 
   }
