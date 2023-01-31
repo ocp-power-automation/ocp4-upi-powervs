@@ -467,7 +467,7 @@ resource "ibm_pi_instance_action" "worker_start" {
 }
 
 resource "null_resource" "install" {
-  depends_on = [ibm_pi_instance_action.worker_start]
+  depends_on = [null_resource.bootstrap_complete, ibm_pi_instance_action.worker_start]
 
   triggers = {
     worker_count = length(var.worker_ips)
