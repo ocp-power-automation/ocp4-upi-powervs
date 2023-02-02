@@ -178,8 +178,20 @@ rhel_smt                    = 4
 ### OpenShift Installation Details
 
 These variables specify the URL for the OpenShift installer and client binaries.
-Change the URL to the specific pre-release version that you want to install on PowerVS.
-Reference link - `https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview`
+Change the URL to the specific stable or pre-release version that you want to install on PowerVS.
+Reference link - `https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/`
+
+For latest stable:
+```
+openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable/openshift-install-linux.tar.gz"
+openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable/openshift-client-linux.tar.gz"
+```
+For specific stable version:
+```
+openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.12/openshift-install-linux.tar.gz"
+openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable-4.12/openshift-client-linux.tar.gz"
+```
+For pre-release:
 ```
 openshift_install_tarball   = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
 openshift_client_tarball    = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
@@ -299,7 +311,7 @@ This variable specifies the external DNS servers to forward DNS queries that can
 dns_forwarders              = "1.1.1.1; 9.9.9.9"
 ```
 
-List of [day-1 kernel arguments](https://docs.openshift.com/container-platform/4.8/installing/install_config/installing-customizing.html#installation-special-config-kargs_installing-customizing) for the cluster nodes.
+List of [day-1 kernel arguments](https://docs.openshift.com/container-platform/latest/installing/install_config/installing-customizing.html#installation-special-config-kargs_installing-customizing) for the cluster nodes.
 To add kernel arguments to master or worker nodes, using MachineConfig object and inject that object into the set of manifest files used by Ignition during cluster setup.
 ```
 rhcos_pre_kernel_options        = []
@@ -309,7 +321,7 @@ rhcos_pre_kernel_options        = []
   rhcos_pre_kernel_options   = ["rd.multipath=default","root=/dev/disk/by-label/dm-mpath-root"]
   ```
 
-List of [kernel arguments](https://docs.openshift.com/container-platform/4.4/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes.
+List of [kernel arguments](https://docs.openshift.com/container-platform/latest/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes.
 Note that this will be applied after the cluster is installed and all the nodes are in `Ready` status.
 ```
 rhcos_kernel_options        = []
@@ -409,11 +421,11 @@ These set of variables are specific for LUKS encryption configuration and instal
 luks_compliant              = false # Set it true if you prefer to use FIPS enable in ocp deployment
 luks_config                 = [ { thumbprint = "", url = "" }, { thumbprint = "", url = "" }, { thumbprint = "", url = "" } ]
 luks_filesystem_device      = "/dev/mapper/root"  #Set this value for file system device
-luks_format                 = "xfs"  #Set value of format for filesystem 
-luks_wife_filesystem        = true  #Set value of wipeFileSystem 
-luks_device                 = "/dev/disk/by-partlabel/root"  #Set value of luks device 
-luks_label                  = "luks-root"  #Set value of tang label 
-luks_options                = ["--cipher", "aes-cbc-essiv:sha256"]  #Set List of luks options for the luks encryption 
-luks_wipe_volume             = true  #Set value of wipeVolume 
-luks_name                   = "root"  #Set value of luks name 
+luks_format                 = "xfs"  #Set value of format for filesystem
+luks_wife_filesystem        = true  #Set value of wipeFileSystem
+luks_device                 = "/dev/disk/by-partlabel/root"  #Set value of luks device
+luks_label                  = "luks-root"  #Set value of tang label
+luks_options                = ["--cipher", "aes-cbc-essiv:sha256"]  #Set List of luks options for the luks encryption
+luks_wipe_volume             = true  #Set value of wipeVolume
+luks_name                   = "root"  #Set value of luks name
 ```

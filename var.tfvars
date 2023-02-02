@@ -21,7 +21,7 @@ worker    = { memory = "32", processors = "0.5", "count" = 2 }
 #worker    = { memory = "32", processors = "0.5", "count" = 2, data_volume_count  = 0, data_volume_size  = 100 }
 
 rhel_image_name  = "rhel-8.3"
-rhcos_image_name = "rhcos-4.6"
+rhcos_image_name = "rhcos-4.12"
 
 ### Provide these parameters if RHCOS image needs to be imported from public bucket of cloud object storage to PVS.
 ### When this is provided, data provided through parameter "rhcos_image_name" will be ignored.
@@ -45,8 +45,8 @@ rhel_smt                        = 4
 
 ### OpenShift Installation Details
 
-openshift_install_tarball = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-install-linux.tar.gz"
-openshift_client_tarball  = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/latest/openshift-client-linux.tar.gz"
+openshift_install_tarball = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable/openshift-install-linux.tar.gz"
+openshift_client_tarball  = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable/openshift-client-linux.tar.gz"
 pull_secret_file          = "data/pull-secret.txt"
 
 cluster_domain    = "ibm.com"  #Set domain to nip.io or xip.io if you prefer using online wildcard domain and avoid modifying /etc/hosts
@@ -121,11 +121,11 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 
 #luks_compliant              = false # Set it true if you prefer to use LUKS enable in OCP deployment
 #luks_config                 = [ { thumbprint = "", url = "" }, { thumbprint = "", url = "" }, { thumbprint = "", url = "" } ]
-#luks_filesystem_device      = "/dev/mapper/root"  #Set the Path of device to be luks encrypted 
+#luks_filesystem_device      = "/dev/mapper/root"  #Set the Path of device to be luks encrypted
 #luks_format                 = "xfs"  #Set the Format of the FileSystem to be luks encrypted
-#luks_wipe_filesystem         = true  #Configures the FileSystem to be wiped 
+#luks_wipe_filesystem         = true  #Configures the FileSystem to be wiped
 #luks_device                 = "/dev/disk/by-partlabel/root"  #Set the Path of luks encrypted partition
 #luks_label                  = "luks-root"  #Set the value for user label of luks encrpted partition
 #luks_options                = ["--cipher", "aes-cbc-essiv:sha256"]  #Set List of luks options for the luks encryption
-#luks_wipe_volume             = true  #Configures the luks encrypted partition to be wiped 
+#luks_wipe_volume             = true  #Configures the luks encrypted partition to be wiped
 #luks_name                   = "root" #Set the value for the user label of Filesystem to be luks encrypted

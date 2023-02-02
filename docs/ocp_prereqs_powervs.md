@@ -103,9 +103,9 @@ ID                                     Name             Link Status   Speed
 
 Get the ID of the connection.
 
-If you don’t have an existing Direct Link Connect 2.0 connection provisioned under your account, 
-then you can create a new connection using the IBM Cloud CLI. 
-A highly available Direct Link Connect 2.0 connection between the Power Virtual Server and IBM Cloud comes free of cost. 
+If you don’t have an existing Direct Link Connect 2.0 connection provisioned under your account,
+then you can create a new connection using the IBM Cloud CLI.
+A highly available Direct Link Connect 2.0 connection between the Power Virtual Server and IBM Cloud comes free of cost.
 Refer: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-ordering-direct-link-connect
 
 ```
@@ -137,7 +137,7 @@ Networks         ID: e1b90247-a504-4468-8662-8f785533067d       Name: ocp-net  V
 
 ```
 
-The output shows that the `ocp-net` private network is attached to Direct Link Connect 2.0. 
+The output shows that the `ocp-net` private network is attached to Direct Link Connect 2.0.
 This enables inter VM communication on the private network as well as communication with IBM Cloud over Direct Link.
 
 *Option 2*
@@ -203,7 +203,7 @@ Further, the image disk should be minimum of 120 GB in size.
 - Qcow2 Image Links
   - RHEL 8.3 Qcow2 image is available from the following [link](https://access.redhat.com/downloads/content/279/ver=/rhel---8/8.3/ppc64le/product-software)
   - CentOS 8.3 Wcow2 image is available from the following [link](https://cloud.centos.org/centos/8/ppc64le/images/CentOS-8-GenericCloud-8.3.2011-20201204.2.ppc64le.qcow2)
-  - RHCOS Qcow2 image is available from the following [link](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/4.6/latest/rhcos-4.6.1-ppc64le-openstack.ppc64le.qcow2.gz)
+  - RHCOS Qcow2 image is available at [latest stable](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/latest/rhcos-openstack.ppc64le.qcow2.gz) OR [pre-release](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/pre-release/latest/rhcos-openstack.ppc64le.qcow2.gz)
 
 Note: RHCOS image version is tied to the specific OCP release. For example RHCOS-4.6 image needs to be used for OCP 4.6 release.
 ### Uploading to IBM Cloud Object Storage
