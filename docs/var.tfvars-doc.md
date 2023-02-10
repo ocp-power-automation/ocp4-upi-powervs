@@ -136,8 +136,8 @@ network_name        = "ocp-net"
 These set of variables specify the type of processor and physical system type to be used for the VMs.
 Change the default values according to your requirement.
 ```
-processor_type      = "shared"  #Can be shared or dedicated
-system_type         = "s922"    #Can be either s922 or e980
+processor_type      = "shared"  # Can be shared, dedicated or capped
+system_type         = "s922"    # Run IBM Cloud CLI command 'ibmcloud pi system-pool' for available options in your location
 ```
 
 These set of variables specify the username and the SSH key to be used for accessing the bastion node.
