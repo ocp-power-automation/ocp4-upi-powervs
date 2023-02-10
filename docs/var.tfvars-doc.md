@@ -418,11 +418,11 @@ csi_driver_version         = "v0.1.1"
 These set of variables are specific for LUKS encryption configuration and installation.
 
 ```
-luks_compliant              = false # Set it true if you prefer to use FIPS enable in ocp deployment
+luks_compliant              = false # Set it true if you prefer to use LUKS enable in ocp deployment
 luks_config                 = [ { thumbprint = "", url = "" }, { thumbprint = "", url = "" }, { thumbprint = "", url = "" } ]
 luks_filesystem_device      = "/dev/mapper/root"  #Set this value for file system device
 luks_format                 = "xfs"  #Set value of format for filesystem
-luks_wife_filesystem        = true  #Set value of wipeFileSystem
+luks_wipe_filesystem        = true  #Set value of wipeFileSystem
 luks_device                 = "/dev/disk/by-partlabel/root"  #Set value of luks device
 luks_label                  = "luks-root"  #Set value of tang label
 luks_options                = ["--cipher", "aes-cbc-essiv:sha256"]  #Set List of luks options for the luks encryption
