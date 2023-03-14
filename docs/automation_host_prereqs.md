@@ -29,7 +29,7 @@ Install Terraform and providers for Power environment:
 ```
 $ cd <path_to_TF_project>
 $ mkdir -p ./providers
-$ curl -fsSL https://github.com/ocp-power-automation/terraform-providers-power/releases/download/v0.11/archive.zip -o archive.zip
+$ curl -fsSL https://github.com/ocp-power-automation/terraform-providers-power/releases/download/v0.15/archive.zip -o archive.zip
 $ unzip -o ./archive.zip -d ./providers
 $ rm -f ./archive.zip
 ```
