@@ -107,6 +107,11 @@ locals {
 
   local_registry_ocp_image = "registry.${var.cluster_id}.${var.cluster_domain}:5000/${local.local_registry.ocp_release_repo}:${var.ocp_release_tag}"
 
+  // enable multipathd by default across cluster nodes
+  default_kernel_options        = ["rd.multipath=default", "root=/dev/disk/by-label/dm-mpath-root"]
+  rhcos_pre_kernel_options_keys = [for opt in var.rhcos_pre_kernel_options : split("=", opt)[0]]
+  rhcos_pre_kernel_options      = contains(local.rhcos_pre_kernel_options_keys, "rd.multipath") ? var.rhcos_pre_kernel_options : concat(var.rhcos_pre_kernel_options, local.default_kernel_options)
+
   install_vars = {
     bastion_vip              = var.bastion_vip
     cluster_id               = var.cluster_id
@@ -118,7 +123,7 @@ locals {
     release_image_override   = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
     enable_local_registry    = var.enable_local_registry
     fips_compliant           = var.fips_compliant
-    rhcos_pre_kernel_options = var.rhcos_pre_kernel_options
+    rhcos_pre_kernel_options = local.rhcos_pre_kernel_options
     rhcos_kernel_options     = var.rhcos_kernel_options
     node_labels              = merge(local.node_labels, var.node_labels)
     chrony_config            = var.chrony_config

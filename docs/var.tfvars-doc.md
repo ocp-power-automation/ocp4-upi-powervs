@@ -312,23 +312,24 @@ dns_forwarders              = "1.1.1.1; 9.9.9.9"
 ```
 
 List of [day-1 kernel arguments](https://docs.openshift.com/container-platform/latest/installing/install_config/installing-customizing.html#installation-special-config-kargs_installing-customizing) for the cluster nodes.
-To add kernel arguments to master or worker nodes, using MachineConfig object and inject that object into the set of manifest files used by Ignition during cluster setup.
+To add kernel arguments to master or worker nodes, using MachineConfig object and inject that object into the set of manifest files used by Ignition during cluster setup. Use only if they are needed to complete the initial OCP installation. The automation will set `"rd.multipath=default"` and `"root=/dev/disk/by-label/dm-mpath-root"` by default.
 ```
 rhcos_pre_kernel_options        = []
 ```
 - Example 1
   ```
-  rhcos_pre_kernel_options   = ["rd.multipath=default","root=/dev/disk/by-label/dm-mpath-root"]
+  rhcos_pre_kernel_options   =  ["loglevel=7"]
   ```
 
-List of [kernel arguments](https://docs.openshift.com/container-platform/latest/nodes/nodes/nodes-nodes-working.html#nodes-nodes-kernel-arguments_nodes-nodes-working) for the cluster nodes.
+List of [kernel arguments](https://docs.openshift.com/container-platform/latest/post_installation_configuration/machine-configuration-tasks.html#nodes-nodes-kernel-arguments_post-install-machine-configur
+ation-tasks) for the cluster nodes.
 Note that this will be applied after the cluster is installed and all the nodes are in `Ready` status.
 ```
 rhcos_kernel_options        = []
 ```
 - Example 1
   ```
-  rhcos_kernel_options      = ["slub_max_order=0","loglevel=7"]
+  rhcos_kernel_options      = ["slub_max_order=0","enforcing=0"]
   ```
 
 This is a Map of [Node labels](https://kubernetes.io/docs/reference/labels-annotations-taints) and its values. Some of the well known labels such as `topology.kubernetes.io/region, topology.kubernetes.io/zone and node.kubernetes.io/instance-type` are automated. More custom labels can be added using the `node_labels` map variable.
