@@ -31,7 +31,12 @@ jobs:
               # Append table row to markdown content
               markdown_content+="| 4.${version} | ${object} |\n"
           done
-          markdown_content+="Sourced from (for each version branch): https://github.com/openshift/installer/blob/master/data/data/coreos/rhcos.json"
+
+          # Footer
+          markdown_content+="\n"
+          markdown_content+="Note: Data sourced from (for each version branch): https://github.com/openshift/installer/blob/master/data/data/coreos/rhcos.json"
+          markdown_content+="\n"
+
           # Create markdown file
           echo -e "${markdown_content}" > ./docs/rhcos-table.md
 
