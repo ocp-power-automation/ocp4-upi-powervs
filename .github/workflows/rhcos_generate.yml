@@ -1,0 +1,55 @@
+name: Generate Images
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs: {}
+
+jobs:
+  generate-table:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate Markdown Table
+        run: |
+          sudo apt-get install -y jq
+          # Generate markdown content
+          markdown_content=""
+          markdown_content+="| OCP Version | RHCOS Image File Name |\n"
+          markdown_content+="| ----------- | --------------------- |\n"
+          # Iterate through each release version
+          for version in {15..11}
+          do
+              # Fetch object information for the release version
+              object=$(curl -s "https://raw.githubusercontent.com/openshift/installer/release-4.${version}/data/data/coreos/rhcos.json" | jq -r '.architectures.ppc64le.images.powervs.regions."au-syd".object')
+
+              # Append table row to markdown content
+              markdown_content+="| 4.${version} | ${object} |\n"
+          done
+          markdown_content+="Sourced from (for each version branch): https://github.com/openshift/installer/blob/master/data/data/coreos/rhcos.json"
+          # Create markdown file
+          echo -e "${markdown_content}" > ./docs/rhcos-table.md
+
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update rhcos-table.md"
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: true
+          branch: image-patches
+          delete-branch: true
+          title: "Update for RHCOS image file names"
+          body: "This pull request updates the rhcos-table.md file"
+          labels: |
+            kind/documentation
+            documentation
+            bot
+          draft: false
