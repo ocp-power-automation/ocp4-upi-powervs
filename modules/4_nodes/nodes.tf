@@ -103,6 +103,7 @@ resource "ibm_pi_instance_action" "bootstrap_stop" {
   pi_cloud_instance_id = var.service_instance_id
   pi_instance_id       = ibm_pi_instance.bootstrap[count.index].instance_id
   pi_action            = "immediate-shutdown"
+  pi_health_status     = "WARNING"
 }
 
 #master
@@ -156,6 +157,7 @@ resource "ibm_pi_instance_action" "master_stop" {
   pi_cloud_instance_id = var.service_instance_id
   pi_instance_id       = ibm_pi_instance.master[count.index].instance_id
   pi_action            = "immediate-shutdown"
+  pi_health_status     = "WARNING"
 }
 
 resource "ibm_pi_volume" "master" {
@@ -221,6 +223,7 @@ resource "ibm_pi_instance_action" "worker_stop" {
   pi_cloud_instance_id = var.service_instance_id
   pi_instance_id       = ibm_pi_instance.worker[count.index].instance_id
   pi_action            = "immediate-shutdown"
+  pi_health_status     = "WARNING"
 }
 
 resource "null_resource" "remove_worker" {

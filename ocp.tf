@@ -107,7 +107,8 @@ module "nodes" {
 }
 
 module "install" {
-  source = "./modules/5_install"
+  source     = "./modules/5_install"
+  depends_on = [module.nodes]
 
   service_instance_id            = var.service_instance_id
   region                         = var.ibmcloud_region
