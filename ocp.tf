@@ -101,7 +101,7 @@ module "nodes" {
   private_key                     = local.private_key
   ssh_agent                       = var.ssh_agent
   rhcos_import_image              = var.rhcos_import_image
-  rhcos_import_bucket_region      = lookup(local.powervs_vpc_region_map, var.ibmcloud_region, "au_syd")
+  rhcos_import_bucket_region      = lookup(local.powervs_vpc_region_map, var.ibmcloud_region, "au-syd")
   rhcos_import_image_filename     = var.rhcos_import_image_filename
   rhcos_import_image_storage_type = var.rhcos_import_image_storage_type
 }
