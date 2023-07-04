@@ -497,7 +497,7 @@ resource "null_resource" "install" {
 
 resource "null_resource" "powervs_config" {
   depends_on = [null_resource.install]
-  count      = var.ibm_cloud_dl_endpoint_net_cidr != "" && var.ibm_cloud_http_proxy != "" ? 1 : 0
+  count      = var.ibm_cloud_dl_endpoint_net_cidr != "" ? 1 : 0
 
   connection {
     type        = "ssh"
