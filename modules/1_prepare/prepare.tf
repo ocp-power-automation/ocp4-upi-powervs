@@ -33,16 +33,35 @@ locals {
 data "ibm_pi_catalog_images" "catalog_images" {
   pi_cloud_instance_id = var.service_instance_id
 }
+data "ibm_pi_images" "project_images" {
+  pi_cloud_instance_id = var.service_instance_id
+}
 
 locals {
   catalog_bastion_image = [for x in data.ibm_pi_catalog_images.catalog_images.images : x if x.name == var.rhel_image_name]
-  bastion_image_id      = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].id : local.catalog_bastion_image[0].image_id
-  bastion_storage_pool  = length(local.catalog_bastion_image) == 0 ? data.ibm_pi_image.bastion[0].storage_pool : local.catalog_bastion_image[0].storage_pool
+  project_bastion_image = [for x in data.ibm_pi_images.project_images.image_info : x if x.name == var.rhel_image_name]
+  invalid_bastion_image = length(local.project_bastion_image) == 0 && length(local.catalog_bastion_image) == 0
+  # If invalid then use name to fail in ibm_pi_instance resource; else if not found in project then import using ibm_pi_image; else use the bastion image id
+  bastion_image_id = (
+    local.invalid_bastion_image ? var.rhel_image_name : (
+      length(local.project_bastion_image) == 0 ? ibm_pi_image.bastion[0].image_id : local.project_bastion_image[0].id
+    )
+  )
+  # If invalid then use hardcoded value; else if project image pool is not empty use catalog image pool; else if project image pool is empty use catalog image pool; else use project image pool
+  bastion_storage_pool = (
+    local.invalid_bastion_image ? "Tier3-Flash-1" : (
+      length(local.project_bastion_image) == 0 ? local.catalog_bastion_image[0].storage_pool : (
+        local.project_bastion_image[0].storage_pool == "" ? local.catalog_bastion_image[0].storage_pool : local.project_bastion_image[0].storage_pool
+      )
+    )
+  )
 }
 
-data "ibm_pi_image" "bastion" {
-  count                = length(local.catalog_bastion_image) == 0 ? 1 : 0
+# Copy image from catalog if not in the project and present in catalog
+resource "ibm_pi_image" "bastion" {
+  count                = length(local.project_bastion_image) == 0 && length(local.catalog_bastion_image) == 1 ? 1 : 0
   pi_image_name        = var.rhel_image_name
+  pi_image_id          = local.catalog_bastion_image[0].image_id
   pi_cloud_instance_id = var.service_instance_id
 }
 
@@ -246,7 +265,7 @@ resource "null_resource" "bastion_register" {
 # Give some more time to subscription-manager
 sudo subscription-manager config --server.server_timeout=600
 sudo subscription-manager clean
-if [[ '${var.rhel_subscription_username}' != '' && '${var.rhel_subscription_username}' != '<subscription-id>' ]]; then 
+if [[ '${var.rhel_subscription_username}' != '' && '${var.rhel_subscription_username}' != '<subscription-id>' ]]; then
     sudo subscription-manager register --username='${var.rhel_subscription_username}' --password='${var.rhel_subscription_password}' --force
 else
     sudo subscription-manager register --org='${var.rhel_subscription_org}' --activationkey='${var.rhel_subscription_activationkey}' --force
