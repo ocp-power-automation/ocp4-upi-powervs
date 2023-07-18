@@ -252,7 +252,7 @@ resource "null_resource" "remove_worker" {
     on_failure = continue
     inline = [<<EOF
 oc adm cordon ${self.triggers.node_prefix}worker-${count.index}.${self.triggers.cluster_id}.${self.triggers.cluster_domain}
-oc adm drain ${self.triggers.node_prefix}worker-${count.index}.${self.triggers.cluster_id}.${self.triggers.cluster_domain} --force --delete-local-data --ignore-daemonsets --timeout=180s
+oc adm drain ${self.triggers.node_prefix}worker-${count.index}.${self.triggers.cluster_id}.${self.triggers.cluster_domain} --force --delete-emptydir-data --ignore-daemonsets --timeout=100s
 oc delete node ${self.triggers.node_prefix}worker-${count.index}.${self.triggers.cluster_id}.${self.triggers.cluster_domain}
 EOF
     ]
