@@ -280,9 +280,9 @@ release_image_override     = ""
 These variables specify the ansible playbooks that are used for OpenShift install and post-install customizations.
 ```
 helpernode_repo            = "https://github.com/redhat-cop/ocp4-helpernode"
-helpernode_tag             = "5eab3db53976bb16be582f2edc2de02f7510050d"
+helpernode_tag             = "bf7842ec240f1d9ba5b5f9897bb72e7c86500faa"
 install_playbook_repo      = "https://github.com/ocp-power-automation/ocp4-playbooks"
-install_playbook_tag       = "02a598faa332aa2c3d53e8edd0e840440ff74bd5"
+install_playbook_tag       = "main"
 ```
 
 This variable specify if bastion should poll for the Health Status to be OK or WARNING. Default is OK.
