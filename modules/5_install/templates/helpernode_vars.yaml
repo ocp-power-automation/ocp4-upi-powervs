@@ -50,6 +50,7 @@ workers:
 %{ endfor ~}
 %{ endif }
 ppc64le: true
+baremetal: false
 ssh_gen_key: false
 
 %{ if local_registry.enable_local_registry }
