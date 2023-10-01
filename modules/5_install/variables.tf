@@ -134,3 +134,11 @@ variable "luks_name" {}
 variable "bootstrap_count" {}
 variable "master_count" {}
 variable "worker_count" {}
+
+variable "kdump_enable" { default = false }
+variable "kdump_commandline_remove" {}
+variable "kdump_commandline_append" {}
+variable "kdump_kexec_args" {}
+variable "kdump_img" {}
+variable "kdump_log_path" {}
+variable "kdump_crash_kernel_memory" {}
