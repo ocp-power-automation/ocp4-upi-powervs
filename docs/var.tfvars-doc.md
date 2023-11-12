@@ -234,9 +234,9 @@ Note: Once fips_compliant set to true it will enable FIPS on the OCP cluster and
 
 ### Using IBM Cloud Services
 
-You can use IBM Cloud classic DNS and VPC Load Balancer services for running the OCP cluster. When this feature is enabled the services called named (DNS) and haproxy (Load Balancer) will not be running on the bastion/helpernode.
+You can use IBM Cloud Internet Services (CIS) and Load Balancer services on VPC for running the OCP cluster. When this feature is enabled the services called `named` (DNS) and `haproxy` (Load Balancer) will not be running on the bastion/helpernode.
 
-Ensure you have setup [DirectLink](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-ordering-direct-link-connect) with IBM Cloud VPC over the private network in cloud instance. Also, ensure you have registered a [DNS](https://cloud.ibm.com/docs/dns?topic=dns-register-a-new-domain) domain and use it as given in `cluster_domain` variable.
+Ensure you have setup [Cloud Connection](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-cloud-connections) or [DirectLink](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-ordering-direct-link-connect) with IBM Cloud VPC over the private network in cloud instance. Also, ensure you have registered a [DNS domain](https://cloud.ibm.com/docs/cis?topic=cis-about-ibm-cloud-internet-services-cis) and use it as given in `cluster_domain` variable.
 
 **IMPORTANT**: This is an **experimental** feature at present. Please manually set variables `setup_snat = true` and `setup_squid_proxy = false` for using IBM Cloud services. This will allow the cluster nodes have public internet access without a proxy server.
 
@@ -246,18 +246,9 @@ Below variables needs to be set in order to use the IBM Cloud services.
 use_ibm_cloud_services    = true
 ibm_cloud_vpc_name        = "ocp-vpc"
 ibm_cloud_vpc_subnet_name = "ocp-subnet"
+iaas_vpc_region           = "us-south" # the VPC region for accessing IBM Cloud services. If empty, will default to ibmcloud_region.
+ibm_cloud_cis_crn         = "crn:v1:bluemix:public:internet-svcs:global:a/<account_id>:<cis_instance_id>::" # CRN of the CIS instance where domain is registered.
 ```
-
-These set of variables specify the username and API key for accessing IBM Cloud services. The default combination should suffice for most of the common use-cases.
-
-```
-iaas_classic_username     = "apikey"
-iaas_classic_api_key      = "" # if empty, will default to ibmcloud_api_key.
-iaas_vpc_region           = "" # if empty, will default to ibmcloud_region.
-```
-
-Note: `iaas_classic_username`, `iaas_classic_api_key` and `iaas_vpc_region` variables are optional, These variables need to be set only when using a different classic username, key and vpc region. By default `apikey` will be used as the `iaas_class_username`, `ibmcloud_api_key` will be used as the `iaas_classic_api_key` and `ibmcloud_region` will be used as the `iaas_vpc_region`. Note that non-default values for these variables can also be passed via environment variables `IAAS_CLASSIC_USERNAME` and `IAAS_CLASSIC_API_KEY` respectively.
-
 
 ### Misc Customizations
 

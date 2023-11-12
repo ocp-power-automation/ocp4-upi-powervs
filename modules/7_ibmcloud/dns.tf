@@ -22,75 +22,80 @@
 ##### DNS 
 #####################################
 
-data "ibm_dns_domain" "domain" {
-  name = var.cluster_domain
+data "ibm_cis_domain" "domain" {
+  cis_id = var.ibm_cloud_cis_crn
+  domain = var.cluster_domain
 }
 
-resource "ibm_dns_record" "bastion" {
-  count              = var.bastion_count
-  data               = var.bastion_ip[count.index]
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.name_prefix}bastion-${count.index}.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "a"
+resource "ibm_cis_dns_record" "bastion" {
+  count     = var.bastion_count
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = var.bastion_ip[count.index]
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "${var.name_prefix}bastion-${count.index}.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "A"
 }
-resource "ibm_dns_record" "registry" {
-  data               = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "registry.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "a"
+resource "ibm_cis_dns_record" "registry" {
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "registry.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "A"
 }
-resource "ibm_dns_record" "bootstrap" {
-  count              = var.bootstrap_count
-  data               = var.bootstrap_ip
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.node_prefix}bootstrap.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "a"
+resource "ibm_cis_dns_record" "bootstrap" {
+  count     = var.bootstrap_count
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = var.bootstrap_ip
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "${var.node_prefix}bootstrap.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "A"
 }
-resource "ibm_dns_record" "master" {
-  count              = var.master_count
-  data               = var.master_ips[count.index]
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.node_prefix}master-${count.index}.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "a"
+resource "ibm_cis_dns_record" "master" {
+  count     = var.master_count
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = var.master_ips[count.index]
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "${var.node_prefix}master-${count.index}.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "A"
 }
-resource "ibm_dns_record" "worker" {
-  count              = var.worker_count
-  data               = var.worker_ips[count.index]
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "${var.node_prefix}worker-${count.index}.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "a"
+resource "ibm_cis_dns_record" "worker" {
+  count     = var.worker_count
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = var.worker_ips[count.index]
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "${var.node_prefix}worker-${count.index}.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "A"
 }
-resource "ibm_dns_record" "api" {
-  data               = "${ibm_is_lb.load_balancer_external.hostname}."
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "api.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "cname"
+
+#####################################
+##### Kubernetes 
+#####################################
+resource "ibm_cis_dns_record" "api" {
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = ibm_is_lb.load_balancer_external.hostname
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "api.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "CNAME"
 }
-resource "ibm_dns_record" "api-int" {
-  data               = "${ibm_is_lb.load_balancer_internal.hostname}."
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "api-int.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "cname"
+resource "ibm_cis_dns_record" "api-int" {
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = ibm_is_lb.load_balancer_internal.hostname
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "api-int.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "CNAME"
 }
-resource "ibm_dns_record" "apps" {
-  data               = "${ibm_is_lb.load_balancer_external.hostname}."
-  domain_id          = data.ibm_dns_domain.domain.id
-  host               = "*.apps.${var.cluster_id}"
-  responsible_person = "root.${var.cluster_domain}."
-  ttl                = 900
-  type               = "cname"
+resource "ibm_cis_dns_record" "apps" {
+  cis_id    = var.ibm_cloud_cis_crn
+  content   = ibm_is_lb.load_balancer_external.hostname
+  domain_id = data.ibm_cis_domain.domain.id
+  name      = "*.apps.${var.cluster_id}.${var.cluster_domain}"
+  ttl       = 900
+  type      = "CNAME"
 }
