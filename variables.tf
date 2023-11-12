@@ -219,7 +219,7 @@ variable "rhel_smt" {
 ################################################################
 variable "use_ibm_cloud_services" {
   type        = bool
-  description = "Experimental: Flag to use IBM Cloud DNS and VPC Loadbalancer instead of bastion services. Please set variables setup_snat=true and setup_squid_proxy=false"
+  description = "Experimental: Flag to use Internet Services (CIS) and Loadbalancer services on VPC instead of bastion services. Please set variables setup_snat=true and setup_squid_proxy=false"
   default     = false
 }
 variable "ibm_cloud_vpc_name" {
@@ -232,22 +232,17 @@ variable "ibm_cloud_vpc_subnet_name" {
   description = "Name of the VPC subnet having DirectLink access to the private network. Required if use_ibm_cloud_services = true."
   default     = "ocp-subnet"
 }
-variable "iaas_classic_username" {
-  type        = string
-  description = "IBM Cloud Classic Infrastructure user name (Hint: <account_id>_<email>). User should have access to update the DNS forward zones. Uses IAAS_CLASSIC_USERNAME envrionment variable if not provided. Required if use_ibm_cloud_services = true."
-  default     = "apikey"
-}
-variable "iaas_classic_api_key" {
-  type        = string
-  description = "IBM Cloud Classic Infrastructure API key. Uses IAAS_CLASSIC_API_KEY envrionment variable if not provided. Required if use_ibm_cloud_services = true."
-  default     = ""
-  # if empty, will default to ibmcloud_api_key
-}
 variable "iaas_vpc_region" {
   type        = string
   description = "IBM Cloud VPC Infrastructure region."
   default     = ""
   # if empty, will default to ibmcloud_region
+}
+variable "ibm_cloud_cis_crn" {
+  # cli: `ibmcloud resource service-instance <cis name>`
+  type        = string
+  description = "IBM Cloud Intenet Service instance CRN. Required if use_ibm_cloud_services = true."
+  default     = ""
 }
 
 ################################################################
@@ -409,12 +404,11 @@ variable "proxy" {
 }
 
 locals {
-  private_key_file     = var.private_key_file == "" ? "${path.cwd}/data/id_rsa" : var.private_key_file
-  public_key_file      = var.public_key_file == "" ? "${path.cwd}/data/id_rsa.pub" : var.public_key_file
-  private_key          = var.private_key == "" ? file(coalesce(local.private_key_file, "/dev/null")) : var.private_key
-  public_key           = var.public_key == "" ? file(coalesce(local.public_key_file, "/dev/null")) : var.public_key
-  iaas_classic_api_key = var.iaas_classic_api_key == "" ? var.ibmcloud_api_key : var.iaas_classic_api_key
-  iaas_vpc_region      = var.iaas_vpc_region == "" ? var.ibmcloud_region : var.iaas_vpc_region
+  private_key_file = var.private_key_file == "" ? "${path.cwd}/data/id_rsa" : var.private_key_file
+  public_key_file  = var.public_key_file == "" ? "${path.cwd}/data/id_rsa.pub" : var.public_key_file
+  private_key      = var.private_key == "" ? file(coalesce(local.private_key_file, "/dev/null")) : var.private_key
+  public_key       = var.public_key == "" ? file(coalesce(local.public_key_file, "/dev/null")) : var.public_key
+  iaas_vpc_region  = var.iaas_vpc_region == "" ? var.ibmcloud_region : var.iaas_vpc_region
 }
 
 ################################################################
@@ -439,7 +433,7 @@ variable "release_image_override" {
 variable "cluster_domain" {
   type        = string
   default     = "ibm.com"
-  description = "Domain name to use to setup the cluster. A DNS Forward Zone should be a registered in IBM Cloud if use_ibm_cloud_services = true"
+  description = "Domain name to use to setup the cluster. A CIS Domain should be a registered in IBM Cloud if use_ibm_cloud_services = true"
 
   validation {
     condition     = can(regex("^[a-z0-9]+[a-zA-Z0-9_\\-.]*[a-z0-9]+$", var.cluster_domain))

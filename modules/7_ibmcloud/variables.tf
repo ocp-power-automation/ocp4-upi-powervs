@@ -29,6 +29,7 @@ variable "node_prefix" {}
 
 variable "vpc_name" {}
 variable "vpc_subnet_id" {}
+variable "ibm_cloud_cis_crn" {}
 
 variable "bastion_count" {}
 variable "bootstrap_count" {}

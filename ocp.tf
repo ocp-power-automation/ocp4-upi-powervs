@@ -5,11 +5,9 @@ provider "ibm" {
 }
 
 provider "ibm" {
-  alias                 = "classic"
-  region                = local.iaas_vpc_region
-  ibmcloud_api_key      = var.ibmcloud_api_key
-  iaas_classic_username = var.iaas_classic_username
-  iaas_classic_api_key  = local.iaas_classic_api_key
+  alias            = "vpc"
+  region           = local.iaas_vpc_region
+  ibmcloud_api_key = var.ibmcloud_api_key
 }
 
 resource "random_id" "label" {
@@ -38,7 +36,7 @@ locals {
 }
 
 data "ibm_is_subnet" "vpc_subnet" {
-  provider = ibm.classic
+  provider = ibm.vpc
   count    = var.use_ibm_cloud_services ? 1 : 0
   name     = var.ibm_cloud_vpc_subnet_name
 }
@@ -209,22 +207,23 @@ module "ibmcloud" {
   count  = var.use_ibm_cloud_services ? 1 : 0
   source = "./modules/7_ibmcloud"
   providers = {
-    ibm = ibm.classic
+    ibm = ibm.vpc
   }
 
-  cluster_domain  = module.nodes.cluster_domain
-  cluster_id      = local.cluster_id
-  name_prefix     = local.name_prefix
-  node_prefix     = local.node_prefix
-  bastion_count   = lookup(var.bastion, "count", 1)
-  bootstrap_count = var.bootstrap["count"]
-  master_count    = var.master["count"]
-  worker_count    = var.worker["count"]
-  bastion_vip     = module.prepare.bastion_vip
-  bastion_ip      = module.prepare.bastion_ip
-  bootstrap_ip    = module.nodes.bootstrap_ip
-  master_ips      = module.nodes.master_ips
-  worker_ips      = module.nodes.worker_ips
-  vpc_name        = var.ibm_cloud_vpc_name
-  vpc_subnet_id   = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].id : ""
+  cluster_domain    = module.nodes.cluster_domain
+  cluster_id        = local.cluster_id
+  name_prefix       = local.name_prefix
+  node_prefix       = local.node_prefix
+  bastion_count     = lookup(var.bastion, "count", 1)
+  bootstrap_count   = var.bootstrap["count"]
+  master_count      = var.master["count"]
+  worker_count      = var.worker["count"]
+  bastion_vip       = module.prepare.bastion_vip
+  bastion_ip        = module.prepare.bastion_ip
+  bootstrap_ip      = module.nodes.bootstrap_ip
+  master_ips        = module.nodes.master_ips
+  worker_ips        = module.nodes.worker_ips
+  vpc_name          = var.ibm_cloud_vpc_name
+  vpc_subnet_id     = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].id : ""
+  ibm_cloud_cis_crn = var.ibm_cloud_cis_crn
 }

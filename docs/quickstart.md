@@ -134,7 +134,7 @@ Once the deployment is completed successfully, you can safely delete the bootstr
 
 #### Create API and Ingress DNS Records
 
-Please skip this section if your `cluster_domain` is one of the online wildcard DNS domains: nip.io, xip.io and sslip.io.
+Please skip this section if your `cluster_domain` is one of the online wildcard DNS domains: nip.io, xip.io and sslip.io. Also, not required when using `use_ibm_cloud_services = true`.
 
 For all other domains, you can use one of the following options.
 
