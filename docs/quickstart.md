@@ -136,6 +136,8 @@ Once the deployment is completed successfully, you can safely delete the bootstr
 
 Please skip this section if your `cluster_domain` is one of the online wildcard DNS domains: nip.io, xip.io and sslip.io. Also, not required when using `use_ibm_cloud_services = true`.
 
+>**Note**: If you just need to add the DNS entries in the CIS domain zone without using IBM Cloud Services eg: VPC Load Balancer, then set `ibm_cloud_cis_crn` with the CIS domain CRN and keep `use_ibm_cloud_services = false`.
+
 For all other domains, you can use one of the following options.
 
 1. **Add entries to your DNS server**

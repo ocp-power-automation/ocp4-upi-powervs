@@ -227,3 +227,14 @@ module "ibmcloud" {
   vpc_subnet_id     = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].id : ""
   ibm_cloud_cis_crn = var.ibm_cloud_cis_crn
 }
+
+module "custom" {
+  count      = var.ibm_cloud_cis_crn != "" && !var.use_ibm_cloud_services ? 1 : 0
+  source     = "./modules/8_custom"
+  depends_on = [module.install]
+
+  cluster_domain    = module.nodes.cluster_domain
+  cluster_id        = local.cluster_id
+  bastion_public_ip = lookup(var.bastion, "count", 1) > 1 ? module.prepare.bastion_external_vip : module.prepare.bastion_public_ip[0]
+  ibm_cloud_cis_crn = var.ibm_cloud_cis_crn
+}
