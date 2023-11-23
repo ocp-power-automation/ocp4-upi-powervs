@@ -26,8 +26,9 @@ data "ibm_is_vpc" "vpc" {
 }
 
 resource "ibm_is_security_group" "ocp_security_group" {
-  name = "${var.name_prefix}ocp-sec-group"
-  vpc  = data.ibm_is_vpc.vpc.id
+  name           = "${var.name_prefix}ocp-sec-group"
+  vpc            = data.ibm_is_vpc.vpc.id
+  resource_group = data.ibm_is_vpc.vpc.resource_group
 }
 
 resource "ibm_is_security_group_rule" "inbound_ports" {
