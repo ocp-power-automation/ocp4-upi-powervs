@@ -58,8 +58,9 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 
 ### Using IBM Cloud Services
 #use_ibm_cloud_services    = true
-#ibm_cloud_vpc_name        = "ocp-vpc"
-#ibm_cloud_vpc_subnet_name = "ocp-subnet"
+#ibm_cloud_vpc_name        = ""
+#ibm_cloud_vpc_subnet_name = ""
+#ibm_cloud_resource_group  = "Default"
 # iaas_vpc_region          = ""               # if empty, will default to ibmcloud_region.
 # ibm_cloud_cis_crn        = "crn:v1:bluemix:public:internet-svcs:global:a/<account_id>:<cis_instance_id>::"
 

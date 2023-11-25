@@ -21,14 +21,11 @@
 locals {
   tcp_ports = [22623, 6443, 443, 80]
 }
-data "ibm_is_vpc" "vpc" {
-  name = var.vpc_name
-}
 
 resource "ibm_is_security_group" "ocp_security_group" {
   name           = "${var.name_prefix}ocp-sec-group"
-  vpc            = data.ibm_is_vpc.vpc.id
-  resource_group = data.ibm_is_vpc.vpc.resource_group
+  vpc            = local.vpc_id
+  resource_group = local.resource_group_id
 }
 
 resource "ibm_is_security_group_rule" "inbound_ports" {

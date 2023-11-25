@@ -35,12 +35,6 @@ locals {
   }
 }
 
-data "ibm_is_subnet" "vpc_subnet" {
-  provider = ibm.vpc
-  count    = var.use_ibm_cloud_services ? 1 : 0
-  name     = var.ibm_cloud_vpc_subnet_name
-}
-
 module "prepare" {
   source = "./modules/1_prepare"
 
@@ -180,7 +174,7 @@ module "install" {
   csi_driver_install             = var.csi_driver_install
   csi_driver_type                = var.csi_driver_type
   csi_driver_version             = var.csi_driver_version
-  vpc_cidr                       = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].ipv4_cidr_block : ""
+  vpc_cidr                       = var.use_ibm_cloud_services ? module.ibmcloud[0].vpc_cidr : ""
   luks_compliant                 = var.luks_compliant
   luks_config                    = var.luks_config
   luks_filesystem_device         = var.luks_filesystem_device
@@ -210,22 +204,24 @@ module "ibmcloud" {
     ibm = ibm.vpc
   }
 
-  cluster_domain    = module.nodes.cluster_domain
-  cluster_id        = local.cluster_id
-  name_prefix       = local.name_prefix
-  node_prefix       = local.node_prefix
-  bastion_count     = lookup(var.bastion, "count", 1)
-  bootstrap_count   = var.bootstrap["count"]
-  master_count      = var.master["count"]
-  worker_count      = var.worker["count"]
-  bastion_vip       = module.prepare.bastion_vip
-  bastion_ip        = module.prepare.bastion_ip
-  bootstrap_ip      = module.nodes.bootstrap_ip
-  master_ips        = module.nodes.master_ips
-  worker_ips        = module.nodes.worker_ips
-  vpc_name          = var.ibm_cloud_vpc_name
-  vpc_subnet_id     = var.use_ibm_cloud_services ? data.ibm_is_subnet.vpc_subnet[0].id : ""
-  ibm_cloud_cis_crn = var.ibm_cloud_cis_crn
+  cluster_domain           = module.nodes.cluster_domain
+  cluster_id               = local.cluster_id
+  name_prefix              = local.name_prefix
+  node_prefix              = local.node_prefix
+  bastion_count            = lookup(var.bastion, "count", 1)
+  bootstrap_count          = var.bootstrap["count"]
+  master_count             = var.master["count"]
+  worker_count             = var.worker["count"]
+  bastion_vip              = module.prepare.bastion_vip
+  bastion_ip               = module.prepare.bastion_ip
+  bootstrap_ip             = module.nodes.bootstrap_ip
+  master_ips               = module.nodes.master_ips
+  worker_ips               = module.nodes.worker_ips
+  vpc_name                 = var.ibm_cloud_vpc_name
+  vpc_subnet_name          = var.ibm_cloud_vpc_subnet_name
+  vpc_region               = local.iaas_vpc_region
+  ibm_cloud_resource_group = var.ibm_cloud_resource_group
+  ibm_cloud_cis_crn        = var.ibm_cloud_cis_crn
 }
 
 module "custom" {
