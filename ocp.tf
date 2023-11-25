@@ -65,9 +65,20 @@ module "prepare" {
   storage_type                    = local.storage_type
   volume_size                     = var.volume_size
   volume_shareable                = var.volume_shareable
-  setup_squid_proxy               = var.setup_squid_proxy
+  setup_squid_proxy               = var.use_ibm_cloud_services ? false : var.setup_squid_proxy
   proxy                           = var.proxy
   fips_compliant                  = var.fips_compliant
+  create_cloud_connection         = local.create_cloud_connection
+}
+
+data "ibm_pi_workspace" "workspace" {
+  pi_cloud_instance_id = var.service_instance_id
+}
+
+locals {
+  is_per                  = contains(["dal10", "wdc06"], var.ibmcloud_zone)
+  create_cloud_connection = var.use_ibm_cloud_services && var.ibm_cloud_connection_name == "" && !local.is_per
+  tgw_network             = module.prepare.cloud_connection_name == "" ? data.ibm_pi_workspace.workspace.pi_workspace_details.crn : module.prepare.cloud_connection_name
 }
 
 module "nodes" {
@@ -144,8 +155,8 @@ module "install" {
   local_registry_image           = var.local_registry_image
   ocp_release_tag                = var.ocp_release_tag
   ocp_release_name               = var.ocp_release_name
-  setup_snat                     = var.setup_snat
-  setup_squid_proxy              = var.setup_squid_proxy
+  setup_snat                     = var.use_ibm_cloud_services ? true : var.setup_snat
+  setup_squid_proxy              = var.use_ibm_cloud_services ? false : var.setup_squid_proxy
   proxy                          = var.proxy
   helpernode_repo                = var.helpernode_repo
   helpernode_tag                 = var.helpernode_tag
@@ -222,6 +233,10 @@ module "ibmcloud" {
   vpc_region               = local.iaas_vpc_region
   ibm_cloud_resource_group = var.ibm_cloud_resource_group
   ibm_cloud_cis_crn        = var.ibm_cloud_cis_crn
+  ibm_cloud_tgw            = var.ibm_cloud_tgw
+  ibm_cloud_tgw_net        = local.tgw_network
+  is_per                   = local.is_per
+  is_new_cloud_connection  = local.create_cloud_connection
 }
 
 module "custom" {

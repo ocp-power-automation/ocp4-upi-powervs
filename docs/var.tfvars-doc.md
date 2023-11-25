@@ -124,7 +124,7 @@ Note that the boot images should have a minimum disk size of 120GB
 These set of variables should be provided when RHCOS image should be imported from public bucket of cloud object storage to your PowerVS service instance
 ```
 rhcos_import_image              = true                                                   # true/false (default=false)
-rhcos_import_image_filename     = "rhcos-411-85-202203181612-0-ppc64le-powervs.ova.gz"   # RHCOS boot image file name available in cloud object storage
+rhcos_import_image_filename     = "rhcos-415-92-202310310037-0-ppc64le-powervs.ova.gz"   # RHCOS boot image file name available in cloud object storage
 rhcos_import_image_storage_type = "tier1"                                                # tier1/tier3 (default=tier1) Storage type in PowerVS where image needs to be uploaded
 ```
 
@@ -236,19 +236,24 @@ Note: Once fips_compliant set to true it will enable FIPS on the OCP cluster and
 
 You can use IBM Cloud Internet Services (CIS) and Load Balancer services on VPC for running the OCP cluster. When this feature is enabled the services called `named` (DNS) and `haproxy` (Load Balancer) will not be running on the bastion/helpernode.
 
-Ensure you have setup [Cloud Connection](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-cloud-connections) or [DirectLink](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-ordering-direct-link-connect) with IBM Cloud VPC over the private network in cloud instance. Also, ensure you have registered a [DNS domain](https://cloud.ibm.com/docs/cis?topic=cis-about-ibm-cloud-internet-services-cis) and use it as given in `cluster_domain` variable.
+Ensure you have registered a [DNS domain](https://cloud.ibm.com/docs/cis?topic=cis-about-ibm-cloud-internet-services-cis) and use it as given in `cluster_domain` variable.
 
-**IMPORTANT**: This is an **experimental** feature at present. Please manually set variables `setup_snat = true` and `setup_squid_proxy = false` for using IBM Cloud services. This will allow the cluster nodes have public internet access without a proxy server.
 
 Below variables needs to be set in order to use the IBM Cloud services.
 
 ```
 use_ibm_cloud_services    = true
-ibm_cloud_vpc_name        = "ocp-vpc"
-ibm_cloud_vpc_subnet_name = "ocp-subnet"
+ibm_cloud_vpc_name        = "ocp-vpc"     # If empty a new VPC will be created in `iaas_vpc_region`.
+ibm_cloud_vpc_subnet_name = "ocp-subnet"  # If empty a new VPC Subnet will be created in the first AZ.
+ibm_cloud_resource_group  = "Default"     # Used for creating new VPC resources
 iaas_vpc_region           = "us-south" # the VPC region for accessing IBM Cloud services. If empty, will default to ibmcloud_region.
 ibm_cloud_cis_crn         = "crn:v1:bluemix:public:internet-svcs:global:a/<account_id>:<cis_instance_id>::" # CRN of the CIS instance where domain is registered.
+# Below are the variables required for setting up Transit Gateway and add VPC, PowerVS connections to it.
+ibm_cloud_tgw                   = ""  # Name of existing Transit Gateway where VPC and PowerVS targets are already added. If empty it will create a new Transit Gateway with VPC, PowerVS connected to it (includes support for PER enabled workspace as well).
+ibm_cloud_connection_name = ""  # Name of the cloud connection which is already attached to the above Transit Gateway. If empty a new cloud connection is created and added to above (or new) Transit Gateway. Not applicable for PER enabled workspaces.
 ```
+
+>**Note**: If you just need to add the DNS entries in the CIS domain zone without using IBM Cloud Services eg: VPC Load Balancer, then set `ibm_cloud_cis_crn` with the CIS domain CRN and keep `use_ibm_cloud_services = false`.
 
 ### Misc Customizations
 
@@ -339,8 +344,7 @@ chrony_config               = true
 chrony_config_servers       = [ {server = "0.centos.pool.ntp.org", options = "iburst"}, {server = "1.centos.pool.ntp.org", options = "iburst"} ]
 ```
 
-These set of variables are specific for cluster wide proxy configuration.
-Public internet access for the OpenShift cluster nodes is via Squid proxy deployed on the bastion.
+These set of variables are specific for cluster wide proxy configuration. Public internet access for the OpenShift cluster nodes is via Squid proxy deployed on the bastion. Ignored when `use_ibm_cloud_services = true`.
 ```
 setup_squid_proxy           = true
 ```
@@ -392,7 +396,7 @@ This variable is used to set the default Container Network Interface (CNI) netwo
 cni_network_provider       = "OVNKubernetes"
 ```
 
-This variable is used to enable SNAT for OCP nodes. When using SNAT, the OCP nodes will be able to access public internet without using a proxy
+This variable is used to enable SNAT for OCP nodes. When using SNAT, the OCP nodes will be able to access public internet without using a proxy. Ignored when `use_ibm_cloud_services = true`.
 
 ```
 setup_snat                 = true

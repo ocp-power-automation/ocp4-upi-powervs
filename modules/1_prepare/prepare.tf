@@ -441,3 +441,22 @@ resource "ibm_pi_network_port" "bastion_internal_vip" {
   pi_network_name      = ibm_pi_network.public_network.pi_network_name
   pi_cloud_instance_id = var.service_instance_id
 }
+
+resource "ibm_pi_cloud_connection" "cloud_connection" {
+  count = var.create_cloud_connection ? 1 : 0
+
+  pi_cloud_instance_id                = var.service_instance_id
+  pi_cloud_connection_name            = "${var.cluster_id}-cc"
+  pi_cloud_connection_speed           = 100
+  pi_cloud_connection_global_routing  = true
+  pi_cloud_connection_transit_enabled = true
+  pi_cloud_connection_networks        = [data.ibm_pi_network.network.id]
+}
+# Give some time to change the status
+# after cc is created
+resource "time_sleep" "wait_for_cc" {
+  count = var.create_cloud_connection ? 1 : 0
+
+  depends_on      = [ibm_pi_cloud_connection.cloud_connection]
+  create_duration = "3m"
+}

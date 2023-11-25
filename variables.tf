@@ -219,7 +219,7 @@ variable "rhel_smt" {
 ################################################################
 variable "use_ibm_cloud_services" {
   type        = bool
-  description = "Flag to use Internet Services (CIS) and Loadbalancer services on VPC instead of bastion services. Please set variables setup_snat=true and setup_squid_proxy=false"
+  description = "Flag to use Internet Services (CIS) and Loadbalancer services on VPC instead of bastion services."
   default     = false
 }
 variable "ibm_cloud_vpc_name" {
@@ -247,6 +247,16 @@ variable "ibm_cloud_cis_crn" {
   # cli: `ibmcloud resource service-instance <cis name>`
   type        = string
   description = "IBM Cloud Intenet Service instance CRN. Required if use_ibm_cloud_services = true."
+  default     = ""
+}
+variable "ibm_cloud_tgw" {
+  type        = string
+  description = "Name of the existing transit gateway. If empty a new transit gateway will be created and connect VPC & PowerVS to it."
+  default     = ""
+}
+variable "ibm_cloud_connection_name" {
+  type        = string
+  description = "Name of the existing cloud connection. If empty a new cloud connection will be created. Not applicable for PER."
   default     = ""
 }
 
@@ -385,7 +395,7 @@ variable "chrony_config_servers" {
 
 variable "setup_snat" {
   type        = bool
-  description = "IMPORTANT: This is an experimental feature. Flag to configure bastion as SNAT and use the router on all cluster nodes"
+  description = "Flag to configure bastion as SNAT and use the router on all cluster nodes"
   default     = true
 }
 

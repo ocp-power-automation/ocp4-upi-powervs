@@ -22,9 +22,10 @@ locals {
   create_vpc        = var.vpc_name == ""
   create_subnet     = var.vpc_name == "" || var.vpc_subnet_name == ""
   vpc_id            = local.create_vpc ? ibm_is_vpc.vpc[0].id : data.ibm_is_vpc.vpc[0].id
+  vpc_crn           = local.create_vpc ? ibm_is_vpc.vpc[0].crn : data.ibm_is_vpc.vpc[0].crn
   vpc_subnet_id     = local.create_subnet ? ibm_is_subnet.subnet[0].id : data.ibm_is_subnet.subnet[0].id
   vpc_subnet_cidr   = local.create_subnet ? ibm_is_subnet.subnet[0].ipv4_cidr_block : data.ibm_is_subnet.subnet[0].ipv4_cidr_block
-  resource_group_id = data.ibm_resource_group.group.id
+  resource_group_id = local.create_vpc ? data.ibm_resource_group.group.id : data.ibm_is_vpc.vpc[0].resource_group
 }
 
 data "ibm_is_vpc" "vpc" {

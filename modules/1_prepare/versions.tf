@@ -22,11 +22,14 @@ terraform {
   required_providers {
     ibm = {
       source  = "IBM-Cloud/ibm"
-      version = "~> 1.54.0"
+      version = "1.60.0"
     }
     null = {
       source  = "hashicorp/null"
       version = "~> 3.2"
+    }
+    time = {
+      source = "hashicorp/time"
     }
   }
   required_version = ">= 1.2.0"
