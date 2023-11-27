@@ -84,6 +84,12 @@ locals {
     local_registry  = local.local_registry
     client_tarball  = var.openshift_client_tarball
     install_tarball = var.openshift_install_tarball
+
+    # This variable is needed to be set if using ibmcloud services.
+    # Otherwise helpernode will fail to run on subsequent runs
+    # trying to start named and haproxy
+    # TODO: This is hardcoded to 9.9.9.9 to use external nameserver. Need to read from dns_forwarders.
+    ext_dns = var.use_ibm_cloud_services ? "9.9.9.9" : ""
   }
 
   helpernode_inventory = {
@@ -319,13 +325,6 @@ resource "null_resource" "external_services" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'Stopping HAPROXY and DNS'",
-      "sudo systemctl stop haproxy.service && sudo systemctl stop named.service",
-      "sudo systemctl mask haproxy.service && sudo systemctl mask named.service",
-      "echo 'Changing DNS to external on bastion and dhcpd'",
-      # TODO: This is hardcoded to 9.9.9.9 to use external nameserver. Need to read from dns_forwarders.
-      "sudo sed -i 's/nameserver 127.0.0.1/nameserver 9.9.9.9/g' /etc/resolv.conf",
-      "sudo sed -i 's/option domain-name-servers.*/option domain-name-servers 9.9.9.9;/g' /etc/dhcp/dhcpd.conf",
       "echo 'Adding static route for VPC subnet in dhcpd'",
       "sudo sed -i '/option routers/i option static-routes ${cidrhost(var.vpc_cidr, 0)} ${var.gateway_ip};' /etc/dhcp/dhcpd.conf",
       "sudo systemctl restart dhcpd.service"
@@ -598,4 +597,3 @@ resource "ibm_pi_instance_action" "fips_bastion_reboot" {
   pi_instance_id       = "${var.name_prefix}bastion-${count.index}"
   pi_action            = "soft-reboot"
 }
-
