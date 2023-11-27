@@ -59,7 +59,7 @@ output "worker_ips" {
 }
 
 output "dns_entries" {
-  value = var.use_ibm_cloud_services || var.cluster_domain == "nip.io" || var.cluster_domain == "xip.io" || var.cluster_domain == "sslip.io" ? null : <<-EOF
+  value = var.use_ibm_cloud_services || var.cluster_domain == "nip.io" || var.cluster_domain == "sslip.io" ? null : <<-EOF
 
 api.${local.cluster_id}.${var.cluster_domain}.  IN  A  ${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip}
 *.apps.${local.cluster_id}.${var.cluster_domain}.  IN  A  ${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip}
@@ -67,7 +67,7 @@ EOF
 }
 
 output "etc_hosts_entries" {
-  value = var.use_ibm_cloud_services || var.cluster_domain == "nip.io" || var.cluster_domain == "xip.io" || var.cluster_domain == "sslip.io" ? null : <<-EOF
+  value = var.use_ibm_cloud_services || var.cluster_domain == "nip.io" || var.cluster_domain == "sslip.io" ? null : <<-EOF
 
 ${module.install.bastion_external_vip == "" ? module.prepare.bastion_public_ip[0] : module.install.bastion_external_vip} api.${local.cluster_id}.${var.cluster_domain} console-openshift-console.apps.${local.cluster_id}.${var.cluster_domain} integrated-oauth-server-openshift-authentication.apps.${local.cluster_id}.${var.cluster_domain} oauth-openshift.apps.${local.cluster_id}.${var.cluster_domain} prometheus-k8s-openshift-monitoring.apps.${local.cluster_id}.${var.cluster_domain} grafana-openshift-monitoring.apps.${local.cluster_id}.${var.cluster_domain} example.apps.${local.cluster_id}.${var.cluster_domain}
 EOF
