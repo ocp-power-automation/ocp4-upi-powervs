@@ -20,18 +20,19 @@
 
 ################################################################
 ##### Network topology requirements
-##### Ref: https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
+##### Ref: https://docs.openshift.com/container-platform/4.14/installing/installing_platform_agnostic/installing-platform-agnostic.html
 ################################################################
 
 locals {
-  api_servers        = var.bootstrap_count == 0 ? var.master_ips : concat([var.bootstrap_ip], var.master_ips)
-  api_servers_count  = var.bootstrap_count + var.master_count
+  # Post Installation does not require `bootstrap` node to be in the LoadBalancer
+  api_servers        = var.master_ips
+  api_servers_count  = var.master_count
   apps_servers       = var.worker_count == 0 ? var.master_ips : var.worker_ips
   apps_servers_count = var.worker_count == 0 ? var.master_count : var.worker_count
 }
 
 resource "ibm_is_lb" "load_balancer_internal" {
-  name            = "${var.name_prefix}internal-loadbalancer"
+  name            = "${var.name_prefix}internal-lb"
   resource_group  = data.ibm_is_vpc.vpc.resource_group
   subnets         = [var.vpc_subnet_id]
   security_groups = [ibm_is_security_group.ocp_security_group.id]
@@ -39,7 +40,7 @@ resource "ibm_is_lb" "load_balancer_internal" {
 }
 
 resource "ibm_is_lb" "load_balancer_external" {
-  name            = "${var.name_prefix}external-loadbalancer"
+  name            = "${var.name_prefix}external-lb"
   resource_group  = data.ibm_is_vpc.vpc.resource_group
   subnets         = [var.vpc_subnet_id]
   security_groups = [ibm_is_security_group.ocp_security_group.id]
