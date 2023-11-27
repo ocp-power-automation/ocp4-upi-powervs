@@ -89,7 +89,7 @@ worker_ips = [
 
 ```
 
-When using wildcard domain like nip.io or xip.io then `etc_host_entries` is empty
+When using wildcard domain like nip.io or sslip.io then `etc_host_entries` is empty
 
 ```
 bastion_private_ip = 192.168.25.171
@@ -134,7 +134,7 @@ Once the deployment is completed successfully, you can safely delete the bootstr
 
 #### Create API and Ingress DNS Records
 
-Please skip this section if your `cluster_domain` is one of the online wildcard DNS domains: nip.io, xip.io and sslip.io. Also, not required when using `use_ibm_cloud_services = true`.
+Please skip this section if your `cluster_domain` is one of the online wildcard DNS domains: nip.io and sslip.io. Also, not required when using `use_ibm_cloud_services = true`.
 
 >**Note**: If you just need to add the DNS entries in the CIS domain zone without using IBM Cloud Services eg: VPC Load Balancer, then set `ibm_cloud_cis_crn` with the CIS domain CRN and keep `use_ibm_cloud_services = false`.
 

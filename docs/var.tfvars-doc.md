@@ -212,7 +212,7 @@ cluster_id                  = ""
 
 use_zone_info_for_names  = true
 ```
-Set the `cluster_domain` to `nip.io`, `xip.io` or `sslip.io` if you prefer using online wildcard domains.
+Set the `cluster_domain` to `nip.io` or `sslip.io` if you prefer using online wildcard domains.
 Default is `ibm.com`.
 The `cluster_id_prefix` should not be more than 8 characters. Nodes are pre-fixed with this value.
 Default value is `test-ocp`

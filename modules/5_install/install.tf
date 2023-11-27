@@ -19,7 +19,7 @@
 ################################################################
 
 locals {
-  wildcard_dns   = ["nip.io", "xip.io", "sslip.io"]
+  wildcard_dns   = ["nip.io", "sslip.io"]
   cluster_domain = contains(local.wildcard_dns, var.cluster_domain) ? "${var.bastion_external_vip != "" ? var.bastion_external_vip : var.bastion_public_ip[0]}.${var.cluster_domain}" : var.cluster_domain
 
   public_vrrp = {
