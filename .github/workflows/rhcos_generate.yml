@@ -23,7 +23,7 @@ jobs:
           markdown_content+="| OCP Version | RHCOS Image File Name |\n"
           markdown_content+="| ----------- | --------------------- |\n"
           # Iterate through each release version
-          for version in {15..11}
+          for version in {16..11}
           do
               # Fetch object information for the release version
               object=$(curl -s "https://raw.githubusercontent.com/openshift/installer/release-4.${version}/data/data/coreos/rhcos.json" | jq -r '.architectures.ppc64le.images.powervs.regions."au-syd".object')
