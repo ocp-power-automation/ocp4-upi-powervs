@@ -1,5 +1,6 @@
 | OCP Version | RHCOS Image File Name |
 | ----------- | --------------------- |
+| 4.16 | rhcos-415-92-202311241643-0-ppc64le-powervs.ova.gz |
 | 4.15 | rhcos-415-92-202311241643-0-ppc64le-powervs.ova.gz |
 | 4.14 | rhcos-414-92-202309201615-0-ppc64le-powervs.ova.gz |
 | 4.13 | rhcos-413-92-202307260246-0-ppc64le-powervs.ova.gz |
