@@ -61,10 +61,11 @@ Two options are available to enable communication over the private network.
 
 *Option 1*
 
-You can use the IBM Cloud CLI with the latest power-iaas plug-in (version 0.3.4 or later) to enable a private network communication.
-Refer: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-managing-cloud-connections
+Now, the automation can create a [Cloud Connection](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-cloud-connections) for you. IBM Cloud connection creates a Direct Link (2.0) Connect instance to connect your Power Virtual Server instances to the IBM Cloud resources within your account.
 
-This requires attaching the private network to an IBM Cloud Direct Link Connect 2.0 connection.
+You can now use [IBM Cloud Transit Gateway](https://cloud.ibm.com/docs/transit-gateway?topic=transit-gateway-about) to manage the connection of your Power Virtual Server instances to the IBM Cloud resources. This feature is available when you set `use_ibm_cloud_services = true`. Skip the steps given below and please refer to [var.tfvars](./var.tfvars-doc.md#using-ibm-cloud-services) for more details.
+
+Use the IBM Cloud CLI with the latest power-iaas plug-in (version 0.3.4 or later) to enable a private network communication. This requires attaching the private network to an [IBM Cloud Direct Link Connect 2.0 connection](https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-managing-cloud-connections).
 Perform the following steps to enable private network communication by attaching to the Direct Link Connect 2.0 connection.
 
 - Select a specific service instance
@@ -189,8 +190,12 @@ Click "**Continue**" to accept agreements, and then Click "**Submit case**".
 
 This usually takes a day to get enabled.
 
-## RHCOS and RHEL/CentOS 8.X Images for OpenShift
-RHEL image is used for bastion and RHCOS is used for the OpenShift cluster nodes.
+## RHCOS and RHEL/CentOS Images for OpenShift
+RHEL/CentOS (8.X or 9.X) image is used for bastion and RHCOS is used for the OpenShift cluster nodes.
+
+You can now use stock images for the bastion node. The automation will copy it to your PowerVS service instance if not already available.
+
+For RHCOS (OpenShift cluster nodes) you can let the automation import it for you from public COS bucket by setting the variable `rhcos_import_image = true`. Skip the steps given below for RHCOS and please refer to [var.tfvars](./var.tfvars-doc.md#openshift-cluster-details) for more details. Value of `rhcos_import_image_filename` can be refered from [rhcos-table.md](./rhcos-table.md) specific to the required OpenShit version.
 
 You'll need to create [OVA](https://en.wikipedia.org/wiki/Open_Virtualization_Format) formatted images for RHEL and RHCOS, upload them to IBM Cloud Object storage and then import these images as boot images in your PowerVS service instance.
 
@@ -206,6 +211,7 @@ Further, the image disk should be minimum of 120 GB in size.
   - RHCOS Qcow2 image is available at [latest stable](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/latest/rhcos-openstack.ppc64le.qcow2.gz) OR [pre-release](https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/pre-release/latest/rhcos-openstack.ppc64le.qcow2.gz)
 
 Note: RHCOS image version is tied to the specific OCP release. For example RHCOS-4.6 image needs to be used for OCP 4.6 release.
+
 ### Uploading to IBM Cloud Object Storage
 
 - **Create IBM Cloud Object Storage service and bucket**

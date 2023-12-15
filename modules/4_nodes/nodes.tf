@@ -150,6 +150,10 @@ resource "ibm_pi_instance" "master" {
   pi_network {
     network_id = data.ibm_pi_network.network.id
   }
+
+  lifecycle {
+    ignore_changes = [pi_storage_pool_affinity]
+  }
 }
 resource "ibm_pi_instance_action" "master_stop" {
   count = var.master["count"]
@@ -215,6 +219,10 @@ resource "ibm_pi_instance" "worker" {
 
   pi_network {
     network_id = data.ibm_pi_network.network.id
+  }
+
+  lifecycle {
+    ignore_changes = [pi_storage_pool_affinity]
   }
 }
 resource "ibm_pi_instance_action" "worker_stop" {

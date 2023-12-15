@@ -219,18 +219,23 @@ variable "rhel_smt" {
 ################################################################
 variable "use_ibm_cloud_services" {
   type        = bool
-  description = "Experimental: Flag to use Internet Services (CIS) and Loadbalancer services on VPC instead of bastion services. Please set variables setup_snat=true and setup_squid_proxy=false"
+  description = "Flag to use Internet Services (CIS) and Loadbalancer services on VPC instead of bastion services."
   default     = false
 }
 variable "ibm_cloud_vpc_name" {
   type        = string
-  description = "Name of the IBM Cloud Virtual Private Clouds (VPC) to setup the load balancer. Required if use_ibm_cloud_services = true."
-  default     = "ocp-vpc"
+  description = "Name of the IBM Cloud Virtual Private Clouds (VPC) to setup the load balancer. By default will create a new VPC when use_ibm_cloud_services=true."
+  default     = ""
 }
 variable "ibm_cloud_vpc_subnet_name" {
   type        = string
-  description = "Name of the VPC subnet having DirectLink access to the private network. Required if use_ibm_cloud_services = true."
-  default     = "ocp-subnet"
+  description = "Name of the VPC subnet having DirectLink access to the private network. By default will create a new VPC Subnet when use_ibm_cloud_services=true."
+  default     = ""
+}
+variable "ibm_cloud_resource_group" {
+  type        = string
+  description = "Name of the IBM Cloud Resource Group where you want to create the VPC. Ignore if VPC and Subnet names are provided."
+  default     = "Default"
 }
 variable "iaas_vpc_region" {
   type        = string
@@ -242,6 +247,16 @@ variable "ibm_cloud_cis_crn" {
   # cli: `ibmcloud resource service-instance <cis name>`
   type        = string
   description = "IBM Cloud Intenet Service instance CRN. Required if use_ibm_cloud_services = true."
+  default     = ""
+}
+variable "ibm_cloud_tgw" {
+  type        = string
+  description = "Name of the existing transit gateway. If empty a new transit gateway will be created and connect VPC & PowerVS to it."
+  default     = ""
+}
+variable "ibm_cloud_connection_name" {
+  type        = string
+  description = "Name of the existing cloud connection. If empty a new cloud connection will be created. Not applicable for PER."
   default     = ""
 }
 
@@ -380,7 +395,7 @@ variable "chrony_config_servers" {
 
 variable "setup_snat" {
   type        = bool
-  description = "IMPORTANT: This is an experimental feature. Flag to configure bastion as SNAT and use the router on all cluster nodes"
+  description = "Flag to configure bastion as SNAT and use the router on all cluster nodes"
   default     = true
 }
 

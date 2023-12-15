@@ -54,3 +54,8 @@ output "bastion_external_vip" {
   depends_on = [null_resource.bastion_init]
   value      = local.bastion_count > 1 ? ibm_pi_network_port.bastion_internal_vip[0].public_ip : ""
 }
+
+output "cloud_connection_name" {
+  depends_on = [ibm_pi_cloud_connection.cloud_connection, time_sleep.wait_for_cc]
+  value      = var.create_cloud_connection ? ibm_pi_cloud_connection.cloud_connection[0].pi_cloud_connection_name : ""
+}

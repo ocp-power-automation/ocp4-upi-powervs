@@ -57,12 +57,14 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #fips_compliant      = false   # Set it true if you prefer to use FIPS enable in ocp deployment
 
 ### Using IBM Cloud Services
-#use_ibm_cloud_services    = true
-#ibm_cloud_vpc_name        = "ocp-vpc"
-#ibm_cloud_vpc_subnet_name = "ocp-subnet"
-# iaas_vpc_region          = ""               # if empty, will default to ibmcloud_region.
-# ibm_cloud_cis_crn        = "crn:v1:bluemix:public:internet-svcs:global:a/<account_id>:<cis_instance_id>::"
-
+#use_ibm_cloud_services     = true
+#ibm_cloud_vpc_name         = ""
+#ibm_cloud_vpc_subnet_name  = ""
+#ibm_cloud_resource_group   = "Default"
+# iaas_vpc_region           = ""               # if empty, will default to ibmcloud_region.
+# ibm_cloud_cis_crn         = "crn:v1:bluemix:public:internet-svcs:global:a/<account_id>:<cis_instance_id>::"
+# ibm_cloud_tgw             = ""  # Name of existing Transit Gateway where VPC and PowerVS targets are already added.
+# ibm_cloud_connection_name = ""  # Name of the cloud connection which is already attached to the above Transit Gateway.
 
 ### Misc Customizations
 

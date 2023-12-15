@@ -80,3 +80,5 @@ variable "volume_shareable" {}
 variable "setup_squid_proxy" {}
 variable "proxy" {}
 variable "fips_compliant" {}
+
+variable "create_cloud_connection" {}

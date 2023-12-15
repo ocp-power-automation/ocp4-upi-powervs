@@ -32,16 +32,16 @@ locals {
 
 resource "ibm_is_lb" "load_balancer_internal" {
   name            = "${var.name_prefix}internal-loadbalancer"
-  resource_group  = data.ibm_is_vpc.vpc.resource_group
-  subnets         = [var.vpc_subnet_id]
+  resource_group  = local.resource_group_id
+  subnets         = [local.vpc_subnet_id]
   security_groups = [ibm_is_security_group.ocp_security_group.id]
   type            = "private"
 }
 
 resource "ibm_is_lb" "load_balancer_external" {
   name            = "${var.name_prefix}external-loadbalancer"
-  resource_group  = data.ibm_is_vpc.vpc.resource_group
-  subnets         = [var.vpc_subnet_id]
+  resource_group  = local.resource_group_id
+  subnets         = [local.vpc_subnet_id]
   security_groups = [ibm_is_security_group.ocp_security_group.id]
   type            = "public"
 }
