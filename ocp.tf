@@ -76,7 +76,8 @@ data "ibm_pi_workspace" "workspace" {
 }
 
 locals {
-  is_per                  = contains(["dal10", "wdc06"], var.ibmcloud_zone)
+  # PER doc reference: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-per
+  is_per                  = contains(["dal10", "fra04", "fra05", "wdc06", "wdc07", "mad02", "mad04", "sao04"], var.ibmcloud_zone)
   create_cloud_connection = var.use_ibm_cloud_services && var.ibm_cloud_connection_name == "" && !local.is_per
   tgw_network             = module.prepare.cloud_connection_name == "" ? data.ibm_pi_workspace.workspace.pi_workspace_details.crn : module.prepare.cloud_connection_name
 }
