@@ -23,15 +23,17 @@ locals {
   node_prefix  = var.use_zone_info_for_names ? "${var.ibmcloud_zone}-" : ""
   storage_type = lookup(var.bastion, "count", 1) > 1 ? "none" : var.storage_type
   powervs_vpc_region_map = {
-    syd     = "au-syd",
-    osa     = "jp-osa",
-    tok     = "jp-tok",
-    eu-de   = "eu-de",
-    lon     = "eu-gb",
-    tor     = "ca-tor",
-    dal     = "us-south",
-    sao     = "br-sao",
-    us-east = "us-east"
+    syd      = "au-syd",
+    osa      = "jp-osa",
+    tok      = "jp-tok",
+    eu-de    = "eu-de",
+    lon      = "eu-gb",
+    tor      = "ca-tor",
+    us-south = "us-south",
+    dal      = "us-south",
+    sao      = "br-sao",
+    us-east  = "us-east",
+    wdc      = "us-east"
   }
 }
 
