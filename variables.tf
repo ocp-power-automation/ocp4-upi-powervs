@@ -580,7 +580,7 @@ variable "enable_local_registry" {
 variable "local_registry_image" {
   type        = string
   description = "Name of the image used for creating local registry container."
-  default     = "docker.io/ibmcom/registry-ppc64le:2.6.2.5"
+  default     = "docker.io/library/registry:2"
 }
 
 variable "ocp_release_tag" {
