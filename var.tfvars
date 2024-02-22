@@ -69,7 +69,7 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 ### Misc Customizations
 
 #enable_local_registry      = false  #Set to true to enable usage of local registry for restricted network install.
-#local_registry_image       = "docker.io/ibmcom/registry-ppc64le:2.6.2.5"
+#local_registry_image       = "docker.io/library/registry:2"
 #ocp_release_tag            = "4.4.9-ppc64le"
 #ocp_release_name           = "ocp-release"
 #release_image_override     = ""
