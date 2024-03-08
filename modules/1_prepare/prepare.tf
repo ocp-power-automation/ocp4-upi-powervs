@@ -47,14 +47,9 @@ locals {
       length(local.project_bastion_image) == 0 ? ibm_pi_image.bastion[0].image_id : local.project_bastion_image[0].id
     )
   )
-  # If invalid then use hardcoded value; else if project image pool is not empty use catalog image pool; else if project image pool is empty use catalog image pool; else use project image pool
-  bastion_storage_pool = (
-    local.invalid_bastion_image ? "Tier3-Flash-1" : (
-      length(local.project_bastion_image) == 0 ? local.catalog_bastion_image[0].storage_pool : (
-        local.project_bastion_image[0].storage_pool == "" ? local.catalog_bastion_image[0].storage_pool : local.project_bastion_image[0].storage_pool
-      )
-    )
-  )
+  # Use project image pool; If it is a catalog image OR project image pool is "" then let use default (null)
+  project_bastion_image_pool = !local.invalid_bastion_image && length(local.project_bastion_image) != 0 ? local.project_bastion_image[0].storage_pool : ""
+  bastion_storage_pool       = local.project_bastion_image_pool == "" ? null : local.project_bastion_image_pool
 }
 
 # Copy image from catalog if not in the project and present in catalog
