@@ -20,11 +20,12 @@
 
 ################################################################
 ##### Network topology requirements
-##### Ref: https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
+##### Ref: https://docs.openshift.com/container-platform/4.16/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-network-user-infra_installing-platform-agnostic
+##### Note: You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane.
 ################################################################
 
 locals {
-  api_servers        = var.bootstrap_count == 0 ? var.master_ips : concat([var.bootstrap_ip], var.master_ips)
+  api_servers        = var.bootstrap_count == 0 ? var.master_ips : concat(var.master_ips, [var.bootstrap_ip])
   api_servers_count  = var.bootstrap_count + var.master_count
   apps_servers       = var.worker_count == 0 ? var.master_ips : var.worker_ips
   apps_servers_count = var.worker_count == 0 ? var.master_count : var.worker_count
