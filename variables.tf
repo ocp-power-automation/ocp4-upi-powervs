@@ -306,7 +306,7 @@ variable "helpernode_repo" {
 variable "helpernode_tag" {
   type        = string
   description = "Set the branch/tag name or commit# for using ocp4-helpernode repo"
-  default     = "94b8a123308f3566835a8ea2f189b204f77af88c"
+  default     = "d1ab538df6aeba915bf056f7983a60a68717d4d9"
   # Checkout level for var.helpernode_repo which is used for setting up services required on bastion node
 }
 
