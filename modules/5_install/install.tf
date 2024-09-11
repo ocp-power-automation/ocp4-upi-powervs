@@ -90,6 +90,7 @@ locals {
     # trying to start named and haproxy
     # TODO: This is hardcoded to 9.9.9.9 to use external nameserver. Need to read from dns_forwarders.
     ext_dns = var.use_ibm_cloud_services ? "9.9.9.9" : ""
+    fips    = var.fips_compliant
   }
 
   helpernode_inventory = {
@@ -589,11 +590,3 @@ resource "null_resource" "csi_driver_install" {
   }
 }
 
-resource "ibm_pi_instance_action" "fips_bastion_reboot" {
-  depends_on = [null_resource.config, null_resource.setup_snat, null_resource.configure_public_vip, null_resource.external_services, null_resource.pre_install, null_resource.install, null_resource.powervs_config, null_resource.upgrade, null_resource.csi_driver_install]
-  count      = var.fips_compliant ? var.bastion_count : 0
-
-  pi_cloud_instance_id = var.service_instance_id
-  pi_instance_id       = "${var.name_prefix}bastion-${count.index}"
-  pi_action            = "soft-reboot"
-}
