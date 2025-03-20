@@ -20,7 +20,10 @@ high_availability:
 dns:
   domain: "${cluster_domain}"
   clusterid: "${cluster_id}"
-  forwarder1: "${forwarders}"
+  forwarder1: "${forwarder1}"
+%{ if forwarder2 != "" }
+  forwarder2: "${forwarder2}"
+%{ endif }
 dhcp:
   router: "${gateway_ip}"
   bcast: "${broadcast}"
