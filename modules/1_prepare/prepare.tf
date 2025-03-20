@@ -52,10 +52,8 @@ locals {
   bastion_storage_pool       = local.project_bastion_image_pool == "" ? null : local.project_bastion_image_pool
 }
 
-# Copy image from catalog if not in the project and present in catalog
 resource "ibm_pi_image" "bastion" {
   count                = length(local.project_bastion_image) == 0 && length(local.catalog_bastion_image) == 1 ? 1 : 0
-  pi_image_name        = var.rhel_image_name
   pi_image_id          = local.catalog_bastion_image[0].image_id
   pi_cloud_instance_id = var.service_instance_id
 }
@@ -447,20 +445,22 @@ resource "null_resource" "rhel83_fix" {
   }
 }
 
-resource "ibm_pi_network_port" "bastion_vip" {
+resource "ibm_pi_network_interface" "bastion_vip" {
   count      = local.bastion_count > 1 ? 1 : 0
   depends_on = [ibm_pi_instance.bastion]
 
-  pi_network_name      = data.ibm_pi_network.network.pi_network_name
   pi_cloud_instance_id = var.service_instance_id
+  pi_network_id        = data.ibm_pi_network.network.id
+  pi_name              = "bastion_vip"
 }
 
-resource "ibm_pi_network_port" "bastion_internal_vip" {
+resource "ibm_pi_network_interface" "bastion_internal_vip" {
   count      = local.bastion_count > 1 ? 1 : 0
   depends_on = [ibm_pi_instance.bastion]
 
-  pi_network_name      = ibm_pi_network.public_network.pi_network_name
   pi_cloud_instance_id = var.service_instance_id
+  pi_network_id        = data.ibm_pi_network.network.id
+  pi_name              = "bastion_internal_vip"
 }
 
 resource "ibm_pi_cloud_connection" "cloud_connection" {
