@@ -20,7 +20,7 @@
 
 ################################################################
 ##### Network topology requirements
-##### Ref: https://docs.openshift.com/container-platform/4.16/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-network-user-infra_installing-platform-agnostic
+##### Ref: https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/installing_on_any_platform/installing-platform-agnostic#installation-network-user-infra_installing-platform-agnostic
 ##### Note: You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane.
 ################################################################
 

@@ -219,7 +219,7 @@ For pre-release:
 - [Windows](https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp-dev-preview/pre-release/openshift-client-windows.zip)
 
 Download the specific file, extract it and place the binary in a directory that is on your `PATH`
-For more details check the following [link](https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html)
+For more details check the following [link](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/cli_tools/openshift-cli-oc#cli-getting-started)
 
 The CLI login URL `oc_server_url` will be printed at the end of successful install.
 Alternatively you can retrieve it anytime by running `terraform output oc_server_url` from the install directory.

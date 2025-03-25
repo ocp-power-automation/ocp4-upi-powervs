@@ -307,7 +307,7 @@ This variable specifies the external DNS servers to forward DNS queries that can
 dns_forwarders              = "1.1.1.1; 9.9.9.9"
 ```
 
-List of [day-1 kernel arguments](https://docs.openshift.com/container-platform/latest/installing/install_config/installing-customizing.html#installation-special-config-kargs_installing-customizing) for the cluster nodes.
+List of [day-1 kernel arguments](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/installation_configuration/installing-customizing#installation-special-config-kargs_installing-customizing) for the cluster nodes.
 To add kernel arguments to master or worker nodes, using MachineConfig object and inject that object into the set of manifest files used by Ignition during cluster setup. Use only if they are needed to complete the initial OCP installation. The automation will set `"rd.multipath=default"` and `"root=/dev/disk/by-label/dm-mpath-root"` by default.
 ```
 rhcos_pre_kernel_options        = []
@@ -317,8 +317,7 @@ rhcos_pre_kernel_options        = []
   rhcos_pre_kernel_options   =  ["loglevel=7"]
   ```
 
-List of [kernel arguments](https://docs.openshift.com/container-platform/latest/post_installation_configuration/machine-configuration-tasks.html#nodes-nodes-kernel-arguments_post-install-machine-configur
-ation-tasks) for the cluster nodes.
+List of [kernel arguments](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/machine_configuration/machine-configs-configure#nodes-nodes-kernel-arguments_machine-configs-configure) for the cluster nodes.
 Note that this will be applied after the cluster is installed and all the nodes are in `Ready` status.
 ```
 rhcos_kernel_options        = []
@@ -425,7 +424,7 @@ luks_options                = ["--cipher", "aes-cbc-essiv:sha256"]  #Set List of
 luks_wipe_volume             = true  #Set value of wipeVolume
 luks_name                   = "root"  #Set value of luks name
 ```
-The following variables are specific for [Enabling kdump on day-1](https://docs.openshift.com/container-platform/4.13/support/troubleshooting/troubleshooting-operating-system-issues.html#enabling-kdump-day-one) on Cluster nodes.
+The following variables are specific for [Enabling kdump on day-1](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/support/troubleshooting#enabling-kdump-day-one) on Cluster nodes.
 ```
 kdump_enable              = false # Set to true to enable the kdump on Cluster Nodes
 kdump_commandline_remove  = "hugepages hugepagesz slub_debug quiet log_buf_len swiotlb" # This option removes arguments from the current kdump command line
