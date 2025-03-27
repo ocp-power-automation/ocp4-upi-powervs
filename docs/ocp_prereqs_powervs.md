@@ -191,17 +191,21 @@ Click "**Continue**" to accept agreements, and then Click "**Submit case**".
 This usually takes a day to get enabled.
 
 ## RHCOS and RHEL/CentOS Images for OpenShift
-RHEL/CentOS (8.X or 9.X) image is used for bastion and RHCOS is used for the OpenShift cluster nodes.
+### RHEL/CentOS (8.X or 9.X)
+This image is used for the bastion node.
 
-You can now use stock images for the bastion node. The automation will copy it to your PowerVS service instance if not already available.
+You can now use stock images for the bastion node. The automation will copy the stock image to your PowerVS service instance if not already available. Skip the steps given below for creating and uploading/importing images in case you want to use the available stock image for bastion.
 
-For RHCOS (OpenShift cluster nodes) you can let the automation import it for you from public COS bucket by setting the variable `rhcos_import_image = true`. Skip the steps given below for RHCOS and please refer to [var.tfvars](./var.tfvars-doc.md#openshift-cluster-details) for more details. Value of `rhcos_import_image_filename` can be refered from [rhcos-table.md](./rhcos-table.md) specific to the required OpenShit version.
+### RHCOS
+RHCOS is used for the OpenShift cluster nodes.
 
+For RHCOS, you can let the automation import it for you from public COS bucket by setting the variable `rhcos_import_image = true`. Skip the steps given below for RHCOS and please refer to [var.tfvars](./var.tfvars-doc.md#openshift-cluster-details) for more details. Value of `rhcos_import_image_filename` can be refered from [rhcos-table.md](./rhcos-table.md) specific to the required OpenShit version.
+
+
+### Creating OVA images
 You'll need to create [OVA](https://en.wikipedia.org/wiki/Open_Virtualization_Format) formatted images for RHEL and RHCOS, upload them to IBM Cloud Object storage and then import these images as boot images in your PowerVS service instance.
 
 Further, the image disk should be minimum of 120 GB in size.
-
-### Creating OVA images
 
 - If you have PowerVC then you can follow the instructions provided in the [link](https://www.ibm.com/support/knowledgecenter/en/SSXK2N_1.4.4/com.ibm.powervc.standard.help.doc/powervc_export_image_hmc.html) to export an existing PowerVC image to OVA image.
 - You can also use the following [tool](https://github.com/ppc64le-cloud/pvsadm) to convert Qcow2 image to OVA.
