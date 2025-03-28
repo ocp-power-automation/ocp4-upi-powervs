@@ -459,7 +459,7 @@ resource "ibm_pi_network_interface" "bastion_internal_vip" {
   depends_on = [ibm_pi_instance.bastion]
 
   pi_cloud_instance_id = var.service_instance_id
-  pi_network_id        = data.ibm_pi_network.network.id
+  pi_network_id        = ibm_pi_network.public_network.id
   pi_name              = "bastion_internal_vip"
 }
 
