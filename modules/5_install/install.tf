@@ -89,7 +89,7 @@ locals {
     # Otherwise helpernode will fail to run on subsequent runs
     # trying to start named and haproxy
     # TODO: This is hardcoded to 9.9.9.9 to use external nameserver. Need to read from dns_forwarders.
-    ext_dns = var.use_ibm_cloud_services ? "9.9.9.9" : ""
+    ext_dns = var.use_ibm_cloud_services ? "161.26.0.10; 161.26.0.11" : ""
     fips    = var.fips_compliant
   }
 
