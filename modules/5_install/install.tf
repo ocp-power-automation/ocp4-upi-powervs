@@ -221,7 +221,7 @@ resource "null_resource" "config" {
       "mkdir -p .openshift",
       "rm -rf ocp4-helpernode",
       "echo 'Cloning into ocp4-helpernode...'",
-      "git clone ${var.helpernode_repo} --quiet",
+      "git clone ${var.helpernode_repo} --quiet || sleep 5s && git clone ${var.helpernode_repo} --quiet",
       "cd ocp4-helpernode && git checkout ${var.helpernode_tag}"
     ]
   }
@@ -379,7 +379,7 @@ resource "null_resource" "install_config" {
     inline = [
       "rm -rf ocp4-playbooks",
       "echo 'Cloning into ocp4-playbooks...'",
-      "git clone ${var.install_playbook_repo} --quiet",
+      "git clone ${var.install_playbook_repo} --quiet || sleep 5s && git clone ${var.install_playbook_repo} --quiet",
       "cd ocp4-playbooks && git checkout ${var.install_playbook_tag}"
     ]
   }
