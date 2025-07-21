@@ -90,7 +90,7 @@ locals {
     # Otherwise helpernode will fail to run on subsequent runs
     # trying to start named and haproxy
     # This is hardcoded to the IBM Cloud DNS.
-    ext_dns = var.use_ibm_cloud_services ? "161.26.0.10, 161.26.0.11" : ""
+    ext_dns = var.use_ibm_cloud_services ? "161.26.0.10 \nnameserver 161.26.0.11" : ""
     fips    = var.fips_compliant
   }
 
