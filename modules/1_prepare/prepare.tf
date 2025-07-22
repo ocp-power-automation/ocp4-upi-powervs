@@ -48,8 +48,8 @@ locals {
     )
   )
   # Use project image pool; If it is a catalog image OR project image pool is "" then let use default (null)
-  project_bastion_image_pool = !local.invalid_bastion_image && length(local.project_bastion_image) != 0 ? local.project_bastion_image[0].storage_pool : ""
-  bastion_storage_pool       = local.project_bastion_image_pool == "" ? null : local.project_bastion_image_pool
+  bastion_storage_pool = !local.invalid_bastion_image && length(local.project_bastion_image) != 0 ? local.project_bastion_image[0].storage_pool : null
+  bastion_storage_type = !local.invalid_bastion_image && length(local.project_bastion_image) != 0 ? local.project_bastion_image[0].storage_type : null
 }
 
 # Copy image from catalog if not in the project and present in catalog
@@ -84,6 +84,7 @@ resource "ibm_pi_volume" "volume" {
   pi_volume_size       = var.volume_size
   pi_volume_name       = "${var.name_prefix}${var.storage_type}-volume"
   pi_volume_pool       = local.bastion_storage_pool
+  pi_volume_type       = local.bastion_storage_type
   pi_volume_shareable  = var.volume_shareable
   pi_cloud_instance_id = var.service_instance_id
 }
@@ -102,6 +103,7 @@ resource "ibm_pi_instance" "bastion" {
   pi_health_status     = var.bastion_health_status
   pi_volume_ids        = var.storage_type == "nfs" ? ibm_pi_volume.volume.*.volume_id : null
   pi_storage_pool      = local.bastion_storage_pool
+  pi_storage_type      = local.bastion_storage_type
 
   pi_network {
     network_id = ibm_pi_network.public_network.network_id
