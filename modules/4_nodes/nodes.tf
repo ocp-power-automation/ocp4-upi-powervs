@@ -92,6 +92,7 @@ resource "ibm_pi_instance" "bootstrap" {
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
   pi_storage_pool  = data.ibm_pi_image.rhcos.storage_pool
+  pi_storage_type  = data.ibm_pi_image.rhcos.storage_type
 
   pi_network {
     network_id = data.ibm_pi_network.network.id
@@ -146,6 +147,7 @@ resource "ibm_pi_instance" "master" {
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
   pi_storage_pool  = data.ibm_pi_image.rhcos.storage_pool
+  pi_storage_type  = data.ibm_pi_image.rhcos.storage_type
 
   pi_network {
     network_id = data.ibm_pi_network.network.id
@@ -216,6 +218,7 @@ resource "ibm_pi_instance" "worker" {
   pi_key_pair_name = "${var.name_prefix}keypair"
   pi_health_status = "WARNING"
   pi_storage_pool  = data.ibm_pi_image.rhcos.storage_pool
+  pi_storage_type  = data.ibm_pi_image.rhcos.storage_type
 
   pi_network {
     network_id = data.ibm_pi_network.network.id
