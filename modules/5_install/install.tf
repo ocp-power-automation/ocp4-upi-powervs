@@ -52,7 +52,8 @@ locals {
     isHA                  = var.bastion_vip != ""
     bastion_master_ip     = var.bastion_ip[0]
     bastion_backup_ip     = length(var.bastion_ip) > 1 ? slice(var.bastion_ip, 1, length(var.bastion_ip)) : []
-    forwarders            = var.dns_forwarders
+    forwarder1            = split(";", var.dns_forwarders)[0]
+    forwarder2            = split(";", var.dns_forwarders)[1]
     gateway_ip            = var.setup_snat ? (var.bastion_vip != "" ? var.bastion_vip : var.bastion_ip[0]) : var.gateway_ip
     netmask               = cidrnetmask(var.cidr)
     broadcast             = cidrhost(var.cidr, -1)
@@ -88,8 +89,8 @@ locals {
     # This variable is needed to be set if using ibmcloud services.
     # Otherwise helpernode will fail to run on subsequent runs
     # trying to start named and haproxy
-    # TODO: This is hardcoded to 9.9.9.9 to use external nameserver. Need to read from dns_forwarders.
-    ext_dns = var.use_ibm_cloud_services ? "9.9.9.9" : ""
+    # This is hardcoded to the IBM Cloud DNS.
+    ext_dns = var.use_ibm_cloud_services ? "161.26.0.10" : ""
     fips    = var.fips_compliant
   }
 
@@ -221,7 +222,7 @@ resource "null_resource" "config" {
       "mkdir -p .openshift",
       "rm -rf ocp4-helpernode",
       "echo 'Cloning into ocp4-helpernode...'",
-      "git clone ${var.helpernode_repo} --quiet",
+      "git clone ${var.helpernode_repo} --quiet || sleep 5s && git clone ${var.helpernode_repo} --quiet",
       "cd ocp4-helpernode && git checkout ${var.helpernode_tag}"
     ]
   }
@@ -379,7 +380,7 @@ resource "null_resource" "install_config" {
     inline = [
       "rm -rf ocp4-playbooks",
       "echo 'Cloning into ocp4-playbooks...'",
-      "git clone ${var.install_playbook_repo} --quiet",
+      "git clone ${var.install_playbook_repo} --quiet || sleep 5s && git clone ${var.install_playbook_repo} --quiet",
       "cd ocp4-playbooks && git checkout ${var.install_playbook_tag}"
     ]
   }
