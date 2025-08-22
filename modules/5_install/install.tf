@@ -400,9 +400,44 @@ resource "null_resource" "install_config" {
   }
 }
 
+resource "null_resource" "pause_bootstrap_when_loadbalanced" {
+  count      = var.use_ibm_cloud_services ? 1 : 0
+  depends_on = [null_resource.pre_install, null_resource.install_config]
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = var.bastion_public_ip[0]
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "${var.connection_timeout}m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [<<EOF
+random_record=0
+while true
+do
+    sleep 30
+    dig +short "x$${random_record}.apps.${var.cluster_id}.${var.cluster_domain}"
+    if [ $? = 0 ]
+    then
+        break
+    fi
+    random_record=$$((random_record + 1))
+    if [ $$random_record -gt 100 ]
+    then
+        echo "Failure to query the right hosts"
+        exit -1
+    fi
+done
+EOF
+    ]
+  }
+}
 
 resource "ibm_pi_instance_action" "bootstrap_start" {
-  depends_on = [null_resource.pre_install, null_resource.install_config]
+  depends_on = [null_resource.pre_install, null_resource.install_config, null_resource.pause_bootstrap_when_loadbalanced]
   count      = var.bootstrap_count == 0 ? 0 : 1
 
   pi_cloud_instance_id = var.service_instance_id
