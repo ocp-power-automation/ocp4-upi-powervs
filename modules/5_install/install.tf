@@ -431,6 +431,22 @@ do
         exit -1
     fi
 done
+record=0
+while true
+do
+    sleep 30
+    dig +short "api.${var.cluster_id}.${var.cluster_domain}"
+    if [ $? = 0 ]
+    then
+        break
+    fi
+    record=$$((record + 1))
+    if [ $$record -gt 100 ]
+    then
+        echo "Failure to query the right hosts"
+        exit -1
+    fi
+done
 EOF
     ]
   }
