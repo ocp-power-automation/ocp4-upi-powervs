@@ -424,7 +424,7 @@ do
     then
         break
     fi
-    random_record=$$((random_record + 1))
+    random_record=$((random_record + 1))
     if [ $$random_record -gt 100 ]
     then
         echo "Failure to query the right hosts"
@@ -440,7 +440,7 @@ do
     then
         break
     fi
-    record=$$((record + 1))
+    record=$((record + 1))
     if [ $$record -gt 100 ]
     then
         echo "Failure to query the right hosts"
