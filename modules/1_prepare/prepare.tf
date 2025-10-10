@@ -445,6 +445,25 @@ resource "null_resource" "rhel83_fix" {
   }
 }
 
+resource "null_resource" "force_use_utc" {
+  count      = local.bastion_count
+  depends_on = [null_resource.rhel83_fix]
+
+  connection {
+    type        = "ssh"
+    user        = var.rhel_username
+    host        = data.ibm_pi_instance_ip.bastion_public_ip[count.index].external_ip
+    private_key = var.private_key
+    agent       = var.ssh_agent
+    timeout     = "${var.connection_timeout}m"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum remove cloud-init --noautoremove -y",
+    ]
+  }
+}
+
 resource "ibm_pi_network_interface" "bastion_vip" {
   count      = local.bastion_count > 1 ? 1 : 0
   depends_on = [ibm_pi_instance.bastion]
