@@ -446,7 +446,7 @@ resource "null_resource" "rhel83_fix" {
 }
 
 resource "null_resource" "force_use_utc" {
-  count      = local.bastion_count
+  count      = var.force_utc ? local.bastion_count : 0
   depends_on = [null_resource.rhel83_fix]
 
   connection {
@@ -459,7 +459,7 @@ resource "null_resource" "force_use_utc" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo yum remove cloud-init --noautoremove -y",
+      "sudo timedatectl set-timezone UTC",
     ]
   }
 }
