@@ -720,11 +720,9 @@ variable "luks_name" {
   default     = "root"
 }
 
-
 ################################################################
 # KDUMP variables
 ################################################################
-
 
 variable "kdump_enable" {
   type        = bool
@@ -760,4 +758,14 @@ variable "kdump_crash_kernel_memory" {
   type        = string
   description = "The crashkernel memory reservation for kdump occurs during the system boot"
   default     = "2G-4G:384M,4G-16G:512M,16G-64G:1G,64G-128G:2G,128G-:4G"
+}
+
+################################################################
+# Overrides the default timezone in an image to use UTC
+################################################################
+
+variable "force_utc" {
+  type        = bool
+  description = "Forces the bastion to use UTC"
+  default     = false
 }
