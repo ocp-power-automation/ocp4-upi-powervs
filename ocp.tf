@@ -209,6 +209,7 @@ module "install" {
   kdump_img                      = var.kdump_img
   kdump_log_path                 = var.kdump_log_path
   kdump_crash_kernel_memory      = var.kdump_crash_kernel_memory
+  haproxy_apiserver_healthcheck  = var.haproxy_apiserver_healthcheck
 }
 
 module "ibmcloud" {
