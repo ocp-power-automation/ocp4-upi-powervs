@@ -11,7 +11,7 @@ storage_type: ${storage_type}
 log_level: ${log_level}
 release_image_override: '${release_image_override}'
 enable_local_registry: ${enable_local_registry}
-fips_compliant: "${fips_compliant}"
+fips_compliant: ${fips_compliant}
 
 rhcos_pre_kernel_options: [%{ for opt in rhcos_pre_kernel_options ~}"${opt}",%{ endfor ~}]
 
