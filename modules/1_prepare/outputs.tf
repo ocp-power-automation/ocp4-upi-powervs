@@ -42,17 +42,17 @@ output "public_cidr" {
 
 output "bastion_vip" {
   depends_on = [null_resource.bastion_init]
-  value      = local.bastion_count > 1 ? ibm_pi_network_port.bastion_vip[0].pi_network_port_ipaddress : ""
+  value      = local.bastion_count > 1 ? ibm_pi_network_interface.bastion_vip[0].ip_address : ""
 }
 
 output "bastion_internal_vip" {
   depends_on = [null_resource.bastion_init]
-  value      = local.bastion_count > 1 ? ibm_pi_network_port.bastion_internal_vip[0].pi_network_port_ipaddress : ""
+  value      = local.bastion_count > 1 ? ibm_pi_network_interface.bastion_internal_vip[0].ip_address : ""
 }
 
 output "bastion_external_vip" {
   depends_on = [null_resource.bastion_init]
-  value      = local.bastion_count > 1 ? ibm_pi_network_port.bastion_internal_vip[0].public_ip : ""
+  value      = local.bastion_count > 1 ? ibm_pi_network_interface.bastion_internal_vip[0].ip_address : ""
 }
 
 output "cloud_connection_name" {
