@@ -25,11 +25,12 @@ Install the following packages on the automation host. Select the appropriate in
 
 Install Terraform and providers for Power environment:
 1. Download and install the latest Terraform binary for Linux/ppc64le from https://github.com/ppc64le-development/terraform-ppc64le/releases.
-2. Download the required Terraform providers for Power into your TF project directory:
+2. Download the required Terraform providers for Power into your TF project directory. The following commands automatically fetch the latest release tag from GitHub, store it in an environment variable, and then download the matching archive:
 ```
 $ cd <path_to_TF_project>
 $ mkdir -p ./providers
-$ curl -fsSL https://github.com/ocp-power-automation/terraform-providers-power/releases/download/v0.11/archive.zip -o archive.zip
+$ export TERRAFORM_PROVIDERS_POWER_VERSION=$(curl -fsSL https://api.github.com/repos/ocp-power-automation/terraform-providers-power/releases/latest | grep '"tag_name"' | head -n1 | cut -d'"' -f4)
+$ curl -fsSL https://github.com/ocp-power-automation/terraform-providers-power/releases/download/${TERRAFORM_PROVIDERS_POWER_VERSION}/archive.zip -o archive.zip
 $ unzip -o ./archive.zip -d ./providers
 $ rm -f ./archive.zip
 ```
