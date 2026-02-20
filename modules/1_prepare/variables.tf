@@ -82,3 +82,4 @@ variable "proxy" {}
 variable "fips_compliant" {}
 
 variable "create_cloud_connection" {}
+variable "force_utc" {}
