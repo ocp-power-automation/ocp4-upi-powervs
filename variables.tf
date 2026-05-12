@@ -726,11 +726,9 @@ variable "luks_name" {
   default     = "root"
 }
 
-
 ################################################################
 # KDUMP variables
 ################################################################
-
 
 variable "kdump_enable" {
   type        = bool
@@ -775,4 +773,14 @@ variable "haproxy_apiserver_healthcheck" {
   type        = bool
   description = "Flag to enable the haproxy_apiserver_healthcheck which enables API server healthchecks in haproxy"
   default     = true
+}
+
+################################################################
+# Overrides the default timezone in an image to use UTC
+################################################################
+
+variable "force_utc" {
+  type        = bool
+  description = "Forces the bastion to use UTC"
+  default     = false
 }

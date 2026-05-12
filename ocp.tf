@@ -71,6 +71,7 @@ module "prepare" {
   proxy                           = var.proxy
   fips_compliant                  = var.fips_compliant
   create_cloud_connection         = local.create_cloud_connection
+  force_utc                       = var.force_utc
 }
 
 data "ibm_pi_workspace" "workspace" {
@@ -78,10 +79,10 @@ data "ibm_pi_workspace" "workspace" {
 }
 
 locals {
-  # PER doc reference: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-per
-  is_per                  = contains(["dal10", "dal12", "fra04", "fra05", "wdc06", "wdc07", "mad02", "mad04", "sao01", "sao04"], var.ibmcloud_zone)
+  # PER doc reference: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-per#dcs-per
+  is_per                  = contains(["dal10", "dal12", "dal13", "dal14", "fra04", "fra05", "lon04", "lon06", "mad02", "mad04", "osa21", "sao01", "sao04", "syd04", "syd05", "tok04", "tor01", "wdc04", "wdc06", "wdc07", "us-east"], var.ibmcloud_zone)
   create_cloud_connection = var.use_ibm_cloud_services && var.ibm_cloud_connection_name == "" && !local.is_per
-  tgw_network             = module.prepare.cloud_connection_name == "" ? data.ibm_pi_workspace.workspace.pi_workspace_details.crn : module.prepare.cloud_connection_name
+  tgw_network             = module.prepare.cloud_connection_name == "" ? data.ibm_pi_workspace.workspace.pi_workspace_details[0].crn : module.prepare.cloud_connection_name
 }
 
 module "nodes" {

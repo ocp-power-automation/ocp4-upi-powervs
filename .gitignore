@@ -12,3 +12,4 @@ crash.*.log
 
 # terraform lock files
 .terraform.lock.hcl
+.DS_Store
