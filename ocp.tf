@@ -153,6 +153,7 @@ module "install" {
   openshift_client_tarball       = var.openshift_client_tarball
   storage_type                   = local.storage_type
   release_image_override         = var.release_image_override
+  qe_only_disable_image_policy   = var.qe_only_disable_image_policy
   private_network_mtu            = var.private_network_mtu
   enable_local_registry          = var.enable_local_registry
   local_registry_image           = var.local_registry_image

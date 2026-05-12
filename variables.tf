@@ -444,6 +444,12 @@ variable "release_image_override" {
   default = ""
 }
 
+variable "qe_only_disable_image_policy" {
+  type        = bool
+  description = "IBM/Red Hat QE Only: Disables ClusterImagePolicy so Nightly builds can be deployed. This feature puts a cluster in unsupported mode."
+  default     = false
+}
+
 # Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
 variable "cluster_domain" {
   type        = string

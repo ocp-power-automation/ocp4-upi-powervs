@@ -74,6 +74,8 @@ use_zone_info_for_names = true # If set it to false, the zone info would not be 
 #ocp_release_name           = "ocp-release"
 #release_image_override     = ""
 
+#qe_only_disable_image_policy = false # Set to true to disable ClusterImagePolicy for nightly builds. IBM/Red Hat QE Only: This feature puts a cluster in unsupported mode.
+
 
 #helpernode_repo            = "https://github.com/redhat-cop/ocp4-helpernode"
 #helpernode_tag             = ""

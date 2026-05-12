@@ -120,27 +120,28 @@ locals {
   rhcos_pre_kernel_options      = contains(local.rhcos_pre_kernel_options_keys, "rd.multipath") ? var.rhcos_pre_kernel_options : concat(var.rhcos_pre_kernel_options, local.default_kernel_options)
 
   install_vars = {
-    bastion_vip              = var.bastion_vip
-    cluster_id               = var.cluster_id
-    cluster_domain           = var.cluster_domain
-    pull_secret              = var.pull_secret
-    public_ssh_key           = var.public_key
-    storage_type             = var.storage_type
-    log_level                = var.log_level
-    release_image_override   = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
-    enable_local_registry    = var.enable_local_registry
-    fips_compliant           = var.fips_compliant
-    rhcos_pre_kernel_options = local.rhcos_pre_kernel_options
-    rhcos_kernel_options     = var.rhcos_kernel_options
-    node_labels              = merge(local.node_labels, var.node_labels)
-    chrony_config            = var.chrony_config
-    chrony_config_servers    = var.chrony_config_servers
-    chrony_allow_range       = var.cidr
-    setup_squid_proxy        = var.setup_squid_proxy
-    squid_source_range       = var.cidr
-    proxy_url                = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
-    no_proxy                 = var.cidr
-    cni_network_provider     = var.cni_network_provider
+    bastion_vip                  = var.bastion_vip
+    cluster_id                   = var.cluster_id
+    cluster_domain               = var.cluster_domain
+    pull_secret                  = var.pull_secret
+    public_ssh_key               = var.public_key
+    storage_type                 = var.storage_type
+    log_level                    = var.log_level
+    release_image_override       = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
+    qe_only_disable_image_policy = var.qe_only_disable_image_policy
+    enable_local_registry        = var.enable_local_registry
+    fips_compliant               = var.fips_compliant
+    rhcos_pre_kernel_options     = local.rhcos_pre_kernel_options
+    rhcos_kernel_options         = var.rhcos_kernel_options
+    node_labels                  = merge(local.node_labels, var.node_labels)
+    chrony_config                = var.chrony_config
+    chrony_config_servers        = var.chrony_config_servers
+    chrony_allow_range           = var.cidr
+    setup_squid_proxy            = var.setup_squid_proxy
+    squid_source_range           = var.cidr
+    proxy_url                    = local.proxy.server == "" ? "" : "http://${local.proxy.user_pass}${local.proxy.server}:${local.proxy.port}"
+    no_proxy                     = var.cidr
+    cni_network_provider         = var.cni_network_provider
     # Set CNI network MTU to MTU - 100 for OVNKubernetes and MTU - 50 for OpenShiftSDN(default).
     # Add new conditions here when we have more network providers
     cni_network_mtu               = var.cni_network_provider == "OVNKubernetes" ? var.private_network_mtu - 100 : var.private_network_mtu - 50

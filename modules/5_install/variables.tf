@@ -69,6 +69,7 @@ variable "openshift_install_tarball" {}
 variable "public_key" {}
 variable "pull_secret" {}
 variable "release_image_override" {}
+variable "qe_only_disable_image_policy" {}
 
 variable "private_network_mtu" {}
 
