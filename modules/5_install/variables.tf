@@ -145,3 +145,5 @@ variable "kdump_log_path" {}
 variable "kdump_crash_kernel_memory" {}
 
 variable "haproxy_apiserver_healthcheck" {}
+
+variable "os_image_stream" {}
