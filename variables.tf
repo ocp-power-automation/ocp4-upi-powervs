@@ -726,11 +726,9 @@ variable "luks_name" {
   default     = "root"
 }
 
-
 ################################################################
 # KDUMP variables
 ################################################################
-
 
 variable "kdump_enable" {
   type        = bool
@@ -786,4 +784,14 @@ variable "os_image_stream" {
     condition     = var.os_image_stream == "" || var.os_image_stream == "rhel-9" || var.os_image_stream == "rhel-10"
     error_message = "The os_image_stream value must be blank, 'rhel-9', or 'rhel-10'."
   }
+}
+
+################################################################
+# Overrides the default timezone in an image to use UTC
+################################################################
+
+variable "force_utc" {
+  type        = bool
+  description = "Forces the bastion to use UTC"
+  default     = false
 }
