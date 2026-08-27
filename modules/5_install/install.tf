@@ -328,10 +328,19 @@ resource "null_resource" "external_services" {
   }
 
   provisioner "remote-exec" {
-    inline = [
-      "echo 'Adding static route for VPC subnet in dhcpd'",
-      "sudo sed -i '/option routers/i option static-routes ${cidrhost(var.vpc_cidr, 0)} ${var.gateway_ip};' /etc/dhcp/dhcpd.conf",
-      "sudo systemctl restart dhcpd.service"
+    inline = [<<-EOF
+echo 'Adding static route for VPC subnet in dhcpd'
+RHEL_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"' | cut -d'.' -f1)
+if [ "$RHEL_VERSION" -lt 10 ]; then
+  sudo sed -i '/option routers/i option static-routes ${cidrhost(var.vpc_cidr, 0)} ${var.gateway_ip};' /etc/dhcp/dhcpd.conf
+  sudo systemctl restart dhcpd.service
+else
+  sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.bak
+  sudo jq '.Dhcp4["option-data"] |= [{"name":"classless-static-route", "data":"${cidrhost(var.vpc_cidr, 0)}, ${var.gateway_ip}"}] + .' /etc/kea/kea-dhcp4.conf > /etc/kea/tmp-kea.conf
+  sudo mv /etc/kea/tmp-kea.conf /etc/kea/kea-dhcp4.conf
+  sudo systemctl restart kea-dhcp4.service
+fi
+EOF
     ]
   }
 }
@@ -355,9 +364,18 @@ resource "null_resource" "pre_install" {
 
   # DHCP config for setting MTU; Since helpernode DHCP template does not support MTU setting
   provisioner "remote-exec" {
-    inline = [
-      "sudo sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf",
-      "sudo systemctl restart dhcpd.service"
+    inline = [<<-EOF
+RHEL_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"' | cut -d'.' -f1)
+if [ "$RHEL_VERSION" -lt 10 ]; then
+  sudo sed -i.mtubak '/option routers/i option interface-mtu ${var.private_network_mtu};' /etc/dhcp/dhcpd.conf
+  sudo systemctl restart dhcpd.service
+else
+  sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.bak
+  sudo jq '.Dhcp4["option-data"] |= [{"name":"interface-mtu","data":"${var.private_network_mtu}"}] + .' /etc/kea/kea-dhcp4.conf > /etc/kea/tmp-kea.conf
+  sudo mv /etc/kea/tmp-kea.conf /etc/kea/kea-dhcp4.conf
+  sudo systemctl restart kea-dhcp4.service
+fi
+EOF
     ]
   }
 }

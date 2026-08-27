@@ -294,7 +294,13 @@ else
     sudo subscription-manager register --org='${var.rhel_subscription_org}' --activationkey='${var.rhel_subscription_activationkey}' --force
 fi
 sudo subscription-manager refresh
-sudo subscription-manager attach --auto
+RHEL_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"' | cut -d'.' -f1)
+if [ "$RHEL_VERSION" -lt 10 ]; then
+    echo "RHEL $RHEL_VERSION detected: Attaching subscriptions..."
+    sudo subscription-manager attach --auto
+else
+    echo "RHEL $RHEL_VERSION detected: Skipping 'attach' (SCA active)."
+fi
 EOF
     ]
   }
@@ -341,11 +347,11 @@ resource "null_resource" "enable_repos" {
 if ( [[ -z "${var.rhel_subscription_username}" ]] || [[ "${var.rhel_subscription_username}" == "<subscription-id>" ]] ) && [[ -z "${var.rhel_subscription_org}" ]]; then
   sudo yum install -y epel-release
 else
-  os_ver=$(cat /etc/os-release | egrep "^VERSION_ID=" | awk -F'"' '{print $2}')
-  if [[ $os_ver != "9"* ]]; then
+  os_ver=$(grep -E '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"' | cut -d'.' -f1)
+  if [[ $os_ver == "8" ]]; then
     sudo subscription-manager repos --enable ${var.ansible_repo_name}
   else
-    sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+    sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$${os_ver}.noarch.rpm
   fi
 fi
 EOF
@@ -382,11 +388,29 @@ resource "null_resource" "bastion_packages" {
     ]
   }
   provisioner "remote-exec" {
-    inline = [
-      "sudo yum install -y ansible",
-      "ansible-galaxy collection install community.crypto",
-      "ansible-galaxy collection install ansible.posix",
-      "ansible-galaxy collection install kubernetes.core"
+    inline = [<<EOF
+RHEL_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"' | cut -d'.' -f1)
+if [ "$RHEL_VERSION" -ge 9 ]; then
+  sudo yum install -y ansible-core
+else
+  sudo yum install -y ansible
+fi
+ansible-galaxy collection install community.crypto
+ansible-galaxy collection install ansible.posix
+ansible-galaxy collection install kubernetes.core
+EOF
+    ]
+  }
+  provisioner "remote-exec" {
+    inline = [<<EOF
+# On RHEL 10+, NetworkManager overwrites `/etc/resolv.conf`, undoing the helpernode-set `127.0.0.1` DNS - 
+# This prevents NetworkManager from managing it so the local named config persists.
+RHEL_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"' | cut -d'.' -f1)
+if [ "$RHEL_VERSION" -ge 10 ]; then
+  echo -e '[main]\ndns=none' | sudo tee /etc/NetworkManager/conf.d/90-dns-none.conf > /dev/null
+  sudo systemctl reload NetworkManager
+fi
+EOF
     ]
   }
 }
@@ -425,6 +449,7 @@ resource "null_resource" "setup_nfs_disk" {
       "sudo mkfs.xfs /dev/${local.disk_config.disk_name}",
       "echo '/dev/${local.disk_config.disk_name} ${local.storage_path} xfs defaults 0 0' | sudo tee -a /etc/fstab > /dev/null",
       "sudo mount ${local.storage_path}",
+      "sudo systemctl daemon-reload",
     ]
   }
 }
