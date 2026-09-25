@@ -97,6 +97,10 @@ resource "ibm_pi_instance" "bootstrap" {
   pi_network {
     network_id = data.ibm_pi_network.network.id
   }
+
+  lifecycle {
+    ignore_changes = [pi_storage_type, pi_user_data]
+  }
 }
 resource "ibm_pi_instance_action" "bootstrap_stop" {
   count = var.bootstrap["count"] == 0 ? 0 : 1
@@ -154,7 +158,7 @@ resource "ibm_pi_instance" "master" {
   }
 
   lifecycle {
-    ignore_changes = [pi_storage_pool_affinity]
+    ignore_changes = [pi_storage_pool_affinity, pi_storage_type, pi_user_data]
   }
 }
 resource "ibm_pi_instance_action" "master_stop" {
@@ -225,7 +229,7 @@ resource "ibm_pi_instance" "worker" {
   }
 
   lifecycle {
-    ignore_changes = [pi_storage_pool_affinity]
+    ignore_changes = [pi_storage_pool_affinity, pi_storage_type, pi_user_data]
   }
 }
 resource "ibm_pi_instance_action" "worker_stop" {

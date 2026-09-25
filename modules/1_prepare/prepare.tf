@@ -111,6 +111,10 @@ resource "ibm_pi_instance" "bastion" {
   pi_network {
     network_id = data.ibm_pi_network.network.id
   }
+
+  lifecycle {
+    ignore_changes = [pi_storage_type, pi_user_data]
+  }
 }
 
 data "ibm_pi_instance_ip" "bastion_ip" {
