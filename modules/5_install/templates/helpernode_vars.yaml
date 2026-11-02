@@ -81,6 +81,7 @@ chronyconfig:
 
 ocp_client: "${client_tarball}"
 ocp_installer: "${install_tarball}"
+oc_mirror: "${oc_mirror_tarball}"
 
 # Pointing it to local files since it is not required atm
 ocp_bios: "file:///dev/null"

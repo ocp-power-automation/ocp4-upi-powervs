@@ -65,6 +65,7 @@ variable "worker_ids" {}
 
 variable "openshift_client_tarball" {}
 variable "openshift_install_tarball" {}
+variable "oc_mirror_tarball" {}
 
 variable "public_key" {}
 variable "pull_secret" {}

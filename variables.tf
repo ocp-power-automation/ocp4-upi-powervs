@@ -439,6 +439,11 @@ variable "openshift_client_tarball" {
   default = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable/openshift-client-linux.tar.gz"
 }
 
+variable "oc_mirror_tarball" {
+  type    = string
+  default = "https://developers.redhat.com/content-gateway/file/pub/cgw/oc-mirror/2.0/oc-mirror-rhel9-linux-ppc64le.tar.gz"
+}
+
 variable "release_image_override" {
   type    = string
   default = ""

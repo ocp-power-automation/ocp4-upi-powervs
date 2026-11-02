@@ -84,6 +84,7 @@ locals {
     local_registry  = local.local_registry
     client_tarball  = var.openshift_client_tarball
     install_tarball = var.openshift_install_tarball
+    oc_mirror_tarball = var.oc_mirror_tarball
 
     # This variable is needed to be set if using ibmcloud services.
     # Otherwise helpernode will fail to run on subsequent runs
@@ -112,8 +113,6 @@ locals {
     user_pass = lookup(var.proxy, "user", "") == "" ? "" : "${lookup(var.proxy, "user", "")}:${lookup(var.proxy, "password", "")}@"
   }
 
-  local_registry_ocp_image = "registry.${var.cluster_id}.${var.cluster_domain}:5000/${local.local_registry.ocp_release_repo}:${var.ocp_release_tag}"
-
   // enable multipathd by default across cluster nodes
   default_kernel_options        = ["rd.multipath=default", "root=/dev/disk/by-label/dm-mpath-root"]
   rhcos_pre_kernel_options_keys = [for opt in var.rhcos_pre_kernel_options : split("=", opt)[0]]
@@ -128,7 +127,7 @@ locals {
     os_image_stream              = var.os_image_stream
     storage_type                 = var.storage_type
     log_level                    = var.log_level
-    release_image_override       = var.enable_local_registry ? local.local_registry_ocp_image : var.release_image_override
+    release_image_override       = var.enable_local_registry ? "" : var.release_image_override
     qe_only_disable_image_policy = var.qe_only_disable_image_policy
     enable_local_registry        = var.enable_local_registry
     fips_compliant               = var.fips_compliant

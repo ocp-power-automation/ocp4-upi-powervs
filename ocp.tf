@@ -151,6 +151,7 @@ module "install" {
   pull_secret                    = file(coalesce(var.pull_secret_file, "/dev/null"))
   openshift_install_tarball      = var.openshift_install_tarball
   openshift_client_tarball       = var.openshift_client_tarball
+  oc_mirror_tarball              = var.oc_mirror_tarball
   storage_type                   = local.storage_type
   release_image_override         = var.release_image_override
   qe_only_disable_image_policy   = var.qe_only_disable_image_policy
