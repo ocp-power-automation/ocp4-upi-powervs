@@ -47,6 +47,7 @@ rhel_smt                        = 4
 
 openshift_install_tarball = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable/openshift-install-linux.tar.gz"
 openshift_client_tarball  = "https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp/stable/openshift-client-linux.tar.gz"
+oc_mirror_tarball         = "https://developers.redhat.com/content-gateway/file/pub/cgw/oc-mirror/2.0/oc-mirror-rhel9-linux-ppc64le.tar.gz"
 pull_secret_file          = "data/pull-secret.txt"
 
 cluster_domain    = "ibm.com"  #Set domain to nip.io or sslip.io if you prefer using online wildcard domain and avoid modifying /etc/hosts
